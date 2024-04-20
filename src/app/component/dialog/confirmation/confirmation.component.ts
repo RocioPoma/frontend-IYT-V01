@@ -18,6 +18,7 @@ export class ConfirmationComponent implements OnInit {
     }
   }
 
+  //comentario
   handleChangeAction(){
     this.onEmitStatusChange.emit();
   }
