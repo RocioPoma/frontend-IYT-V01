@@ -1,0 +1,196 @@
+<div *ngIf="dialogData.action!='file'">
+    <mat-toolbar color="primary">
+        <mat-toolbar-row fxLayout="row">
+            <span class="title-center">{{action}} Jugador</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    
+    <mat-dialog-content class="mat-typography">
+        <form [formGroup]="jugadorForm">
+            <div fxFlex fxLayout="column">
+                <div fxLayout="row wrap">
+                    <div class="card card_img">
+                        <input type="file" class="ocultar" accept="image/*" (change)="selectFile($event)" #photoInput>
+                        <img class="img-fluid" [src]="photoSelected || imgURL" alt="No Image"
+                            (click)="photoInput.click()" />
+                    </div>
+                    <!--
+                    <div class="radio_buton" appearance="fill" fxFlex>
+                        <mat-label>Documento</mat-label><br>
+                        <input (change)="selectFile($event)" formControlName="documento"
+                            class="form-control-file" type="file">
+                    </div>-->
+                    <!-- FOTO O ARCIVO
+                    <div  appearance="fill" fxFlex>
+                        <div class="card card_img" >
+                            <img class="img-fluid" [src]="imgURL" alt="">
+                        </div>    
+                    </div>
+    
+                    <div class="radio_buton" appearance="fill" fxFlex>
+                        <mat-label>Foto</mat-label><br>
+                        <input  class="form-control-file" type="file" accept="image/*" (change)="selectImage($event)">
+                    </div>
+                    --->
+                </div>
+    
+                <div fxLayout="row wrap">
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Ci</mat-label>
+                        <input matInput formControlName="ci" required>
+                        <mat-error *ngIf="jugadorForm.controls.ci.touched && jugadorForm.controls.ci.invalid">
+                            <span *ngIf="jugadorForm.controls.ci.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.ci.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Nombre</mat-label>
+                        <input matInput formControlName="nombre" required>
+                        <mat-error *ngIf="jugadorForm.controls.nombre.touched && jugadorForm.controls.nombre.invalid">
+                            <span *ngIf="jugadorForm.controls.nombre.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.nombre.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+    
+                <div fxLayout="row wrap">
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Ap Paterno</mat-label>
+                        <input matInput formControlName="ap_paterno" required>
+                        <mat-error
+                            *ngIf="jugadorForm.controls.ap_paterno.touched && jugadorForm.controls.ap_paterno.invalid">
+                            <span *ngIf="jugadorForm.controls.ap_paterno.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.ap_paterno.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Ap Materno</mat-label>
+                        <input matInput formControlName="ap_materno" required>
+                        <mat-error
+                            *ngIf="jugadorForm.controls.ap_materno.touched && jugadorForm.controls.ap_materno.invalid">
+                            <span *ngIf="jugadorForm.controls.ap_materno.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.ap_materno.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+    
+                <div fxLayout="row wrap">
+                    <!--
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Fecha Nacimiento</mat-label>
+                        <input matInput formControlName="fecha_nacimiento" required>
+                        <mat-error *ngIf="jugadorForm.controls.fecha_nacimiento.touched && jugadorForm.controls.fecha_nacimiento.invalid">
+                            <span *ngIf="jugadorForm.controls.fecha_nacimiento.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.fecha_nacimiento.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+                    -->
+                    <mat-form-field appearance="fill">
+                        <mat-label>Fecha de nacimiento</mat-label>
+                        <input formControlName="fecha_nacimiento" matInput [matDatepicker]="picker1" class="form-control">
+                        <mat-hint>DD/MM/AAAA</mat-hint>
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                        <mat-error *ngIf="jugadorForm.controls.sexo.touched && jugadorForm.controls.sexo.invalid">
+                            <span *ngIf="jugadorForm.controls.sexo.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.sexo.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+    
+                    <!--
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Sexo</mat-label>
+                        <input matInput formControlName="sexo" required>
+                        <mat-error *ngIf="jugadorForm.controls.sexo.touched && jugadorForm.controls.sexo.invalid">
+                            <span *ngIf="jugadorForm.controls.sexo.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.sexo.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+                     -->
+                    <div class="radio_buton" appearance="fill" fxFlex>
+                        <mat-label>Sexo</mat-label><br>
+                        <mat-radio-group formControlName="sexo" aria-label="Select an option">
+                            <mat-radio-button *ngFor="let sexo of sexo" [value]="sexo">{{sexo}}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+    
+                </div>
+                <div fxLayout="row wrap">
+                    <!--
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Decendencia</mat-label>
+                        <input matInput formControlName="decendencia" required>
+                        <mat-error
+                            *ngIf="jugadorForm.controls.decendencia.touched && jugadorForm.controls.decendencia.invalid">
+                            <span *ngIf="jugadorForm.controls.decendencia.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.decendencia.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+                    -->
+    
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Decendencia</mat-label>
+                        <mat-select formControlName="decendencia">
+                            <mat-option *ngFor="let decendencia of decendencia" [value]="decendencia">{{decendencia}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="jugadorForm.controls.decendencia.touched && jugadorForm.controls.decendencia.invalid">
+                            <span *ngIf="jugadorForm.controls.decendencia.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.decendencia.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+    
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Club</mat-label>
+                        <mat-select formControlName="clubId">
+                            <mat-option *ngFor="let club of club" [value]="club.id">{{club.nombre}}</mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="jugadorForm.controls.decendencia.touched && jugadorForm.controls.decendencia.invalid">
+                            <span *ngIf="jugadorForm.controls.decendencia.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.decendencia.errors.pattern">Este campo es invalido.</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+    
+    <mat-dialog-actions align="center">
+        <button mat-raised-button color="accent" type="submit" (click)="handleSubmit()"
+            [disabled]="!(jugadorForm.valid && jugadorForm.dirty)">{{action}}</button>
+        <button mat-raised-button color="accent" mat-dialog-close>Cancelar</button>
+    </mat-dialog-actions> 
+</div>
+
+<!--PARA SUBIR DOCUMENTOS-->
+<div *ngIf="dialogData.action=='file'">
+    <mat-toolbar color="primary">
+        <mat-toolbar-row fxLayout="row">
+            <span class="title-center">Subir documentacion de: {{dialogData.data.nombre}} {{dialogData.data.ap_paterno}} {{dialogData.data.ap_materno}}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    
+    <mat-dialog-content class="mat-typography">
+        <form [formGroup]="jugadorForm">
+            <div fxFlex fxLayout="column">
+                <div fxLayout="row wrap">
+
+                    <div class="radio_buton" appearance="fill" fxFlex>
+                        <mat-label>Documento</mat-label><br>
+                        <input (change)="selectFile($event)" formControlName="documento"
+                            class="form-control-file" type="file">
+                    </div>
+                   
+                </div>
+    
+            </div>
+        </form>
+    </mat-dialog-content>
+    
+    <mat-dialog-actions align="center">
+        <button mat-raised-button color="accent" type="submit" (click)="subirDocumentacion()">Subir</button>
+        <button mat-raised-button color="accent" mat-dialog-close>Cancelar</button>
+    </mat-dialog-actions> 
+</div>

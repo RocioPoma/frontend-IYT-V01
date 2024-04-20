@@ -1,0 +1,101 @@
+.tamano_titulo {
+    font-size: 15px;
+    color: rgb(135, 150, 150);
+    // width: 70%;
+}
+
+.letra {
+    font-size: 14px;
+}
+
+.btn-add {
+    // background-color: black;
+    margin-left: 30px;
+    margin-top: 8px;
+    margin-right: 35px;
+}
+
+table {
+    width: 70%;
+    min-width: 350px;
+}
+
+.mat-table {
+    min-width: 350px;
+}
+
+.tamano2 {
+    max-width: 470px;
+}
+
+th {
+    background: #0995a2;
+    color: white;
+    font-size: 15px;
+}
+
+.tr.mat-row:nth-child(even) {
+    background-color: #ebf1f1;
+
+    //border-radius: 5px;
+}
+
+.example-card {
+    max-width: 100px;
+    max-height: 80px;
+}
+
+.card1 {
+    background: #d8e131;
+    margin-top: -8px;
+    margin-bottom: 6px;
+    width: 100%;
+    //margin-bottom: -8px;
+}
+
+.card2 {
+    background: #d8e131;
+    //margin-top: -8px;
+    width: 100%;
+    margin-bottom: -38px;
+}
+
+.contenedorDiv {
+    max-width: 100px;
+    max-height: 80px;
+    border: 1px solid #000000;
+    border-radius: 7px;
+    border-radius: 7px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    //padding: 10px;
+}
+
+.div1 {
+    background: #fffffd;
+}
+
+.div2 {
+    background: #ffff;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.div3 {
+    background: #c6daf4;
+}
+.div4 {
+    background: #eaee6f;
+    color: #000000;
+}
+.div5 {
+    background: #dbdeda;
+    font-size: 8px;
+}
+
+.float-right {
+    float: right;
+    margin-top: -8px;
+    margin-right: 10px;
+}

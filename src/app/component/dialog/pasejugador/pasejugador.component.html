@@ -1,0 +1,83 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span class="title-center">{{action}} Pase Jugador</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="paseForm">
+        <div fxFlex fxLayout="column">
+
+            <div fxLayout="row wrap">                               
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Club Solicitante</mat-label>
+                    <mat-select formControlName="id_club_solicitante">
+                        <mat-option *ngFor="let club of club" [value]="club.id">{{club.nombre}}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="paseForm.controls.id_club_solicitante.touched && paseForm.controls.id_club_solicitante.invalid">
+                        <span *ngIf="paseForm.controls.id_club_solicitante.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="paseForm.controls.id_club_solicitante.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre Club a solicitar</mat-label>
+                    <mat-select formControlName="id_club_solicitado" (selectionChange)="getJugadores($event.value)">
+                        <mat-option *ngFor="let club of club" [value]="club.id">{{club.nombre}}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="paseForm.controls.id_club_solicitado.touched && paseForm.controls.id_club_solicitado.invalid">
+                        <span *ngIf="paseForm.controls.id_club_solicitado.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="paseForm.controls.id_club_solicitado.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Jugador solicitado</mat-label>
+                    <mat-select formControlName="ci" >
+                        <mat-option *ngFor="let jugador of jugador" [value]="jugador.ci">{{jugador.nombre}} {{jugador.ap_paterno}} {{jugador.ap_materno}}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="paseForm.controls.ci.touched && paseForm.controls.ci.invalid">
+                        <span *ngIf="paseForm.controls.ci.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="paseForm.controls.ci.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="fill">
+                    <mat-label>Fecha de solicitud</mat-label>
+                    <input formControlName="fecha" matInput [matDatepicker]="picker1" class="form-control">
+                    <mat-hint>DD/MM/AAAA</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                    <mat-error
+                        *ngIf="paseForm.controls.fecha.touched && paseForm.controls.fecha.invalid">
+                        <span *ngIf="paseForm.controls.fecha.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="paseForm.controls.fecha.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+            </div>
+
+            <div fxLayout="row wrap">
+                <div fxLayout="row wrap">
+                    <div class="radio_buton" appearance="fill" fxFlex>
+                        <mat-label>Documento</mat-label><br>
+                        <input (change)="selectFile($event)" formControlName="documento"
+                            class="form-control-file" type="file">
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="!(paseForm.valid && paseForm.dirty)">{{action}}</button>
+    <button mat-raised-button color="primary" mat-dialog-close>Cancelar</button>
+</mat-dialog-actions> 

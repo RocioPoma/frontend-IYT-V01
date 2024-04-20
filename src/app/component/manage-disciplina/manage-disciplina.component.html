@@ -1,0 +1,23 @@
+<mat-card class="responsive_table">
+    <div class="float-center">
+        <b class="tamano_titulo"><span>DISCIPLINAS</span></b>
+    </div>
+</mat-card>
+<hr>
+<div class="responsive_table">
+    <div *ngFor="let element of datosDisciplina" align="center">
+        <mat-card class="example-card">
+            <mat-card-title-group>
+                <mat-card-title align="left">{{element.nombre}}</mat-card-title>
+                <mat-card-subtitle align="left">"Siempre puedes ser mejor" <br>
+                    <mat-slide-toggle (change)="onChange($event.checked, element.id)"
+                        matTooltip="Activar o Desactivar Disciplina" [checked]="element.estado">
+                    </mat-slide-toggle>
+                </mat-card-subtitle>
+                <img class="img" mat-card-sm-image [src]="imgURL+element.nombre+extension">
+            </mat-card-title-group>
+
+        </mat-card>
+    </div>
+
+</div>

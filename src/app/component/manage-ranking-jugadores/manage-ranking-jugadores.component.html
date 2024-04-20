@@ -1,0 +1,47 @@
+<mat-card>
+    <div class="float-center" align="center">
+        <b class="tamano_titulo"><span>Ranking Jugadores</span></b>
+    </div>
+</mat-card>
+<hr>
+<div fxLayout="row wrap">
+   
+        <div class="tmano1" fxFlex class="responsive_table" align="center">
+            <table style="width: 70%;" mat-table [dataSource]="dataSourceTP" class="mat-elevation-z8 " >
+
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> No.</th>
+                    <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="nombre">
+                    <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                    <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ap">
+                    <th mat-header-cell *matHeaderCellDef> Ap_Paterno</th>
+                    <td mat-cell *matCellDef="let element"> {{element.ap}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="am">
+                    <th mat-header-cell *matHeaderCellDef> Ap_materno</th>
+                    <td mat-cell *matCellDef="let element"> {{element.am}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="club">
+                    <th mat-header-cell *matHeaderCellDef>Club</th>
+                    <td mat-cell *matCellDef="let element"> {{element.club}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="goles">
+                    <th mat-header-cell *matHeaderCellDef>Goles</th>
+                    <td mat-cell *matCellDef="let element"> {{element.goles}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsTP; sticky:true"></tr>
+                <tr class="tr" mat-row *matRowDef="let row;columns:displayedColumnsTP"></tr>
+            </table>
+        </div>
+          
+</div>

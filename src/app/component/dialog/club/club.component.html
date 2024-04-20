@@ -1,0 +1,35 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span class="title-center">{{action}} Club</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="clubForm">
+        <div fxFlex fxLayout="column">
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre</mat-label>
+                    <input matInput formControlName="nombre" required>
+                    <mat-error *ngIf="clubForm.controls.nombre.touched && clubForm.controls.nombre.invalid">
+                        <span *ngIf="clubForm.controls.nombre.errors.required">Este campo es obligatorio.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Comunidad</mat-label>
+                    <input matInput formControlName="comunidad" required>
+                    <mat-error *ngIf="clubForm.controls.comunidad.touched && clubForm.controls.comunidad.invalid">
+                        <span *ngIf="clubForm.controls.comunidad.errors.required">Este campo es obligatorio.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="![clubForm.valid && clubForm.dirty]">{{action}}</button>
+        <button mat-raised-button color="primary" mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>

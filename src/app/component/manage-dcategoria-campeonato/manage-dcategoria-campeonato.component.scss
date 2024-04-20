@@ -1,0 +1,39 @@
+.float-center {
+    text-align: center;
+}
+
+.tamano_titulo {
+    font-size: 18px;
+    color: rgb(120, 132, 133);
+}
+
+.float-right{
+    float: right;
+    margin-top: -8px;
+}
+
+.example-card {
+    max-width: 400px;
+    margin-bottom: 8px;   
+}
+
+.img {
+    background-size: cover;
+    border-radius: 50%;
+   // margin: 0 auto;
+}
+.mayuscula{
+    text-transform: uppercase;
+}
+
+.btn-add{
+    // background-color: black;
+     margin-left: 30px;
+     margin-top: 8px;
+     margin-right: 35px;
+ }
+ .btn-add2{
+    //background-color: black;
+    margin-left: 30px;
+    margin-top: 8px;
+}

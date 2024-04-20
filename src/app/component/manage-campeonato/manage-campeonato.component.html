@@ -1,0 +1,91 @@
+<div id="contenido_camp" align="center">
+    <mat-card fxLayout="column" fxLayout="row wrap">
+        <div fxFlex>
+            <b><span>GESTION CAMPEONATOS</span></b>
+        </div>
+        <div>
+            <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Crear
+                Campeonato</button>
+                <!--
+            <a href="../../../assets/img/reportes/7130e47b-abcb-468e-b8e6-72af9ea270c0.pdf" target="_blank">
+                <button style="margin-right: 10px;" mat-flat-button color="primary" class="float-right">Reporte</button>
+            </a>
+            -->
+        </div>
+
+    </mat-card>
+    <hr>
+    <mat-card>
+        <mat-form-field appearance="fill">
+            <mat-label>Buscar</mat-label>
+            <input matInput (keyup)="applyFilter($event)" autocomplete="off">
+        </mat-form-field>
+    </mat-card>
+    <div class="responsive_table">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container matColumnDef="nombre_campeonato">
+                <th mat-header-cell *matHeaderCellDef> Nombre Campeonato</th>
+                <td mat-cell *matCellDef="let element"> {{element.nombre_campeonato}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="gestion">
+                <th mat-header-cell *matHeaderCellDef>Gestión</th>
+                <td mat-cell *matCellDef="let element"> {{element.gestion}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="fecha_inicio">
+                <th mat-header-cell *matHeaderCellDef> fecha_inicio</th>
+                <td mat-cell *matCellDef="let element"> {{element.fecha_i}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="fecha_fin">
+                <th placeholder="dd-mm-yyyy" mat-header-cell *matHeaderCellDef> fecha_fin</th>
+                <td mat-cell *matCellDef="let element"> {{element.fecha_f}} </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="convocatoria">
+                <th mat-header-cell *matHeaderCellDef> Convocatoria</th>
+                <td mat-cell *matCellDef="let element">
+                    <div *ngIf="(element.convocatoria!='')">
+                        <a [href]="imgURL + element.convocatoria" target="_blank">
+                            <img width="30px" height="30px" src="../../../assets/img/pdf-icono.png" alt="no exist">
+                        </a>
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                <td mat-cell *matCellDef="let element" class="action-link">
+                    <button mat-icon-button color="accent" matTooltip="Modificar" (click)="handleEditAction(element)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="accent" matTooltip="Eliminar" (click)="handleDeleteAction(element)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    <mat-slide-toggle (change)="onChange($event.checked, element.id)"
+                        matTooltip="Activate or Deactivate Campeonato" [checked]="element.status">
+
+                    </mat-slide-toggle>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="administrar">
+                <th mat-header-cell *matHeaderCellDef> Administrar</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-flat-button color="accent" class="float-center"
+                        (click)="handleAction(element)">ADMINISTRAR</button>
+                </td>
+                <!--  <td mat-cell *matCellDef="let element"> {{element.gestion}} </td> 
+        <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">Crear Campeonato</button> -->
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+            <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+        </table>
+    </div>
+</div>
+
+<!--
+<app-manage-detalle-campeonato id="id-detalle-camp"></app-manage-detalle-campeonato>
+-->

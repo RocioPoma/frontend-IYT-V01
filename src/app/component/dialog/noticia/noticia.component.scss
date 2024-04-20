@@ -1,0 +1,38 @@
+.mat-toolbar {
+    margin: -24px;
+    width: auto;
+    margin-bottom: 10px;
+}
+
+.title-center {
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+mat-form-field {
+    padding: 5px;
+}
+
+.l_imagen {
+    margin-left: 8px;
+}
+
+.mat-radio-button~.mat-radio-button {
+    margin-left: 16px;
+}
+
+.radio_buton {
+    padding: 5px;
+}
+
+.card_img {
+    margin-left: 8px;
+    width: 24%;
+    height: 24%;
+    cursor: pointer;
+}
+
+.ocultar {
+    visibility: hidden;
+}
+

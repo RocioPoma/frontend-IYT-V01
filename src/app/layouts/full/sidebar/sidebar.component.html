@@ -1,0 +1,41 @@
+<mat-nav-list appAccordion>
+    <!--<mat-list-item appAcordionLink *ngFor="let menuitem of menuItems.getMenuitem()" routerLinkActive="selected" group="{menuitem.state}"> -->
+
+    <div *ngIf="(bandera==0 || bandera==null); else porfalso">
+        <mat-list-item appAcordionLink *ngFor="let menuitem of menuItems.getMenuitem()" routerLinkActive="selected"
+            group="{menuitem.state}">
+            <a hrefappAcordionToggle [routerLink]="['/integracion',menuitem.state]"
+                *ngIf="(menuitem.role === '' || menuitem.role === tokenPayload.role)">
+                <mat-icon>{{menuitem.icon}}</mat-icon>
+                <span>{{menuitem.name}}</span>
+                <span fxFlex></span>
+            </a>
+        </mat-list-item>
+    </div>
+    <ng-template #porfalso>
+        <mat-list-item appAcordionLink *ngFor="let menuitem of campeonatoItems.getMenuitem()"
+            routerLinkActive="selected" group="{menuitem.state}">
+            <a hrefappAcordionToggle [routerLink]="['/integracion/',menuitem.state,bandera]"
+                *ngIf="(menuitem.role === '' || menuitem.role === tokenPayload.role)">
+                <mat-icon>{{menuitem.icon}}</mat-icon>
+                <span>{{menuitem.name}}</span>
+                <span fxFlex></span>
+            </a>
+        </mat-list-item>
+
+    </ng-template>
+</mat-nav-list>
+
+<!--
+    <mat-nav-list appAccordion>
+        <mat-list-item appAcordionLink *ngFor="let menuitem of menuItems.getMenuitem()" routerLinkActive="selected"
+        group="{menuitem.state}">
+        <a hrefappAcordionToggle [routerLink]="['/integracion',menuitem.state]"
+            *ngIf="(menuitem.role === '' || menuitem.role === tokenPayload.role)">
+            <mat-icon>{{menuitem.icon}}</mat-icon>
+            <span>{{menuitem.name}}</span>
+            <span fxFlex></span>
+        </a>
+    </mat-list-item>
+</mat-nav-list>
+-->

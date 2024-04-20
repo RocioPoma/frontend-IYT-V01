@@ -1,0 +1,120 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span class="title-center">{{action}} </span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="dcategoriaForm">
+        <div fxFlex fxLayout="column">
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Disciplina</mat-label>
+                    <mat-select formControlName="id_disciplina">
+                        <mat-option *ngFor="let disciplina of disciplina" [value]="disciplina.id">{{disciplina.nombre}}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="dcategoriaForm.controls.id_disciplina.touched && dcategoriaForm.controls.id_disciplina.invalid">
+                        <span *ngIf="dcategoriaForm.controls.id_disciplina.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="dcategoriaForm.controls.id_disciplina.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Categoria</mat-label>
+                    <mat-select formControlName="id_categoria">
+                        <mat-option *ngFor="let element of categoria" [value]="element.id">{{element.nombre}}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="dcategoriaForm.controls.id_categoria.touched && dcategoriaForm.controls.id_categoria.invalid">
+                        <span *ngIf="dcategoriaForm.controls.id_categoria.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="dcategoriaForm.controls.id_categoria.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Edad Minima</mat-label>
+                    <input matInput formControlName="edad_min" required type="number">
+                    <mat-error
+                        *ngIf="dcategoriaForm.controls.edad_min.touched && dcategoriaForm.controls.edad_min.invalid">
+                        <span *ngIf="dcategoriaForm.controls.edad_min.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="dcategoriaForm.controls.edad_min.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Edad Maxima</mat-label>
+                    <input matInput formControlName="edad_max" required type="number">
+                    <mat-error
+                        *ngIf="dcategoriaForm.controls.edad_max.touched && dcategoriaForm.controls.edad_max.invalid">
+                        <span *ngIf="dcategoriaForm.controls.edad_max.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="dcategoriaForm.controls.edad_max.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Numero Maximo de Jugadores</mat-label>
+                    <input matInput formControlName="num_max_jugadores" required type="number">
+                    <mat-error
+                        *ngIf="dcategoriaForm.controls.num_max_jugadores.touched && dcategoriaForm.controls.num_max_jugadores.invalid">
+                        <span *ngIf="dcategoriaForm.controls.num_max_jugadores.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="dcategoriaForm.controls.num_max_jugadores.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Requisito</mat-label>
+                    <mat-select formControlName="requisito" (selectionChange)="changeSelectRequisito($event.value)">
+                        <mat-option value="Con edad obligatoria">Con edad obligatoria</mat-option>
+                        <mat-option value="Sin edad obligatoria">Sin edad obligatoria</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="dcategoriaForm.controls.requisito.touched && dcategoriaForm.controls.requisito.invalid">
+                        <span *ngIf="dcategoriaForm.controls.requisito.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="dcategoriaForm.controls.requisito.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field  *ngIf="requisito=='Con edad obligatoria'" appearance="fill" fxFlex>
+                    <mat-label>Edad obligatoria</mat-label>
+                    <input matInput formControlName="edad_obligatoria" required type="number">
+                    <mat-error
+                        *ngIf="dcategoriaForm.controls.edad_obligatoria.touched && dcategoriaForm.controls.edad_obligatoria.invalid">
+                        <span *ngIf="dcategoriaForm.controls.edad_obligatoria.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="dcategoriaForm.controls.edad_obligatoria.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+                <div class="radio_buton" appearance="fill" fxFlex>
+                    <mat-label>Genero</mat-label><br>
+                    <mat-radio-group formControlName="genero" aria-label="Select an option">
+                        <mat-radio-button *ngFor="let genero of genero" [value]="genero">{{genero}}</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                <div class="radio_buton" appearance="fill" fxFlex>
+                    <mat-label>Sistema de Juego</mat-label><br>
+                    <mat-radio-group formControlName="sistema_de_juego" aria-label="Select an option">
+                        <mat-radio-button  value="todos contra todos"> Todos contra todos</mat-radio-button>
+                        <mat-radio-button  value="por serie"> Por serie</mat-radio-button>
+                    </mat-radio-group>
+                    <mat-error
+                    *ngIf="dcategoriaForm.controls.sistema_de_juego.touched && dcategoriaForm.controls.sistema_de_juego.invalid">
+                    <span *ngIf="dcategoriaForm.controls.sistema_de_juego.errors.required">Este campo es obligatorio.</span>
+                </mat-error>
+                </div>
+            </div>
+            
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="!(dcategoriaForm.valid && dcategoriaForm.dirty)">{{action}}</button>
+    <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+</mat-dialog-actions> 

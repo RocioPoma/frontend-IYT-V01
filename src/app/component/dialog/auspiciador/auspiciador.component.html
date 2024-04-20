@@ -1,0 +1,124 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span class="title-center">{{action}} Auspiciador</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="categoriaForm">
+        <div fxFlex fxLayout="column">
+            <div fxLayout="row wrap">
+
+                <mat-form-field class="estado" appearance="fill"> 
+                    <mat-label>Tipo</mat-label>
+                 <!--<mat-select [(value)]="element.tipo" (selectionChange)="changeSelectTipo($event.value)">-->
+                    <mat-select formControlName="tipo" (selectionChange)="changeSelectTipo($event.value)">
+                        <mat-option>None</mat-option>
+                        <mat-option value="Persona">Persona</mat-option>
+                        <mat-option value="Entidad">Entidad</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+
+                <mat-form-field *ngIf="tipo=='Entidad'" appearance="fill" fxFlex>
+                    <mat-label>nit</mat-label>
+                    <input matInput formControlName="nit" required>
+                    <mat-error
+                        *ngIf="categoriaForm.controls.nit.touched && categoriaForm.controls.nit.invalid">
+                        <span *ngIf="categoriaForm.controls.nit.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="categoriaForm.controls.nit.errors.pattern">Este campo es
+                            invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="tipo=='Persona'" appearance="fill" fxFlex>
+                    <mat-label>ci</mat-label>
+                    <input matInput formControlName="ci" required>
+                    <mat-error
+                        *ngIf="categoriaForm.controls.ci.touched && categoriaForm.controls.ci.invalid">
+                        <span *ngIf="categoriaForm.controls.ci.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="categoriaForm.controls.ci.errors.pattern">Este campo es
+                            invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre</mat-label>
+                    <input matInput formControlName="nombre" required>
+                    <mat-error
+                        *ngIf="categoriaForm.controls.nombre.touched && categoriaForm.controls.nombre.invalid">
+                        <span *ngIf="categoriaForm.controls.nombre.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="categoriaForm.controls.nombre.errors.pattern">Este campo es
+                            invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="tipo=='Persona'" fxLayout="row wrap">
+
+                <mat-form-field  appearance="fill" fxFlex>
+                    <mat-label>Apellido Paterno</mat-label>
+                    <input matInput formControlName="ap_paterno" required>
+                    <mat-error
+                        *ngIf="categoriaForm.controls.ap_paterno.touched && categoriaForm.controls.ap_paterno.invalid">
+                        <span *ngIf="categoriaForm.controls.ap_paterno.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="categoriaForm.controls.ap_paterno.errors.pattern">Este campo es
+                            invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Apellido Materno</mat-label>
+                    <input matInput formControlName="ap_materno" required>
+                    <mat-error
+                        *ngIf="categoriaForm.controls.ap_materno.touched && categoriaForm.controls.ap_materno.invalid">
+                        <span *ngIf="categoriaForm.controls.ap_materno.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="categoriaForm.controls.ap_materno.errors.pattern">Este campo es
+                            invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div  fxLayout="row wrap">
+
+                <mat-form-field  appearance="fill" fxFlex>
+                    <mat-label>Sitio</mat-label>
+                    <input matInput formControlName="sitio" required>
+                    <mat-error
+                        *ngIf="categoriaForm.controls.sitio.touched && categoriaForm.controls.sitio.invalid">
+                        <span *ngIf="categoriaForm.controls.sitio.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="categoriaForm.controls.sitio.errors.pattern">Este campo es
+                            invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput formControlName="telefono" required>
+                    <mat-error
+                        *ngIf="categoriaForm.controls.telefono.touched && categoriaForm.controls.telefono.invalid">
+                        <span *ngIf="categoriaForm.controls.telefono.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="categoriaForm.controls.telefono.errors.pattern">Este campo es
+                            invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="!(categoriaForm.valid && categoriaForm.dirty)">{{action}}</button>
+    <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

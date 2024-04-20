@@ -1,0 +1,22 @@
+.mat-toolbar {
+    margin: -24px;
+    width: auto;
+    margin-bottom: 10px;
+}
+
+.title-center {
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+mat-form-field {
+    padding: 5px;
+}
+
+.mat-radio-button~.mat-radio-button {
+    margin-left: 16px;
+}
+
+.radio_buton{
+    padding: 5px;  
+}

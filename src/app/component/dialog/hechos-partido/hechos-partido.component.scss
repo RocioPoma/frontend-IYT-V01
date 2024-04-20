@@ -1,0 +1,46 @@
+.mat-toolbar {
+    margin: -24px;
+    width: auto;
+    margin-bottom: 10px;
+}
+
+.title-center {
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: 18px;
+}
+
+mat-form-field {
+    padding: 5px;
+}
+
+.mat-radio-button~.mat-radio-button {
+    margin-left: 16px;
+}
+
+.example-section {
+    margin: 12px 0;
+}
+
+.align-left {
+    justify-content: right;
+}
+
+.mat-header-cell,
+.mat-cell {
+    text-align: left !important;
+    padding: 0px 8px 0px 15px !important;
+}
+
+.mat-table{
+    min-width:260px ;
+}
+
+
+//---- alto celta tabal
+tr.mat-header-row {
+    height: 40px;
+}
+tr.mat-row{
+    height: 38;
+}

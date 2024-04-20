@@ -1,0 +1,80 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span class="title-center">{{action}} Arbitro</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="arbitroForm">
+        <div fxFlex fxLayout="column">
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Ci</mat-label>
+                    <input matInput formControlName="ci" required>
+                    <mat-error *ngIf="arbitroForm.controls.ci.touched && arbitroForm.controls.ci.invalid">
+                        <span *ngIf="arbitroForm.controls.ci.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="arbitroForm.controls.ci.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre</mat-label>
+                    <input matInput formControlName="nombre" required>
+                    <mat-error *ngIf="arbitroForm.controls.nombre.touched && arbitroForm.controls.nombre.invalid">
+                        <span *ngIf="arbitroForm.controls.nombre.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="arbitroForm.controls.nombre.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Ap Paterno</mat-label>
+                    <input matInput formControlName="ap_paterno" required>
+                    <mat-error
+                        *ngIf="arbitroForm.controls.ap_paterno.touched && arbitroForm.controls.ap_paterno.invalid">
+                        <span *ngIf="arbitroForm.controls.ap_paterno.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="arbitroForm.controls.ap_paterno.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Ap Materno</mat-label>
+                    <input matInput formControlName="ap_materno" required>
+                    <mat-error
+                        *ngIf="arbitroForm.controls.ap_materno.touched && arbitroForm.controls.ap_materno.invalid">
+                        <span *ngIf="arbitroForm.controls.ap_materno.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="arbitroForm.controls.ap_materno.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Telefono</mat-label>
+                    <input matInput formControlName="telefono" type="number">
+                    <mat-error
+                        *ngIf="arbitroForm.controls.telefono.touched && arbitroForm.controls.telefono.invalid">
+                        <span *ngIf="arbitroForm.controls.telefono.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="arbitroForm.controls.telefono.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Funcion</mat-label>
+                    <input matInput formControlName="funcion">
+                    <mat-error
+                        *ngIf="arbitroForm.controls.funcion.touched && arbitroForm.controls.funcion.invalid">
+                        <span *ngIf="arbitroForm.controls.funcion.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="arbitroForm.controls.funcion.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="!(arbitroForm.valid && arbitroForm.dirty)">{{action}}</button>
+    <button mat-raised-button color="primary" mat-dialog-close>Close</button>
+</mat-dialog-actions> 

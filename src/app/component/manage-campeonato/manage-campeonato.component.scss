@@ -1,0 +1,33 @@
+.float-right{
+    float: right;
+    margin-top: -8px;
+    
+}
+.float-center{
+    float: center;
+}
+
+mat-card{
+ padding: 20px;   
+}
+
+table{
+    width: 100%;
+}
+
+#contenido_camp{
+    //display: none;
+    display: block;
+}
+
+#id-detalle-camp{
+    display: none;
+}
+
+.btn-add {
+    // background-color: black;
+    margin-left: 30px;
+    margin-top: 8px;
+    //margin-right: 35px;
+    //padding: 3px 3px;
+}

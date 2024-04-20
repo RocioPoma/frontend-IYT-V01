@@ -1,0 +1,96 @@
+<mat-card>
+    <b><span>Administracion de Noticias</span></b>
+    <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">Crear Noticia</button>
+</mat-card>
+<hr>
+
+<div  layout=”row”  *ngFor="let noticia of datosNoticia">
+        <div class="column">
+            <div class="card">
+                <div class="container card-noticia">
+                    <mat-card class="example-card ">
+                        <mat-card-header>
+                            <div mat-card-avatar class="example-header-image"></div>
+                            <mat-card-title> {{noticia.titulo}}</mat-card-title>
+                            <mat-card-subtitle>Integracion Yaretanense</mat-card-subtitle>
+                        </mat-card-header>
+                        <div align="center">
+                            <img class="img" mat-card-image [src]="imgURL + noticia.imagen" alt="">
+                        </div>
+
+                        <mat-card-content>
+                            <p>
+                                {{noticia.descripcion}}
+                            </p>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button mat-button>LIKE</button>
+                            <button mat-button>SHARE</button>
+                            <div>
+                                <button mat-icon-button color="primary" matTooltip="Edit"
+                                    (click)="handleEditAction(noticia)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button mat-icon-button color="primary" matTooltip="Delete"
+                                    (click)="handleDeleteAction(noticia)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </div>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+</div>
+<!--<h1>noticias</h1>
+    
+    <div *ngFor="let par of noticias">
+      <b>a {{ par.titulo }}</b
+      >
+    </div> -->
+<!--
+    <body>
+        <mat-card>
+            <b><span>Dashboard</span></b>
+        </mat-card>
+        <br>
+        <div  layout=”row”  *ngFor="let noticia of datosNoticia">
+            <div class="column">
+                <div class="card">
+                    <div class="container">
+                        <mat-card class="example-card ">
+                            <mat-card-header>
+                                <div mat-card-avatar class="example-header-image"></div>
+                                <mat-card-title> {{noticia.titulo}}</mat-card-title>
+                                <mat-card-subtitle>Integracion Yaretanense</mat-card-subtitle>
+                            </mat-card-header>
+                            <div align="center">
+                                <img class="img" mat-card-image [src]="imgURL + noticia.imagen" alt="">
+                            </div>
+    
+                            <mat-card-content>
+                                <p>
+                                    {{noticia.descripcion}}
+                                </p>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button mat-button>LIKE</button>
+                                <button mat-button>SHARE</button>
+                                <div>
+                                    <button mat-icon-button color="primary" matTooltip="Edit"
+                                        (click)="handleEditAction(noticia)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="primary" matTooltip="Delete"
+                                        (click)="handleDeleteAction(noticia)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+-->

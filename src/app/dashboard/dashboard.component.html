@@ -1,0 +1,27 @@
+<body>
+    <mat-card>
+        <b><span>Dashboard</span></b>
+    </mat-card>
+    <br>
+    <div class="row">
+        <div class="column">
+            <div class="card">
+                <div class="container">
+                    <h2 class="title">Total Clubs:</h2>
+                    <h1 class="title">{{data?.club}}</h1>
+                    <p><button class="button" [routerLink]="['/integracion/club']">Ver Club</button></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+                <div class="container">
+                    <h2 class="title">Total Jugadores:</h2>
+                    <h1 class="title">{{data?.jugador}}</h1>
+                    <p><button class="button" [routerLink]="['/integracion/jugador']">Ver Jugadores</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

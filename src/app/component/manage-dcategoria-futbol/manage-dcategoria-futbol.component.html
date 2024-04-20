@@ -1,0 +1,82 @@
+<mat-card class="responsive_table mayuscula">
+  <div class="float-center">
+    <b class="tamano_titulo"><span>{{dataSource.nombre_disciplina}} {{dataSource.nombre_categoria}}</span></b>
+    <b><span></span></b>
+  </div>
+</mat-card>
+
+<mat-tab-group class="color">
+  <!--<mat-tab label="Detalle"></mat-tab>-->
+  <mat-tab>
+    <!--
+    <ng-template mat-tab-label>
+      <button class="text-color" mat-button (click)="handleAction(menu_campeonato)">{{menu_campeonato}}</button>
+    </ng-template>
+  -->
+    <ng-template mat-tab-label>
+      <button class="text-color" mat-button (click)="handleDetalle()">Detalle</button>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <button class="text-color" mat-button (click)="handleEquipos()">Equipos</button>
+    </ng-template>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <button class="text-color" mat-button (click)="handleFixture()">Fixture</button>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <button class="text-color" mat-button (click)="handleTP()">Tabla de Posiciones</button>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <button class="text-color" mat-button (click)="handleRankings()">Rankings Jugadores</button>
+      </ng-template>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <button class="text-color" mat-button [matMenuTriggerFor]="aboveMenu">Con Opciones</button>
+        <mat-menu #aboveMenu="matMenu" yPosition="above">
+          <button mat-menu-item>Item 1</button>
+          <button mat-menu-item>Item 2</button>
+        </mat-menu>
+      </ng-template>
+    </mat-tab>
+  </mat-tab>
+</mat-tab-group>
+
+
+<div id="contenido-cat">
+  <mat-card class="responsive_table">
+    <mat-list>
+      <mat-list-item>En esta Categoria podran ser habilitados {{dataSource.num_max_jugadores}} jugadores como maximo;
+        Edad mínima: {{dataSource.edad_min}}, Edad máxima: {{dataSource.edad_max}}.
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+    <div align="center">
+      <img class="img" [src]="imgURL+dataSource.nombre_disciplina+extension" alt="No image" width="30%">
+
+    </div>
+  </mat-card>
+</div>
+
+<div id="contenido-equipo">
+  <app-manage-dequipo></app-manage-dequipo>
+</div>
+
+<div id="contenido-partido">
+  <app-manage-dpartido></app-manage-dpartido>
+</div>
+
+<div id="contenido-tablaposiciones">
+  <app-manage-tabla-posiciones></app-manage-tabla-posiciones>
+</div>
+
+<div id="contenido-rankingJugadores">
+  <app-manage-ranking-jugadores></app-manage-ranking-jugadores>
+</div>

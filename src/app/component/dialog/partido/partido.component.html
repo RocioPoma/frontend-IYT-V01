@@ -1,0 +1,567 @@
+<div *ngFor="let element of dataPartido">
+    <mat-toolbar color="primary" align="center">
+        <div class="divestado">
+            <!-- <span class="title-center">Agregar Jugadores al equipo: {{action}} </span> -->
+            <mat-form-field class="estado" appearance="fill">
+                <mat-label>Estado Partido</mat-label>
+                <mat-select [(value)]="element.estado" (selectionChange)="changeSelectEstado($event.value,id_partido)">
+                    <mat-option>None</mat-option>
+                    <mat-option value="Cerrado">CERRADO</mat-option>
+                    <mat-option value="En vivo">EN VIVO</mat-option>
+                    <mat-option value="No realizado">NO REALIZADO</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </mat-toolbar>
+
+    <mat-dialog-content class="mat-typography" class="responsive_table">
+
+        <!-- EQUIPO 1  -->
+        <div>
+            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="cards-wrapper">
+
+                            <div class="card">
+                                <div align="center" class="encavezado">EN CANCHA</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="equipoJugadorEnCanchaE1" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="numero">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="edad">
+                                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-cancha" mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo1,'jugadores en cancha',0)">Añadir</button>
+                                </div>
+                            </div>
+
+                            <div class="card d-none d-md-block">
+                                <div align="center" class="encavezado">CAMBIO</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="equipoJugadorEnBancaE1" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="numero">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="edad">
+                                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo1,'cambio',0)">Añadir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="cards-wrapper">
+                            
+                            <div class="card">
+                                <div align="center" class="encavezado">GOLES</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="hechoGolE1" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="camiseta">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hecho">
+                                            <th mat-header-cell *matHeaderCellDef> Goles</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumnsHechos; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumnsHechos"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo1,'gol',1)">Añadir</button>
+                                </div>
+                            </div>
+
+                            <div class="card d-none d-md-block">
+                                <div align="center" class="encavezado">FALTAS</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="hechoFaltaE1" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="camiseta">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hecho">
+                                            <th mat-header-cell *matHeaderCellDef> Faltas</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumnsHechos; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumnsHechos"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo1,'falta',4)">Añadir</button>
+                                </div>
+                            </div>
+                
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="cards-wrapper">
+                            
+                            <div class="card">
+                                <div align="center" class="encavezado">TARJETA AMARILLA</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="hechoTarjetaAmarillaE1" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="camiseta">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hecho">
+                                            <th mat-header-cell *matHeaderCellDef> Amarilla</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumnsHechos; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumnsHechos"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo1,'tarjeta amarilla',2)">Añadir</button>
+                                </div>
+                            </div>
+
+                            <div class="card d-none d-md-block">
+                                <div align="center" class="encavezado">TARJETA ROJA</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="hechoTarjetaRojaE1" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="camiseta">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hecho">
+                                            <th mat-header-cell *matHeaderCellDef>T Roja</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumnsHechos; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumnsHechos"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo1,'tarjeta roja',3)">Añadir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <hr>
+        <!-- FIN EQUIPO 1-->
+
+
+        <!---->
+        <div class="div-padre" align="center">
+            <div class="div-equipo" fxFlex>{{element.equipo1}}</div>
+            <div fxFlex class="contenedorDiv" matTooltip="Agregar Resultado" 
+                (click)="addResultado(element.id_equipo1,element.id_equipo2,element.equipo1,element.equipo2,'resultado')" >
+                <div class="div1">1</div> 
+                <div class="div2"> {{totalGolesE1[0].total}} : {{totalGolesE2[0].total}} </div>
+                <!--<div class="div2"> {{element.total_equipo1}} : {{element.total_equipo2}} </div>-->
+                <!--
+                <div class="div2" *ngIf="(totalGolesE1[0].total!=totalGolesOldE1[0].total || totalGolesE2[0].total!=totalGolesOldE2[0].total)">
+                    <div actualizarResultadoPartido(totalGolesE1[0].total,totalGolesE2[0].total) > {{element.total_equipo1}} : {{element.total_equipo2}} </div>
+                </div>
+                <div class="div2" *ngIf="(totalGolesE1[0].total==totalGolesOldE1[0].total || totalGolesE2[0].total==totalGolesOldE2[0].total)">
+                    {{element.total_equipo1}} : {{element.total_equipo2}} 
+                </div>-->
+                
+                <!--<div class="div2" *ngIf="actualizarResultadoPartido(totalGolesE1[0].total,totalGolesE2[0].total)"> {{element.total_equipo1}} : {{element.total_equipo2}} </div>-->
+                <div class="div1">1</div>
+            </div>
+            <div class="div-equipo" fxFlex>{{element.equipo2}}</div>
+        </div>
+        <hr>
+        <!---->
+
+
+        <!-- EQUIPO 2-->
+        <div>
+            <div id="carouselEquipo2" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="cards-wrapper">
+
+                            <div class="card">
+                                <div align="center" class="encavezado">EN CANCHA</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="equipoJugadorEnCanchaE2" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="numero">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="edad">
+                                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-cancha" mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo2,'jugadores en cancha',0)">Añadir</button>
+                                </div>
+                            </div>
+
+                            <div class="card d-none d-md-block">
+                                <div align="center" class="encavezado">CAMBIO</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="equipoJugadorEnBancaE2" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="numero">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="edad">
+                                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo2,'cambio',0)">Añadir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="cards-wrapper">
+                            
+                            <div class="card">
+                                <div align="center" class="encavezado">GOLES</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="hechoGolE2" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="camiseta">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hecho">
+                                            <th mat-header-cell *matHeaderCellDef> Goles</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumnsHechos; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumnsHechos"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo2,'gol',1)">Añadir</button>
+                                </div>
+                            </div>
+
+                            <div class="card d-none d-md-block">
+                                <div align="center" class="encavezado">FALTAS</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="hechoFaltaE2" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="camiseta">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hecho">
+                                            <th mat-header-cell *matHeaderCellDef> Faltas</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumnsHechos; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumnsHechos"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo2,'falta',4)">Añadir</button>
+                                </div>
+                            </div>
+                
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="cards-wrapper">
+                            
+                            <div class="card">
+                                <div align="center" class="encavezado">TARJETA AMARILLA</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="hechoTarjetaAmarillaE2" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="camiseta">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hecho">
+                                            <th mat-header-cell *matHeaderCellDef> Amarilla</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumnsHechos; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumnsHechos"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo2,'tarjeta amarilla',2)">Añadir</button>
+                                </div>
+                            </div>
+
+                            <div class="card d-none d-md-block">
+                                <div align="center" class="encavezado">TARJETA ROJA</div>
+                                <hr>
+                                <div class="card-body">
+                                    <table mat-table [dataSource]="hechoTarjetaRojaE2" class="mat-elevation-z5">
+    
+                                        <ng-container matColumnDef="camiseta">
+                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="nombre">
+                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                                {{element.ap_materno}}</td>
+                                        </ng-container>
+                    
+                                        <ng-container matColumnDef="hecho">
+                                            <th mat-header-cell *matHeaderCellDef>T Roja</th>
+                                            <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
+                                        </ng-container>
+                    
+                                        <tr class="en-banca" mat-header-row *matHeaderRowDef="displayedColumnsHechos; sticky:true"></tr>
+                                        <tr mat-row *matRowDef="let row;columns:displayedColumnsHechos"></tr>
+                                    </table>
+                                </div>
+                                <div class="btn-add" align="center">
+                                    <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'" 
+                                        (click)="handleSubmitHechos(id_equipo2,'tarjeta roja',3)">Añadir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselEquipo2"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselEquipo2"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <!--FIN EQUIPO 2-->
+
+        <!--
+        <div fxFlex fxLayout="column">
+            <div fxLayout="row wrap">
+                <div fxFlex>
+                    <div fxFlex>
+                        <h4>Selecciona los Jugadores:</h4>
+                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 ">
+    
+                            <ng-container matColumnDef="nombre">
+                                <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                <td class="align-left" mat-cell *matCellDef="let element">
+    
+                                    <div *ngIf="comprobarSiExiste(element.ci); then thenBlock else elseBlock"> </div>
+    
+                                    <ng-template #thenBlock>
+                                        <mat-checkbox [checked]="true" (change)="add_or_delete($event.checked,element.ci)">
+                                            {{element.nombre}} {{element.ap_paterno}} {{element.ap_materno}}
+                                        </mat-checkbox>
+                                    </ng-template>
+                                    <ng-template #elseBlock>
+                                        <mat-checkbox (change)="add_or_delete($event.checked,element.ci)">
+                                            {{element.nombre}} {{element.ap_paterno}} {{element.ap_materno}}
+                                        </mat-checkbox>
+                                    </ng-template>
+                                </td>
+                            </ng-container>
+    
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsCheck; sticky:true"></tr>
+                            <tr mat-row *matRowDef="let row;columns:displayedColumnsCheck"></tr>
+                        </table>
+                    </div>
+                </div>
+    
+                <div fxFlex>
+                    <h4>Jugadores Seleccionados:</h4>
+                    <table mat-table [dataSource]="dataEquipoJugador" class="mat-elevation-z5">
+    
+                        <ng-container matColumnDef="numero">
+                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="nombre">
+                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                {{element.ap_materno}}</td>
+                        </ng-container>
+    
+                        <ng-container matColumnDef="edad">
+                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                            <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
+                        </ng-container>
+    
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                        <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    -->
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="center">
+        <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'"  (click)="handleSubmit(totalGolesE1[0].total,totalGolesE2[0].total)">Guardar</button>
+        <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+    </mat-dialog-actions>
+</div>

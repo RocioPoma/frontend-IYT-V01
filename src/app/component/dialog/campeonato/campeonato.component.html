@@ -1,0 +1,94 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span class="title-center">{{action}} Campeonato</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="campeonatoForm">
+        <div fxFlex fxLayout="column">
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre Campeonato</mat-label>
+                    <input matInput formControlName="nombre_campeonato" required>
+                    <mat-error
+                        *ngIf="campeonatoForm.controls.nombre_campeonato.touched && campeonatoForm.controls.nombre_campeonato.invalid">
+                        <span *ngIf="campeonatoForm.controls.nombre_campeonato.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="campeonatoForm.controls.nombre_campeonato.errors.pattern">Este campo es
+                            invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div  fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Fecha inicio</mat-label>
+                    <input formControlName="fecha_inicio" matInput [matDatepicker]="picker1" class="form-control"
+                        autocomplete="off">
+                    <mat-hint>DD/MM/AAAA</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                    <mat-error
+                        *ngIf="campeonatoForm.controls.fecha_inicio.touched && campeonatoForm.controls.fecha_inicio.invalid">
+                        <span *ngIf="campeonatoForm.controls.fecha_inicio.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="campeonatoForm.controls.fecha_inicio.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Fecha Finalizacion</mat-label>
+                    <input formControlName="fecha_fin" matInput [matDatepicker]="picker" class="form-control"
+                        autocomplete="off">
+                    <mat-hint>DD/MM/AAAA</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error
+                        *ngIf="campeonatoForm.controls.fecha_fin.touched && campeonatoForm.controls.fecha_fin.invalid">
+                        <span *ngIf="campeonatoForm.controls.fecha_fin.errors.required">Este campo es
+                            obligatorio.</span>
+                        <span *ngIf="campeonatoForm.controls.fecha_fin.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row wrap">
+                <!--
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Convovatoria</mat-label>
+                    <input matInput formControlName="convocatoria" required>
+                    <mat-error *ngIf="campeonatoForm.controls.convocatoria.touched && campeonatoForm.controls.convocatoria.invalid">
+                        <span *ngIf="campeonatoForm.controls.convocatoria.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="campeonatoForm.controls.convocatoria.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+                -->
+                <div class="radio_buton" appearance="fill" fxFlex>
+                    <mat-label>Convocatoria</mat-label><br>
+                    <input (change)="selectFile($event)" formControlName="convocatoria"
+                        class="form-control-file" type="file">
+                </div>
+
+            </div>
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Gestion</mat-label>
+                    <input matInput formControlName="gestion" type="number" required type="number" autocomplete="off">
+                    <mat-hint>AAAA ej 2020</mat-hint>
+                    <mat-error
+                        *ngIf="campeonatoForm.controls.gestion.touched && campeonatoForm.controls.gestion.invalid">
+                        <span *ngIf="campeonatoForm.controls.gestion.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="campeonatoForm.controls.gestion.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="!(campeonatoForm.valid && campeonatoForm.dirty)">{{action}}</button>
+    <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

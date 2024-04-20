@@ -1,0 +1,65 @@
+
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span class="title-center">{{action}} Noticia</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="noticiaForm">
+        <div fxFlex fxLayout="column">
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Titulo</mat-label>
+                    <input matInput formControlName="titulo" required>
+                    <mat-error *ngIf="noticiaForm.controls.titulo.touched && noticiaForm.controls.titulo.invalid">
+                        <span *ngIf="noticiaForm.controls.titulo.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="noticiaForm.controls.titulo.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Descripcion</mat-label>
+                    <textarea matInput rows="4" formControlName="descripcion" ></textarea>
+                    <mat-error
+                        *ngIf="noticiaForm.controls.descripcion.touched && noticiaForm.controls.descripcion.invalid">
+                        <span *ngIf="noticiaForm.controls.descripcion.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="noticiaForm.controls.descripcion.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+                
+            </div>
+
+            <mat-label class="l_imagen">Imagen</mat-label>
+            <div  align="center">
+                <div class="card card_img card-photo" >
+                    <input  type="file" class="ocultar" accept="image/*" (change)="selectImage($event)" #photoInput>
+                    <img  class="img-fluid" [src]="photoSelected || imgURL" alt="No Image"
+                        (click)="photoInput.click()" />
+                </div>
+                <!-- FOTO O ARCIVO
+                <div  appearance="fill" fxFlex>
+                    <div class="card card_img" >
+                        <img class="img-fluid" [src]="imgURL" alt="">
+                    </div>    
+                </div>
+
+                <div class="radio_buton" appearance="fill" fxFlex>
+                    <mat-label>Foto</mat-label><br>
+                    <input  class="form-control-file" type="file" accept="image/*" (change)="selectImage($event)">
+                </div>
+                --->
+            </div>
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="!(noticiaForm.valid && noticiaForm.dirty)">{{action}}</button>
+    <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

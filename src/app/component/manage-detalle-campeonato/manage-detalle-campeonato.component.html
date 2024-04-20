@@ -1,0 +1,94 @@
+<!--<h1>Ruta 01</h1>
+<h1>{{id}}</h1>-->
+<mat-card class="responsive_table">
+  <div class="float-center">
+    <b class="tamano_titulo"><span>{{arraycamp.nombre_campeonato}} - </span></b>
+    <b class="tamano_titulo"><span>GESTION: {{arraycamp.gestion}}</span></b>
+  </div>
+</mat-card>
+<hr>
+<!--
+<mat-tab-group class="color">
+  <mat-tab  label="Detalle"></mat-tab>
+  <mat-tab *ngFor="let menu_campeonato of menu_campeonato">
+    <ng-template mat-tab-label>
+      <button class="text-color" mat-button (click)="handleAction(menu_campeonato)">{{menu_campeonato}}</button>
+    </ng-template>
+    <ng-template mat-tab-label>
+      <button class="text-color" mat-button [matMenuTriggerFor]="aboveMenu">Con Opciones</button>
+      <mat-menu #aboveMenu="matMenu" yPosition="above">
+        <button mat-menu-item>Item 1</button>
+        <button mat-menu-item>Item 2</button>
+      </mat-menu>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+-->
+<mat-card class="responsive_table">
+  <div>
+    <b>Fecha Inicio: </b> {{arraycamp.fecha_i }}
+    <b>Fecha Fin: </b> {{arraycamp.fecha_f}}
+    <b>Convocatoria: </b> <a [href]="imgURL + arraycamp.convocatoria" target="_blank">
+      ver convocatoria</a>
+  </div>
+  <div align="center">
+    <img src="../../../assets/img/logo2.png" alt="No image" width="80%">
+  </div>
+</mat-card>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<div *ngIf="arraycamp" class="row">
+  <div class="col-md-12">
+    <p>Nombre: {{arraycamp.id}}</p>
+  </div>
+</div>
+-->
+<!--
+<mat-card class="responsive_table tamano_card">
+  <button class="btn-menu" mat-button [matMenuTriggerFor]="aboveMenu"
+    *ngFor="let menu_campeonato of menu_campeonato">{{menu_campeonato}}</button>
+  <mat-menu #aboveMenu="matMenu" yPosition="above">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+</mat-card>
+
+<mat-tab-group class="tamano_card">
+  <mat-tab  *ngFor="let menu_campeonato of menu_campeonato" [label]="menu_campeonato"  [matMenuTriggerFor]="aboveMenu"> Content 1 </mat-tab>
+  <mat-menu #aboveMenu="matMenu" yPosition="above">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+</mat-tab-group>
+-->
+<!--
+<div> 
+  <div *ngFor="let campeonato of arraycamp">
+    <b> {{ campeonato?.id}}</b>
+  </div>
+</div>
+-->
+
+
+
+<!--
+<div *ngIf="arraycamp" class="row">
+  <div class="col-md-12" >
+      <p>Nombre: {{arraycamp.id}}</p>
+  </div>
+</div>
+
+<div *ngIf="!arraycamp" class="row">
+  No hay datos para mostrar
+</div>-->

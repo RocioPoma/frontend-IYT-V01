@@ -1,0 +1,305 @@
+<div *ngIf="hecho!='RESULTADO'">
+    <mat-toolbar color="primary">
+        <mat-toolbar-row fxLayout="row">
+            <span class="title-center">{{hecho}}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <mat-dialog-content class="mat-typography" class="responsive_table">
+
+        <div fxFlex fxLayout="column">
+            <!--PARA AGREGAR JUGADORES EN CANCHA-->
+            <div fxLayout="row wrap" *ngIf="hecho=='JUGADORES EN CANCHA'">
+
+                <div fxFlex style="width: 100%;">
+
+                    <div fxFlex>
+                        <h4>Selecciona los Jugadores:</h4>
+                        <table mat-table [dataSource]="dataEquipoJugador" class="mat-elevation-z8 ">
+
+                            <ng-container matColumnDef="nombre">
+                                <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                <td class="align-left" mat-cell *matCellDef="let element">
+
+                                    <div *ngIf="element.estado=='true'; then thenBlock else elseBlock"> </div>
+
+                                    <ng-template #thenBlock>
+                                        <mat-checkbox [checked]="true"
+                                            (change)="updateEstadoJugador($event.checked,element.ci)">
+                                            {{element.nombre}} {{element.ap_paterno}} {{element.ap_materno}}
+                                        </mat-checkbox>
+                                    </ng-template>
+                                    <ng-template #elseBlock>
+                                        <mat-checkbox (change)="updateEstadoJugador($event.checked,element.ci)">
+                                            {{element.nombre}} {{element.ap_paterno}} {{element.ap_materno}}
+                                        </mat-checkbox>
+                                    </ng-template>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumnsCheck; sticky:true"></tr>
+                            <tr mat-row *matRowDef="let row;columns:displayedColumnsCheck"></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div fxFlex>
+                    <h4>Jugadores en cancha:</h4>
+                    <table mat-table [dataSource]="equipoJugadorEnCancha" class="mat-elevation-z5">
+
+                        <ng-container matColumnDef="numero">
+                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="nombre">
+                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                            <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
+                                {{element.ap_materno}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="edad">
+                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                            <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                        <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+                    </table>
+                </div>
+            </div>
+            <!---->
+
+            <!-- PARA REALIZAR CAMBIO DE JUGADORES -->
+            <div *ngIf="hecho=='CAMBIO'" fxLayout="row wrap">
+                <form fxFlex [formGroup]="equipoJugadorForm">
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Jugador Saliente</mat-label>
+                        <mat-select formControlName="ci_jugador1"
+                            (selectionChange)="cambioJugador($event.value,'true')">
+                            <mat-option *ngFor="let element of equipoJugadorEnCancha" [value]="element.ci" required>
+                                {{element.nombre}} {{element.ap_paterno}}
+                                {{element.ap_materno}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="equipoJugadorForm.controls.ci_jugador1.touched && equipoJugadorForm.controls.ci_jugador1.invalid">
+                            <span *ngIf="equipoJugadorForm.controls.ci_jugador1.errors.required">Este campo es
+                                obligatorio.</span>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Jugador Entrante</mat-label>
+                        <mat-select formControlName="ci_jugador2"
+                            (selectionChange)="cambioJugador($event.value,'false')">
+                            <mat-option *ngFor="let element of equipoJugadorEnBanca " [value]="element.ci" required>
+                                {{element.nombre}} {{element.ap_paterno}}
+                                {{element.ap_materno}}
+                            </mat-option>
+                            <mat-error
+                                *ngIf="equipoJugadorForm.controls.ci_jugador2.touched && equipoJugadorForm.controls.ci_jugador2.invalid">
+                                <span *ngIf="equipoJugadorForm.controls.ci_jugador2.errors.required">Este campo es
+                                    obligatorio.</span>
+                            </mat-error>
+                        </mat-select>
+                    </mat-form-field>
+                </form>
+            </div>
+            <!---->
+
+            <!-- PARA REGISTRAR GOLES -->
+            <form *ngIf="hecho=='GOL' || hecho=='FALTA' || hecho=='TARJETA AMARILLA' || hecho=='TARJETA ROJA'" [formGroup]="hechoPartidoForm">
+                <div fxLayout="row wrap">
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Nombre Jugador</mat-label>
+
+                        <mat-select formControlName="ci">
+                            <mat-option *ngFor="let element of equipoJugadorEnCancha " [value]="element.ci" required>
+                                {{element.nombre}} {{element.ap_paterno}}
+                                {{element.ap_materno}}
+                            </mat-option>
+                            <mat-error
+                                *ngIf="hechoPartidoForm.controls.ci.touched && hechoPartidoForm.controls.ci.invalid">
+                                <span *ngIf="hechoPartidoForm.controls.ci.errors.required">Este campo es
+                                    obligatorio.</span>
+                            </mat-error>
+                        </mat-select>
+
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Descripcion</mat-label>
+                        <input formControlName="descripcion_hecho" matInput>
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row wrap">
+                    <div class="radio_buton" appearance="fill" fxFlex>
+                        <mat-label>Tiempo</mat-label><br>
+                        <mat-radio-group aria-label="Select an option" formControlName="id_time">
+                            <mat-radio-button value="1">Primer Tiempo</mat-radio-button>
+                            <mat-radio-button value="2">Segundo Tiempo</mat-radio-button>
+                        </mat-radio-group>
+                        <mat-error *ngIf="hechoPartidoForm.controls.id_time.touched && hechoPartidoForm.controls.id_time.invalid">
+                            <span *ngIf="hechoPartidoForm.controls.id_time.errors.required">Este campo es
+                                obligatorio.</span>
+                        </mat-error>
+                    </div>
+                </div>
+            </form>
+
+            <!---->
+
+            <!-- PARA REGISTRAR FALTAS 
+            <div *ngIf="hecho=='FALTA'" fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre Jugador</mat-label>
+
+                    <mat-select formControlName="id_club">
+                        <mat-option *ngFor="let element of equipoJugadorEnCancha" [value]="element.ci" required>
+                            {{element.nombre}} {{element.ap_paterno}}
+                            {{element.ap_materno}}
+                        </mat-option>
+                    </mat-select>
+
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Descripcion</mat-label>
+                    <input matInput>
+                </mat-form-field>
+
+                <div class="radio_buton" appearance="fill" fxFlex>
+                    <mat-label>Tiempo</mat-label><br>
+                    <mat-radio-group aria-label="Select an option">
+                        <mat-radio-button value="primero">Primer Tiempo</mat-radio-button>
+                        <mat-radio-button value="segundo">Segundo Tiempo</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+            -->
+
+            <!-- PARA REGISTRAR TARJETA AMARILLA 
+            <div *ngIf="hecho=='TARJETA AMARILLA'" fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre Jugador</mat-label>
+
+                    <mat-select formControlName="id_club">
+                        <mat-option *ngFor="let element of equipoJugadorEnCancha" [value]="element.ci" required>
+                            {{element.nombre}} {{element.ap_paterno}}
+                            {{element.ap_materno}}
+                        </mat-option>
+                    </mat-select>
+
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Descripcion</mat-label>
+                    <input matInput>
+                </mat-form-field>
+
+                <div class="radio_buton" appearance="fill" fxFlex>
+                    <mat-label>Tiempo</mat-label><br>
+                    <mat-radio-group aria-label="Select an option">
+                        <mat-radio-button value="primero">Primer Tiempo</mat-radio-button>
+                        <mat-radio-button value="segundo">Segundo Tiempo</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+            -->
+
+            <!-- PARA REGISTRAR TARJETA ROJA 
+            <div *ngIf="hecho=='TARJETA ROJA'" fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre Jugador</mat-label>
+
+                    <mat-select formControlName="id_club">
+                        <mat-option *ngFor="let element of equipoJugadorEnCancha" [value]="element.ci" required>
+                            {{element.nombre}} {{element.ap_paterno}}
+                            {{element.ap_materno}}
+                        </mat-option>
+                    </mat-select>
+
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Descripcion</mat-label>
+                    <input matInput>
+                </mat-form-field>
+
+                <div class="radio_buton" appearance="fill" fxFlex>
+                    <mat-label>Tiempo</mat-label><br>
+                    <mat-radio-group aria-label="Select an option">
+                        <mat-radio-button value="primero">Primer Tiempo</mat-radio-button>
+                        <mat-radio-button value="segundo">Segundo Tiempo</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+            -->
+
+        </div>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="center">
+        <button *ngIf="hecho=='CAMBIO'" mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+            [disabled]="!(equipoJugadorForm.valid && equipoJugadorForm.dirty)">Guardar</button>
+
+        <button *ngIf="hecho!='CAMBIO' && hecho!='JUGADORES EN CANCHA'" mat-raised-button color="primary" type="submit"
+            (click)="handleSubmit()" [disabled]="!(hechoPartidoForm.valid && hechoPartidoForm.dirty)">Guardar</button>
+
+        <button *ngIf="hecho=='JUGADORES EN CANCHA'" mat-raised-button color="primary" type="submit"
+            (click)="handleSubmit()">Guardar</button>
+        <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+    </mat-dialog-actions>
+</div>
+
+
+
+
+<!--PARA AGREGAR RESULTADO FINAL DEL  PARTIDO DE FORMA DIRECTA-->
+<div *ngIf="hecho=='RESULTADO'">
+    <mat-toolbar color="primary">
+        <mat-toolbar-row fxLayout="row">
+            <span class="title-center">{{hecho}}</span>
+        </mat-toolbar-row>
+    </mat-toolbar>
+
+    <mat-dialog-content class="mat-typography" class="responsive_table">
+        <div fxFlex fxLayout="column">
+            <div fxLayout="row wrap">
+                <form fxFlex [formGroup]="partidoForm">
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Total equipo {{dialogData.nombre_equipo1}}</mat-label>
+                        <input matInput formControlName="total_equipo1" type="number" required>
+                        <mat-error
+                            *ngIf="partidoForm.controls.total_equipo1.touched && partidoForm.controls.total_equipo1.invalid">
+                            <span *ngIf="partidoForm.controls.total_equipo1.errors.required">Este campo es
+                                obligatorio.</span>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Total equipo {{dialogData.nombre_equipo2}}</mat-label>
+                        <input matInput formControlName="total_equipo2" type="number" required>
+                        <mat-error
+                            *ngIf="partidoForm.controls.total_equipo2.touched && partidoForm.controls.total_equipo2.invalid">
+                            <span *ngIf="partidoForm.controls.total_equipo2.errors.required">Este campo es
+                                obligatorio.</span>
+                        </mat-error>
+                    </mat-form-field>
+                </form>
+            </div>
+
+        </div>
+        <!---->
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="center">
+        <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+            [disabled]="!(partidoForm.valid && partidoForm.dirty)">Guardar</button>
+        <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+    </mat-dialog-actions>
+</div>
+
+<!---->

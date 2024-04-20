@@ -1,0 +1,52 @@
+<mat-card class="responsive_table">
+    <div class="float-center">
+        <b class="tamano_titulo"><span>{{arraycamp.nombre_campeonato}} - </span></b>
+        <b class="tamano_titulo"><span>GESTION: {{arraycamp.gestion}}</span></b>
+    </div>
+</mat-card>
+<hr>
+<mat-card  fxLayout="column" fxLayout="row wrap">
+    <div fxFlex>
+        <b><span>GESTION CATEGORIAS CAMPEONATO</span></b>
+    </div>
+    <div class="btn-add2">
+        <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">Agregar Categoria al Campeonato</button>
+    </div>
+</mat-card>
+<hr>
+<div class="responsive_table">
+    <div *ngFor="let element of dataSource" align="center">
+        <mat-card class="example-card">
+            <mat-card-title-group class="mayuscula">
+                <mat-card-title align="left">{{element.nombre_disciplina}} {{element.nombre_categoria}}</mat-card-title>
+                <mat-card-subtitle align="left">
+                    <div *ngIf="element.genero=='Masculino'">
+                        VARONES - {{element.sistema_de_juego}}
+                    </div>
+                    <div *ngIf="element.genero=='Femenino'">
+                        DAMAS - {{element.sistema_de_juego}}
+                    </div>
+                    <div *ngIf="element.genero=='Mixto'">
+                        MIXTO - {{element.sistema_de_juego}}
+                    </div>
+                    
+                    <button mat-icon-button color="primary" matTooltip="Administrar"
+                        (click)="handleDetalleAction(element)">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary" matTooltip="Editar" (click)="handleEditAction(element)">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="primary" matTooltip="Eliminar" (click)="handleDeleteAction(element)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    <mat-slide-toggle (change)="onChange($event.checked, element.id)"
+                        matTooltip="Activar o desactivar estado de la categoria" [checked]="element.estado">
+                    </mat-slide-toggle>
+                </mat-card-subtitle>
+                <img class="img" mat-card-sm-image [src]="imgURL+element.nombre_disciplina+extension">
+            </mat-card-title-group>
+        </mat-card>
+    </div>
+
+</div>

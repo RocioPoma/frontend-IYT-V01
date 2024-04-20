@@ -1,0 +1,59 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row fxLayout="row">
+        <span class="title-center">{{action}} </span>
+    </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="equipoForm">
+        <div fxFlex fxLayout="column">
+
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Nombre Equipo</mat-label>
+                    <!--
+                    <mat-select formControlName="id_club" (selectionChange)="changeSelect($event.value)">
+                        <mat-option *ngFor="let club of club" [value]="club.id">{{club.nombre}}</mat-option>
+                    </mat-select>
+                    -->
+                    <mat-select formControlName="id_club">
+                        <mat-option *ngFor="let club of club" [value]="club.id">{{club.nombre}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="equipoForm.controls.id_club.touched && equipoForm.controls.id_club.invalid">
+                        <span *ngIf="equipoForm.controls.id_club.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="equipoForm.controls.id_club.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Numero Sorteo</mat-label>
+                    <input matInput formControlName="numero_sorteo" type="number" required autocomplete="off">
+                    <mat-error
+                        *ngIf="equipoForm.controls.numero_sorteo.touched && equipoForm.controls.numero_sorteo.invalid">
+                        <span *ngIf="equipoForm.controls.numero_sorteo.errors.required">Este campo es
+                            obligatorio.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <div *ngIf="sistema_de_juego=='por serie'">
+                    <mat-form-field appearance="fill" fxFlex>
+                        <mat-label>Serie</mat-label>
+                        <mat-select formControlName="id_serie">
+                            <mat-option *ngFor="let serie of serie" [value]="serie.id_serie">{{serie.nombre}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="equipoForm.controls.id_serie.touched && equipoForm.controls.id_serie.invalid">
+                            <span *ngIf="equipoForm.controls.id_serie.errors.required">Este campo es obligatorio.</span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+        [disabled]="!(equipoForm.valid && equipoForm.dirty)">{{action}}</button>
+    <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

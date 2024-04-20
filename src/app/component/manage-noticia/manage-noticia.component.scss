@@ -1,0 +1,124 @@
+.example-card {
+  max-width: 100%;
+
+}
+
+.example-header-image {
+  background-image: url('../../../assets/img/futbol.jpg');
+  background-size: cover;
+}
+
+.float-right {
+  float: right;
+}
+
+mat-card {
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+.img {
+  width: 200px;
+  height: 200px;
+}
+
+.card-photo {
+  cursor: pointer;
+}
+
+.card-noticia:hover {
+  //border: 2px solid rgba(199, 197, 197, 0.507);
+  background-color: #a7aaaa;
+}
+
+.mat-grid-imagen {
+  width: 30%;
+}
+
+mat-grid-tile {
+  background: lightblue;
+}
+
+////------------------------
+.position-relative {
+  position: relative;
+}
+
+.add-contact {
+  position: absolute;
+  right: 17px;
+  top: 57px;
+}
+
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.column {
+  float: left;
+  width: 33.3%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.about-section {
+  padding: 50px;
+  text-align: center;
+  background-color: #474e5d;
+  color: white;
+}
+
+.container {
+  padding: 3px 3px;
+}
+
+.container::after,
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: black;
+  text-align: center !important;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #00838F;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}

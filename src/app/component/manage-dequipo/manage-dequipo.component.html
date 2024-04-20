@@ -1,0 +1,49 @@
+<hr>
+<mat-card class="responsive_table">
+    <div class="float-center">
+        <b class="tamano_titulo"><span>EQUIPOS</span></b>
+    </div>
+</mat-card>
+
+<mat-card>
+    <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #input autocomplete="off">
+    </mat-form-field>
+    <div class="btn-add">
+        <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">Registrar Equipo</button>
+    </div>
+</mat-card>
+<hr>
+
+<div class="row">
+    <div class="responsive_table">
+        <div *ngFor="let element of dataSource">
+            <div class="column">
+                <mat-card class="card ">
+                    <mat-card-title-group class="mayuscula">
+                        <mat-card-title align="left">{{element.nombre_club}}</mat-card-title>
+                        <mat-card-subtitle align="left">
+                            <div>{{element.comunidad}}</div>
+
+                            <button mat-icon-button color="primary" matTooltip="Agregar jugadores"
+                                (click)="handleAddJugador(element)">
+                                <mat-icon>group_add</mat-icon>
+                            </button>
+                            <button mat-icon-button color="primary" matTooltip="Editar"
+                                (click)="handleEditAction(element)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="primary" matTooltip="Eliminar"
+                                (click)="handleDeleteAction(element)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+
+                        </mat-card-subtitle>
+                        <img class="img" mat-card-sm-image src="../../../assets/img/logo2.png">
+                    </mat-card-title-group>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</div>

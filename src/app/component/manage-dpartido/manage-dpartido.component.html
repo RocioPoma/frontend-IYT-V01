@@ -1,0 +1,216 @@
+<!---->
+<hr>
+<mat-card>
+    <div class="float-center" align="center">
+        <b class="tamano_titulo"><span> FIXTURE O CALENDARIO DE PARTIDOS</span></b>
+    </div>
+    <hr>
+</mat-card>
+
+<mat-card fxLayout="column" fxLayout="row wrap">
+    <mat-form-field appearance="fill" fxFlex>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+    <div class="btn-add">
+        <button style="margin-right: 10px;" [disabled]="comprobarArrayFixture()" mat-flat-button color="primary"
+            class="float-right" (click)="handleAddAction()">Generar Fixture</button>
+        <button [disabled]="!comprobarArrayFixture()" mat-flat-button color="primary" class="float-right"
+            (click)="handleDeleteAction()">Emininar Fixture</button>
+    </div>
+</mat-card>
+<hr>
+<div fxLayout="column" *ngIf="comprobarArrayFixture()">
+    <!--
+    <div *ngIf="dataCategoriad.sistema_de_juego != 'por serie'">
+        <mat-card class="tamano2" fxFlex>
+            <div align="right">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col" >Equipo A</th>
+                            <th scope="col">VS</th>
+                            <th scope="col">Equipo B</th>
+                        </tr>
+                    </thead>
+                    <tbody  *ngFor=" let element of dataFixture">
+                        <tr>
+                            <th scope="row">1</th>
+                            <td class="letra">{{element.equipo1}}</td>
+                            <td class="action-link">
+                                <div align="center">
+                                    <div class="contenedorDiv"
+                                        (click)="hechosPartido(element.id_partido,element.id_equipo1,element.id_equipo2)"
+                                        matTooltip="Administrar Partido">
+                                        <div class="div1">1</div>
+                                        <div class="div2"
+                                            *ngIf="(element.total_equipo1==null || element.total_equipo2==null)"> 0 : 0
+                                        </div>
+                                        <div class="div2"
+                                            *ngIf="(element.total_equipo1!=null || element.total_equipo2!=null)">
+                                            {{element.total_equipo1}} : {{element.total_equipo2}}</div>
+    
+                                        <div class="div3" *ngIf="element.estado=='Cerrado'">{{element.estado}}</div>
+                                        <div class="div4" *ngIf="element.estado=='En vivo'">{{element.estado}}</div>
+                                        <div class="div5" *ngIf="element.estado=='No realizado'">No Realizado</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="letra">{{element.equipo2}}</td>
+                        </tr>
+                
+                    </tbody>
+                </table>
+
+            </div>
+        </mat-card>
+    </div>
+-->
+ 
+    <!-- TODOS CONTRA TODOS -->
+    <mat-card align="center" fxFlex fxLayout="row wrap" *ngIf="dataCategoriad.sistema_de_juego != 'por serie'">
+        <div class="tamano2" fxFlex>
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-fixture">
+
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> No.</th>
+                    <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="equipo1">
+                    <th mat-header-cell *matHeaderCellDef> Equipo A</th>
+                    <td mat-cell *matCellDef="let element" class="letra"> {{element.equipo1}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="vs">
+                    <th mat-header-cell *matHeaderCellDef> VS</th>
+                    <td mat-cell *matCellDef="let element" class="action-link">
+                        <div align="center">
+                            <div class="contenedorDiv"
+                                (click)="hechosPartido(element.id_partido,element.id_equipo1,element.id_equipo2)"
+                                matTooltip="Administrar Partido">
+                                <div class="div1">1</div>
+                                <div class="div2" *ngIf="(element.total_equipo1==null || element.total_equipo2==null)">
+                                    0 : 0
+                                </div>
+                                <div class="div2" *ngIf="(element.total_equipo1!=null || element.total_equipo2!=null)">
+                                    {{element.total_equipo1}} : {{element.total_equipo2}}</div>
+
+                                <div class="div3" *ngIf="element.estado=='Cerrado'">{{element.estado}}</div>
+                                <div class="div4" *ngIf="element.estado=='En vivo'">{{element.estado}}</div>
+                                <div class="div5" *ngIf="element.estado=='No realizado'">No Realizado</div>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="equipo2">
+                    <th mat-header-cell *matHeaderCellDef>Equipo B</th>
+                    <td mat-cell *matCellDef="let element" class="letra"> {{element.equipo2}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+            </table>
+        </div>
+    </mat-card>
+
+
+
+
+    <!-- SI ES POR SERIES -->
+
+    <mat-card  fxLayout="row wrap" *ngIf="dataCategoriad.sistema_de_juego == 'por serie'" fxFlex>
+        <div align="center" class="tamano2" fxFlex>
+            <h3>SERIE A</h3>
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 table-fixture">
+
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> No.</th>
+                    <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="equipo1">
+                    <th mat-header-cell *matHeaderCellDef> Equipo A</th>
+                    <td mat-cell *matCellDef="let element" class="letra"> {{element.equipo1}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="vs">
+                    <th mat-header-cell *matHeaderCellDef> VS</th>
+                    <td mat-cell *matCellDef="let element" class="action-link">
+                        <div align="center">
+                            <div class="contenedorDiv"
+                                (click)="hechosPartido(element.id_partido,element.id_equipo1,element.id_equipo2)"
+                                matTooltip="Administrar Partido">
+                                <div class="div1">1</div>
+                                <div class="div2" *ngIf="(element.total_equipo1==null || element.total_equipo2==null)">
+                                    0 : 0
+                                </div>
+                                <div class="div2" *ngIf="(element.total_equipo1!=null || element.total_equipo2!=null)">
+                                    {{element.total_equipo1}} : {{element.total_equipo2}}</div>
+
+                                <div class="div3" *ngIf="element.estado=='Cerrado'">{{element.estado}}</div>
+                                <div class="div4" *ngIf="element.estado=='En vivo'">{{element.estado}}</div>
+                                <div class="div5" *ngIf="element.estado=='No realizado'">No Realizado</div>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="equipo2">
+                    <th mat-header-cell *matHeaderCellDef>Equipo B</th>
+                    <td mat-cell *matCellDef="let element" class="letra"> {{element.equipo2}} </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+            </table>
+        </div>
+
+        <div align="center" class="tamano2" fxFlex>
+            <h3>SERIE B</h3>
+            <table mat-table [dataSource]="dataSource2" class="mat-elevation-z8 table-fixture">
+
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> No.</th>
+                    <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="equipo1">
+                    <th mat-header-cell *matHeaderCellDef> Equipo A</th>
+                    <td mat-cell *matCellDef="let element" class="letra"> {{element.equipo1}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="vs">
+                    <th mat-header-cell *matHeaderCellDef> VS</th>
+                    <td mat-cell *matCellDef="let element" class="action-link">
+                        <div align="center">
+                            <div class="contenedorDiv"
+                                (click)="hechosPartido(element.id_partido,element.id_equipo1,element.id_equipo2)"
+                                matTooltip="Administrar Partido">
+                                <div class="div1">1</div>
+                                <div class="div2" *ngIf="(element.total_equipo1==null || element.total_equipo2==null)">
+                                    0 : 0
+                                </div>
+                                <div class="div2" *ngIf="(element.total_equipo1!=null || element.total_equipo2!=null)">
+                                    {{element.total_equipo1}} : {{element.total_equipo2}}</div>
+
+                                <div class="div3" *ngIf="element.estado=='Cerrado'">{{element.estado}}</div>
+                                <div class="div4" *ngIf="element.estado=='En vivo'">{{element.estado}}</div>
+                                <div class="div5" *ngIf="element.estado=='No realizado'">No Realizado</div>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="equipo2">
+                    <th mat-header-cell *matHeaderCellDef>Equipo B</th>
+                    <td mat-cell *matCellDef="let element" class="letra"> {{element.equipo2}} </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
+                <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+            </table>
+        </div>
+    </mat-card>
+</div>
