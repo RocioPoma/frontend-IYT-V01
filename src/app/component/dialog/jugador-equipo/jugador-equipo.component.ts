@@ -7,6 +7,11 @@ import { JugadorService } from 'src/app/servicios/jugador.service';
 import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 
+//reporte
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+
 @Component({
   selector: 'app-jugador-equipo',
   templateUrl: './jugador-equipo.component.html',
@@ -25,6 +30,10 @@ export class JugadorEquipoComponent implements OnInit {
   responseMessage: any;
 
   jugador: any;
+  disciplina: any;
+
+  //-----PARA REPORTES
+  userName: string = 'Rocio Poma Silvestre';
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
     private equipoJugadorService: EquipoJugadorService,
@@ -35,9 +44,10 @@ export class JugadorEquipoComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.disciplina=(this.dialogData.data_categoria.nombre_disciplina+' '+this.dialogData.data_categoria.nombre_categoria).toUpperCase();
     this.getEquipoJugador();
     if (this.dialogData.action === 'addJugador') {
-      this.action = (this.dialogData.data_equipo.nombre_club).toUpperCase(); 
+      this.action = (this.dialogData.data_equipo.nombre_club).toUpperCase(); //Club
       console.log('datos Equipo ' + JSON.stringify(this.dialogData.data_equipo));
       console.log('datos Categoria (CONTEMPLA) ' + JSON.stringify(this.dialogData.data_categoria));
       this.getJugadoresByEdad(this.dialogData.data_equipo.id_club);
@@ -69,7 +79,7 @@ export class JugadorEquipoComponent implements OnInit {
 
   //---------------------LISTA DE JUGADORES DE UN EQUIPO -----------------------------------------
   getEquipoJugador() {
-    this.equipoJugadorService.get(this.dialogData.data_equipo.id_club,this.dialogData.data_equipo.id_contempla).subscribe((response: any) => {
+    this.equipoJugadorService.get(this.dialogData.data_equipo.id_club, this.dialogData.data_equipo.id_contempla).subscribe((response: any) => {
       this.dataEquipoJugador = response;
     });
   }
@@ -119,5 +129,73 @@ export class JugadorEquipoComponent implements OnInit {
     }
     return estado;
   }
+
+  generatePDF() {
+    const doc = new jsPDF();
+
+    // Obtener los datos filtrados
+    const filteredData = this.dataEquipoJugador;
+
+    // Cargar la imagen del logo desde la carpeta de assets
+    const logoImg = new Image();
+    logoImg.src = '../../../assets/img/logo2_1.png'; // Ruta de la imagen en tu proyecto
+
+    logoImg.onload = () => {
+
+      // Agregar el encabezado con el logo, usuario y fecha
+      doc.addImage(logoImg, 'PNG', 150, 2, 40, 25);// Ajusta la posición y tamaño según sea necesario
+      doc.setFontSize(12);
+      doc.text('REPORTE '+ this.disciplina+' CLUB '+ this.action, 50, 28);
+
+      const date = new Date().toLocaleString();
+      doc.setFontSize(10);
+      doc.text(`Generado por: ${this.userName}`, 15, 10);
+      doc.text(`Fecha: ${date}`, 15, 15);
+
+      // Función para agregar encabezado y pie de página en cada página
+      const addHeaderAndFooter = () => {
+
+        // Agregar numeración de página en el pie de página
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
+          doc.text(`Página ${i}`, 100, doc.internal.pageSize.getHeight() - 10);
+        }
+      };
+
+      // Agregar el encabezado antes de crear la tabla
+      addHeaderAndFooter();
+
+      // Definir las columnas para la tabla
+      const columns = ['Nº', 'CI', 'Nombre', 'Edad', 'Fecha de Nacimiento', 'Club'];
+
+      // Mapear los datos filtrados para agregar el índice de numeración
+      const rows = filteredData.map((item, index) => [
+        index + 1,
+        item.ci ,
+        item.nombre +' '+item.ap_paterno +' '+item.ap_materno ,
+        item.edad,
+        item.fecha_nac,
+        this.action
+      ]);
+
+      // Agregar la tabla al PDF usando autoTable
+      (doc as any).autoTable({
+        head: [columns],
+        body: rows,
+        startY: 30, // Ajusta la posición de inicio de la tabla
+        theme: 'striped',
+        didDrawPage: (data) => {
+          // Volver a agregar el encabezado y pie de página en cada página nueva creada por autoTable
+          addHeaderAndFooter();
+        }
+      });
+
+      // Guardar el PDF
+      //doc.save('reporte.pdf');
+      doc.save('REPORTE-'+this.disciplina+'-'+this.action+'.pdf')
+    };
+  }
+
 
 }

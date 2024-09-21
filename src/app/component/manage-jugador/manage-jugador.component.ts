@@ -16,7 +16,10 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonsts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonsts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
-import html2canvas from 'html2canvas';
+
+//reporte
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 @Component({
   selector: 'app-manage-jugador',
@@ -24,7 +27,7 @@ import html2canvas from 'html2canvas';
   styleUrls: ['./manage-jugador.component.scss']
 })
 export class ManageJugadorComponent implements OnInit {
-  displayedColumns: string[] = ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad','documento', 'edit'];
+  displayedColumns: string[] = ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento', 'edit'];
   dataSource: any;
   dataClub: any = [];
   responseMessage: any;
@@ -37,7 +40,10 @@ export class ManageJugadorComponent implements OnInit {
 
   apiResponse: any = []; //para filtrar con el select
   //imgreporte='../../../assets/img/futbol.jpg';
- // imgreporte="https://drive.google.com/file/d/1M-lypmUu2C-HeMZSd0VBANQkxdjHBSP7/view?usp=share_link"
+  // imgreporte="https://drive.google.com/file/d/1M-lypmUu2C-HeMZSd0VBANQkxdjHBSP7/view?usp=share_link"
+
+  //-----PARA REPORTES
+  userName: string = 'Rocio Poma Silvestre';
 
   constructor(private jugadorService: JugadorService,
     private clubService: ClubService,
@@ -61,13 +67,13 @@ export class ManageJugadorComponent implements OnInit {
     const fecha = new Date();
     const pdfDefinition: any = {
 
-      header:{
+      header: {
         margin: 20,
         alignment: "center",
-        columns:[
+        columns: [
           'INTEGRACION YARETANENSE'
         ]
-      } ,
+      },
 
       footer: {
         margin: 10,
@@ -82,10 +88,10 @@ export class ManageJugadorComponent implements OnInit {
           text: 'Reporte de Jugadores'
         },
         {
-          
+
           // you'll most often use dataURI images on the browser side
           // if no width/height/fit is provided, the original size will be used
-         // image: '../../../assets/img/futbol.jpg'
+          // image: '../../../assets/img/futbol.jpg'
         }
         //{ stack: htmlToPdfmake(this.apiResponse) },
       ]
@@ -133,6 +139,124 @@ export class ManageJugadorComponent implements OnInit {
       this.dataSource = new MatTableDataSource(filterData);
     }
   }
+
+
+  //-----------------REPORTE
+  /* generatePDF() {
+     // Crear una instancia de jsPDF
+     const doc = new jsPDF();
+ 
+     // Obtener los datos filtrados
+     const filteredData = this.dataSource.filteredData;
+ 
+     // Crear un objeto de imagen y cargar la imagen desde una URL
+     const logoImg = new Image();
+     logoImg.src = 'https://example.com/logo.png'; // URL de la imagen
+ 
+ 
+     doc.text('Reporte de Jugadores', 70, 20);
+ 
+     // Definir las columnas y las filas para la tabla en el PDF
+     const columns = ['Nro', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'edad', 'NombreClub']; // Nombres de las columnas
+ 
+     // Mapear los datos filtrados para agregar el índice de numeración
+     const rows = filteredData.map((item, index) => [
+       index + 1,       // Añadir el índice +1 para que la numeración comience en 1
+       item.ci,         // Documento de Identidad
+       item.nombre,     // Nombre
+       item.ap_paterno, // Apellido Paterno
+       item.ap_materno, // Apellido Materno
+       item.edad,       // Edad
+       item.NombreClub  // Club
+     ]);
+ 
+     // Agregar la tabla al PDF usando autoTable
+     (doc as any).autoTable({
+       head: [columns],
+       body: rows,
+       startY: 30, // Ajusta la posición de inicio de la tabla
+       theme: 'striped'
+     });
+ 
+     // Agregar el pie de página con el usuario y la fecha
+     const date = new Date().toLocaleString();
+     doc.setFontSize(10);
+     doc.text(`Generado por: ${this.userName}`, 10, doc.internal.pageSize.getHeight() - 10);
+     doc.text(`Fecha: ${date}`, 150, doc.internal.pageSize.getHeight() - 10);
+ 
+     // Guardar el PDF
+     doc.save('reporte.pdf');
+   }*/
+  //-------------FIN REPORTE
+
+  generatePDF() {
+    const doc = new jsPDF();
+
+    // Obtener los datos filtrados
+    const filteredData = this.dataSource.filteredData;
+
+    // Cargar la imagen del logo desde la carpeta de assets
+    const logoImg = new Image();
+    logoImg.src = '../../../assets/img/logo2_1.png'; // Ruta de la imagen en tu proyecto
+
+    logoImg.onload = () => {
+      
+      // Agregar el encabezado con el logo, usuario y fecha
+      doc.addImage(logoImg, 'PNG', 150, 5, 40, 20);// Ajusta la posición y tamaño según sea necesario
+      doc.setFontSize(12);
+      doc.text('REPORTE JUGADORES', 75, 25);
+
+      const date = new Date().toLocaleString();
+      doc.setFontSize(10);
+      doc.text(`Generado por: ${this.userName}`, 15, 15);
+      doc.text(`Fecha: ${date}`, 15, 20);
+
+      // Función para agregar encabezado y pie de página en cada página
+      const addHeaderAndFooter = () => {
+
+        // Agregar numeración de página en el pie de página
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
+          doc.text(`Página ${i}`, 100, doc.internal.pageSize.getHeight() - 10);
+        }
+      };
+
+      // Agregar el encabezado antes de crear la tabla
+      addHeaderAndFooter();
+
+      // Definir las columnas para la tabla
+      const columns = ['Nº', 'CI', 'Nombre', 'Apellido Paterno', 'Apellido Materno', 'Edad', 'Club'];
+
+      // Mapear los datos filtrados para agregar el índice de numeración
+      const rows = filteredData.map((item, index) => [
+        index + 1,
+        item.ci,
+        item.nombre,
+        item.ap_paterno,
+        item.ap_materno,
+        item.edad,
+        item.NombreClub
+      ]);
+
+      // Agregar la tabla al PDF usando autoTable
+      (doc as any).autoTable({
+        head: [columns],
+        body: rows,
+        startY: 30, // Ajusta la posición de inicio de la tabla
+        theme: 'striped',
+        didDrawPage: (data) => {
+          // Volver a agregar el encabezado y pie de página en cada página nueva creada por autoTable
+          addHeaderAndFooter();
+        }
+      });
+
+      // Guardar el PDF
+      doc.save('REPORTE JUGADORES IYT'+'.pdf');
+    };
+  }
+
+
 
 
   handleAddAction() {
@@ -233,4 +357,6 @@ export class ManageJugadorComponent implements OnInit {
       this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
     })
   }
+
+
 }
