@@ -54,6 +54,7 @@ export class ManageDcategoriaFutbolComponent implements OnInit {
   datosCampeonato(id: any) {
     this.campeonatoService.getByIdc(id).subscribe(res => {
       this.arraycamp = res;
+      console.log("datos RES array: " + JSON.stringify(this.arraycamp));
     },
       err => console.log(err)
     )

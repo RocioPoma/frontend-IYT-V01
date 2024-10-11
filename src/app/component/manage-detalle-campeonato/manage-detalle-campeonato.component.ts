@@ -45,7 +45,7 @@ export class ManageDetalleCampeonatoComponent implements OnInit {
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
 
-    this.datosCampeonato(this.id);
+    this.datosCampeonato(this.id); 
   }
 
   datosCampeonato(id: any) {
