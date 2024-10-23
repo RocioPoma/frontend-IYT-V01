@@ -114,7 +114,7 @@ export class JugadorEquipoComponent implements OnInit {
     console.log("value2 " + ci);
   }
 
-  //----------------COMPROBAR SI EL JUGADOR YA ESTA AGREGADO EN EL EQUIPO
+  //---------------- COMPROBAR SI EL JUGADOR YA ESTA AGREGADO EN EL EQUIPO
   comprobarSiExiste(ci: any) {
     let estado = false;
     let tamaño = Object.keys(this.dataEquipoJugador).length;
