@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, AfterViewInit } from '@angular
 import { ActivatedRoute, Router } from '@angular/router';
 import { CampeonatoService } from 'src/app/servicios/campeonato.service';
 import { UserService } from 'src/app/servicios/user.service';
+import jwt_decode from 'jwt-decode';
 
 
 /** @title Responsive sidenav */
@@ -38,7 +39,19 @@ export class FullComponent implements OnDestroy, AfterViewInit {
       console.log('Usuario: ' + this.usuario)
     });
 
-    this.usuario='Rocio Poma Silvestre'
+    //this.usuario='Rocio Poma Silvestre'
+
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+      // Decodificar el token y extraer el nombre
+      const decodedToken: any = jwt_decode(token);
+      this.usuario = decodedToken?.nombre || 'Usuario desconocido';
+      
+      console.log('Nombre del usuario logueado:', this.usuario);
+    } else {
+      console.log('No hay token en localStorage');
+    }
    // this.usuario='Usuario'
     
     /*

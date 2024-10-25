@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
       this.dialogRef.close();
       localStorage.setItem('token',response.token);
 
-      console.log(response.data.nombre);
+      console.log('TOKEN: '+response.token);
       this.xusuario=response.data.nombre;
     //  this.ejecutar( this.router, this.xusuario);
      // this.userService.disparadorDeUser.emit(this.xusuario)
