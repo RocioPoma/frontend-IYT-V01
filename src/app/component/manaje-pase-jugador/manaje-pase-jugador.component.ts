@@ -92,7 +92,7 @@ export class ManajePaseJugadorComponent implements OnInit {
     };
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
     const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe((response) => {
-      this.deletePase(values.id);
+      this.deletePase(values.id_pase);
       dialogRef.close();
     });
   }

@@ -14,7 +14,7 @@ const MENUITEMS = [
     { state: 'club', name: 'Gestion Clubs', icon: 'category', role: 'admin'},
     { state: 'jugador', name: 'Gestion Jugadores', icon: 'badge', role: 'admin'},
     { state: 'pase', name: 'Pase jugador', icon: 'badge', role: 'admin'},
-    { state: 'reglamento', name: 'Gestion Normas', icon: 'file_present', role: 'admin'},
+    { state: 'reglamento', name: 'Reglamento', icon: 'file_present', role: 'admin'},
     { state: 'disciplina', name: 'Disciplinas', icon: 'sports_soccer', role: 'admin'},
     { state: 'arbitro', name: 'Arbitros', icon: 'assignment_ind', role: 'admin'},
     { state: 'categoria', name: 'Categorias', icon: 'engineering', role: ''},
