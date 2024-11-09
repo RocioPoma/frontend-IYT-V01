@@ -7,6 +7,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../../../servicios/snackbar.service';
 import { UserService } from '../../../servicios/user.service';
 import { GlobalCostants } from '../../../shared/global-constants';
+import { ClubService } from 'src/app/servicios/club.service';
 
 @Component({
   selector: 'app-signup',
@@ -20,11 +21,14 @@ export class SignupComponent implements OnInit {
   dialogAction: any = "Add";
   action: any = "Agregar";
   responseMessage: any;
+  club: any = [];
 
+  role = ['user', 'admin'];
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
     private formBuilder: FormBuilder,
     private userService: UserService,
+    private clubService: ClubService,
     private dialogRef: MatDialogRef<SignupComponent>,
     private snackbarService: SnackbarService,
     private dateAdapter: DateAdapter<Date>) {
@@ -37,33 +41,25 @@ export class SignupComponent implements OnInit {
       email: [null, [Validators.required, Validators.pattern(GlobalCostants.emailRegex)]],
       contactNumber: [null, [Validators.required, Validators.pattern(GlobalCostants.contactNumberRegex)]],
       password: [null, [Validators.required]],
+      role: [null, Validators.required],
+      clubId: [null, Validators.required]
+      
     });
     if (this.dialogData.action === 'Editar') {
       //console.log('Password '+this.dialogData.data.password);
       this.dialogAction = "Edit";
       this.action = "Actualizar";
       this.userForm.patchValue(this.dialogData.data);
+      console.log(this.dialogData.data);
     }
+    this.getClubs();
   }
 
-  /*
-  handleSubmit1() {
-    this.ngxService.start();
-    var formData = this.userForm.value;
-    var data = {
-      name: formData.name,
-      email: formData.email,
-      contactNumber: formData.contactNumber,
-      password: formData.password
-    }
-    this.userService.signup(data).subscribe((response: any) => {
-      this.ngxService.stop();
-      this.dialogRef.close();
-      this.responseMessage = response?.message;
-      this.snackbarService.openSnackBar(this.responseMessage, "");
-      // this.router.navigate(['/']); 
-    }, (error) => {
-      this.ngxService.stop();
+  //------------------- OBTENEMOS LOS CLUBS
+  getClubs() {
+    this.clubService.getClubs().subscribe((response: any) => {
+      this.club = response;
+    }, (error: any) => {
       if (error.error?.message) {
         this.responseMessage = error.error?.message;
       }
@@ -71,9 +67,10 @@ export class SignupComponent implements OnInit {
         this.responseMessage = GlobalCostants.genericError;
       }
       this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
-    })
+
+    });
   }
-  */
+
   handleSubmit() {
     if (this.dialogAction === 'Edit') {
       this.edit();
@@ -88,7 +85,10 @@ export class SignupComponent implements OnInit {
       name: formData.name,
       email: formData.email,
       contactNumber: formData.contactNumber,
-      password: formData.password
+      password: formData.password,
+      role:formData.role,
+      clubId: formData.clubId,
+
     }
     this.userService.signup(data).subscribe((response: any) => {
       this.dialogRef.close();
@@ -114,7 +114,9 @@ export class SignupComponent implements OnInit {
       name: formData.name,
       email: formData.email,
       contactNumber: formData.contactNumber,
-      password: formData.password
+      password: formData.password,
+      role:formData.role,
+      clubId: formData.clubId
     }
     this.userService.update(data).subscribe((response: any) => {
       this.dialogRef.close();

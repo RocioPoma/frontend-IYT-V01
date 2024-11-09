@@ -15,7 +15,7 @@ import { SignupComponent } from './signup/signup.component';
   styleUrls: ['./manage-user.component.scss']
 })
 export class ManageUserComponent implements OnInit {
-  displayedColumns: string[] = ['nombre', 'email', 'celular', 'acciones'];
+  displayedColumns: string[] = ['nombre', 'email', 'celular','rol','NombreClub', 'acciones'];
   dataSource: any;
   responseMessage: any;
 

@@ -181,27 +181,6 @@ export class JugadorComponent implements OnInit {
       this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
     })
 
-    /*
-    var formData = this.jugadorForm.value;
-    console.log("Fecha de Nacimiento "+formData.fecha_nacimiento);
-    console.log(this.file);
-
-    this.jugadorService.add1(formData.ci,formData.nombre.toUpperCase(),formData.ap_paterno,formData.ap_materno,
-    formData.fecha_nacimiento,formData.sexo,formData.decendencia,formData.clubId,formData.fecha_habilitacion, this.file).subscribe((response: any) => {
-      this.dialogRef.close();
-      this.onAddJugador.emit();
-      this.responseMessage = response.message;
-      this.snackbarService.openSnackBar(this.responseMessage, "success");
-    }, (error: any) => {
-      this.dialogRef.close();
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
-      }
-      else {
-        this.responseMessage = GlobalCostants.genericError;
-      }
-      this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
-    })*/
   }
 
 

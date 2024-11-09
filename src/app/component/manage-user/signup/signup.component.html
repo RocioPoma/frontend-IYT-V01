@@ -46,6 +46,32 @@
                     </mat-error>
                 </mat-form-field>
             </div>
+            <div fxLayout="row wrap">
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Rol</mat-label>
+                    <mat-select formControlName="role">
+                        <mat-option *ngFor="let role of role" [value]="role">{{role}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="userForm.controls.role.touched && userForm.controls.role.invalid">
+                        <span *ngIf="userForm.controls.role.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="userForm.controls.role.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill" fxFlex>
+                    <mat-label>Club</mat-label>
+                    <mat-select formControlName="clubId">
+                        <mat-option *ngFor="let club of club" [value]="club.id">{{club.nombre}}</mat-option>
+                    </mat-select>
+                    <mat-error
+                        *ngIf="userForm.controls.clubId.touched && userForm.controls.clubId.invalid">
+                        <span *ngIf="userForm.controls.clubId.errors.required">Este campo es obligatorio.</span>
+                        <span *ngIf="userForm.controls.clubId.errors.pattern">Este campo es invalido.</span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
         </div>
     </form>
 </mat-dialog-content>

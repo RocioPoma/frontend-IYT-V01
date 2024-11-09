@@ -53,6 +53,7 @@ export class LoginComponent implements OnInit {
     //  this.ejecutar( this.router, this.xusuario);
      // this.userService.disparadorDeUser.emit(this.xusuario)
       this.router.navigate(['/integracion/dashboard']);
+      
       //this.router.navigate([{ outlets: { pie: ['pie', this.xusuario] } }]);
      // this.ejecutar( this.router, this.xusuario);
 

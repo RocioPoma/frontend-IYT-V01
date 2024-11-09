@@ -97,16 +97,7 @@
                         </mat-error>
                     </mat-form-field>
     
-                    <!--
-                    <mat-form-field appearance="fill" fxFlex>
-                        <mat-label>Sexo</mat-label>
-                        <input matInput formControlName="sexo" required>
-                        <mat-error *ngIf="jugadorForm.controls.sexo.touched && jugadorForm.controls.sexo.invalid">
-                            <span *ngIf="jugadorForm.controls.sexo.errors.required">Este campo es obligatorio.</span>
-                            <span *ngIf="jugadorForm.controls.sexo.errors.pattern">Este campo es invalido.</span>
-                        </mat-error>
-                    </mat-form-field>
-                     -->
+            
                     <div class="radio_buton" appearance="fill" fxFlex>
                         <mat-label>Sexo</mat-label><br>
                         <mat-radio-group formControlName="sexo" aria-label="Select an option">
@@ -116,18 +107,6 @@
     
                 </div>
                 <div fxLayout="row wrap">
-                    <!--
-                    <mat-form-field appearance="fill" fxFlex>
-                        <mat-label>Decendencia</mat-label>
-                        <input matInput formControlName="decendencia" required>
-                        <mat-error
-                            *ngIf="jugadorForm.controls.decendencia.touched && jugadorForm.controls.decendencia.invalid">
-                            <span *ngIf="jugadorForm.controls.decendencia.errors.required">Este campo es obligatorio.</span>
-                            <span *ngIf="jugadorForm.controls.decendencia.errors.pattern">Este campo es invalido.</span>
-                        </mat-error>
-                    </mat-form-field>
-                    -->
-    
                     <mat-form-field appearance="fill" fxFlex>
                         <mat-label>Decendencia</mat-label>
                         <mat-select formControlName="decendencia">
@@ -147,9 +126,9 @@
                             <mat-option *ngFor="let club of club" [value]="club.id">{{club.nombre}}</mat-option>
                         </mat-select>
                         <mat-error
-                            *ngIf="jugadorForm.controls.decendencia.touched && jugadorForm.controls.decendencia.invalid">
-                            <span *ngIf="jugadorForm.controls.decendencia.errors.required">Este campo es obligatorio.</span>
-                            <span *ngIf="jugadorForm.controls.decendencia.errors.pattern">Este campo es invalido.</span>
+                            *ngIf="jugadorForm.controls.clubId.touched && jugadorForm.controls.clubId.invalid">
+                            <span *ngIf="jugadorForm.controls.clubId.errors.required">Este campo es obligatorio.</span>
+                            <span *ngIf="jugadorForm.controls.clubId.errors.pattern">Este campo es invalido.</span>
                         </mat-error>
                     </mat-form-field>
                 </div>

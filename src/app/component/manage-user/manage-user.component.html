@@ -25,6 +25,16 @@
             <th mat-header-cell *matHeaderCellDef> Nro Celular</th>
             <td mat-cell *matCellDef="let element"> {{element.contactNumber}} </td>
         </ng-container>
+
+        <ng-container matColumnDef="rol">
+            <th mat-header-cell *matHeaderCellDef> Rol</th>
+            <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="NombreClub">
+            <th mat-header-cell *matHeaderCellDef> NombreClub</th>
+            <td mat-cell *matCellDef="let element"> {{element.NombreClub}} </td>
+        </ng-container>
         
         <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef>Acciones</th>
