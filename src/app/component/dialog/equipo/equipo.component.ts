@@ -57,6 +57,7 @@ export class EquipoComponent implements OnInit {
     if(this.dialogData.role==='admin'){
       this.getClub();
     }else{
+      this.getClubConId(this.dialogData.id_club);
     }
 
    // this.getClub();
