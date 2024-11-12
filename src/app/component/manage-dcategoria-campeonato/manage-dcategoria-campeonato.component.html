@@ -10,7 +10,7 @@
         <b><span>GESTION CATEGORIAS CAMPEONATO</span></b>
     </div>
     <div class="btn-add2">
-        <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">Agregar Categoria al Campeonato</button>
+        <button mat-flat-button color="primary" class="float-right" *ngIf="role !== 'user'" (click)="handleAddAction()">Agregar Categoria al Campeonato</button>
     </div>
 </mat-card>
 <hr>
@@ -34,13 +34,13 @@
                         (click)="handleDetalleAction(element)">
                         <mat-icon>visibility</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="Editar" (click)="handleEditAction(element)">
+                    <button *ngIf="role !== 'user'" mat-icon-button color="primary" matTooltip="Editar" (click)="handleEditAction(element)">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button color="primary" matTooltip="Eliminar" (click)="handleDeleteAction(element)">
+                    <button *ngIf="role !== 'user'" mat-icon-button color="primary" matTooltip="Eliminar" (click)="handleDeleteAction(element)">
                         <mat-icon>delete</mat-icon>
                     </button>
-                    <mat-slide-toggle (change)="onChange($event.checked, element.id)"
+                    <mat-slide-toggle *ngIf="role !== 'user'" (change)="onChange($event.checked, element.id)"
                         matTooltip="Activar o desactivar estado de la categoria" [checked]="element.estado">
                     </mat-slide-toggle>
                 </mat-card-subtitle>

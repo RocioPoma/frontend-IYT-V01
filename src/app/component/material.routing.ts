@@ -29,7 +29,7 @@ export const MaterialRoutes: Routes = [
         component: ManageCampeonatoComponent,
         canActivate: [RouteGuardService],
         data: {
-            expectedRole: ['admin']
+            expectedRole: ['admin', 'user']
         }
     },
 
@@ -38,7 +38,7 @@ export const MaterialRoutes: Routes = [
         component: ManageJugadorComponent,
         canActivate: [RouteGuardService],
         data: {
-            expectedRole: ['admin']
+            expectedRole: ['admin', 'user']
         }
     },
     {
@@ -70,7 +70,7 @@ export const MaterialRoutes: Routes = [
         component: ManageReglamentoComponent,
         canActivate: [RouteGuardService],
         data: {
-            expectedRole: ['admin']
+            expectedRole: ['admin', 'user']
         }
     },
     {

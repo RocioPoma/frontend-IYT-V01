@@ -12,6 +12,7 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 
 import { environment } from 'src/environments/environment';
 import { CampeonatoService } from 'src/app/servicios/campeonato.service';
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-manage-noticia',
@@ -32,6 +33,7 @@ export class ManageNoticiaComponent implements OnInit {
   arraycamp: any = [];
   responseMessage: any;
   id: string | null = '';
+  role: any;
 
   constructor(private noticiaService: NoticiaService,
     private campeonatoService: CampeonatoService,
@@ -47,6 +49,17 @@ export class ManageNoticiaComponent implements OnInit {
     this.datosNoticiaCampeonato(this.id);
     this.datosCampeonato(this.id);
     // this.tableData();
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decodificar el token y extraer el nombre
+      const decodedToken: any = jwt_decode(token);
+      this.role = decodedToken?.role || 'Rol desconocido';
+      
+      console.log('Rol:', this.role);
+    } else {
+      console.log('No hay token en localStorage');
+    }
   }
 
   //---------------------LISTA NOTICIAS DE UN CAMPEONATO ESPECIFICO  -------------

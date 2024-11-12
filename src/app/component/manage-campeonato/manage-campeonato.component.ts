@@ -11,6 +11,7 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 
 import { DateAdapter } from '@angular/material/core';
 import { environment } from 'src/environments/environment';
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-manage-campeonato',
@@ -18,9 +19,10 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./manage-campeonato.component.scss']
 })
 export class ManageCampeonatoComponent implements OnInit {
-  displayedColumns: string[] = ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'administrar'];
+  displayedColumns: string[] = ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
   dataSource: any; //almacena los tatos extraidos del backend
   responseMessage: any;
+  role: any;
 
   //----url del servidor backend
   url = environment.apiUrl;
@@ -41,6 +43,22 @@ export class ManageCampeonatoComponent implements OnInit {
     this.ngxService.start();
     console.log("url: " + this.imgURL);
     this.tableData();
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decodificar el token y extraer el nombre
+      const decodedToken: any = jwt_decode(token);
+      this.role = decodedToken?.role || 'Rol desconocido';
+      
+      console.log('Rol:', this.role);
+    } else {
+      console.log('No hay token en localStorage');
+    }
+
+    this.displayedColumns = this.role === 'user' 
+      ? ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'ver']  // Agrega las columnas que sí pueden ver los usuarios "user"
+      : ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
+  
   }
 
   tableData() {

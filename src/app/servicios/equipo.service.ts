@@ -20,6 +20,8 @@ export class EquipoService {
     return this.httpClient.get(this.url + "/equipo/get/" + id_contempla);
   }
 
+
+
   //----------------------API PARA OBTENER SEGUN ID DE UN EQUIPO -------- se utilizo
   getById(id: any) {
     return this.httpClient.get(this.url + "/equipo/getById/" + id);
@@ -42,9 +44,9 @@ export class EquipoService {
   }
 
   //----------------------API PARA ELIMINAR  ------------------------------
-  delete(id_club: any,id_contempla:any) {
+  delete(id_club: any, id_contempla: any) {
     return this.httpClient.delete(this.url +
-      "/equipo/delete/" + id_club+'/'+id_contempla, {
+      "/equipo/delete/" + id_club + '/' + id_contempla, {
       headers: new HttpHeaders().set('Content-Type', "application/json")
     });
   }

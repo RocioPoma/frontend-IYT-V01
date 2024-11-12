@@ -26,15 +26,15 @@
                         <mat-card-subtitle align="left">
                             <div>{{element.comunidad}}</div>
 
-                            <button mat-icon-button color="primary" matTooltip="Agregar jugadores"
+                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Agregar jugadores"
                                 (click)="handleAddJugador(element)">
                                 <mat-icon>group_add</mat-icon>
                             </button>
-                            <button mat-icon-button color="primary" matTooltip="Editar"
+                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Editar"
                                 (click)="handleEditAction(element)">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                            <button mat-icon-button color="primary" matTooltip="Eliminar"
+                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Eliminar"
                                 (click)="handleDeleteAction(element)">
                                 <mat-icon>delete</mat-icon>
                             </button>

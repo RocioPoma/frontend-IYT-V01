@@ -11,11 +11,12 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 import { JugadorComponent } from '../dialog/jugador/jugador.component';
 import * as _ from 'lodash';
 import { ClubService } from 'src/app/servicios/club.service';
-//import { jsPDF } from "./jspdf";
+import jwt_decode from 'jwt-decode';
+
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonsts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonsts.pdfMake.vfs;
-import htmlToPdfmake from 'html-to-pdfmake';
+
 
 //reporte
 import jsPDF from 'jspdf';
@@ -31,6 +32,7 @@ export class ManageJugadorComponent implements OnInit {
   dataSource: any;
   dataClub: any = [];
   responseMessage: any;
+  role: any;
 
   //----url del servidor backend
   url = environment.apiUrl;
@@ -39,11 +41,9 @@ export class ManageJugadorComponent implements OnInit {
   imgURL = this.url + '/uploads/img/';
 
   apiResponse: any = []; //para filtrar con el select
-  //imgreporte='../../../assets/img/futbol.jpg';
-  // imgreporte="https://drive.google.com/file/d/1M-lypmUu2C-HeMZSd0VBANQkxdjHBSP7/view?usp=share_link"
-
+ 
   //-----PARA REPORTES
-  userName: string = 'Rocio Poma Silvestre';
+  userName: string = '';
 
   constructor(private jugadorService: JugadorService,
     private clubService: ClubService,
@@ -60,7 +60,23 @@ export class ManageJugadorComponent implements OnInit {
   ngOnInit(): void {
     this.tableData();
     this.getClub();
-    //this.downloadPDF();
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decodificar el token y extraer el nombre
+      const decodedToken: any = jwt_decode(token);
+      this.role = decodedToken?.role || 'Rol desconocido';
+      this.userName = decodedToken?.nombre || 'Usuario desconocido';
+      
+      console.log('Rol:', this.role);
+    } else {
+      console.log('No hay token en localStorage');
+    }
+
+    this.displayedColumns = this.role === 'user' 
+      ? ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento']  // Agrega las columnas que sí pueden ver los usuarios "user"
+      : ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento', 'edit'];
+  
   }
 
   craatePdf() {

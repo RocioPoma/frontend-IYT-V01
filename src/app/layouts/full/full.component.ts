@@ -31,15 +31,6 @@ export class FullComponent implements OnDestroy, AfterViewInit {
 
   ngOnInit() {
     
-    //this.usuario = this.activeR.snapshot.paramMap.get('xnom');
-    console.log('Usuario: ' + this.usuario)
-    
-    this.activeR.params.subscribe(para => {
-      this.usuario = para['xnom'];
-      console.log('Usuario: ' + this.usuario)
-    });
-
-    //this.usuario='Rocio Poma Silvestre'
 
     const token = localStorage.getItem('token');
     

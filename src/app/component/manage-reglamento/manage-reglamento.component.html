@@ -11,11 +11,11 @@
             <mat-label>Buscar</mat-label>
             <input matInput (keyup)="applyFilter($event)" autocomplete="off">
         </mat-form-field>
-        <div class="btn-add">
+        <div *ngIf="role === 'admin'" class="btn-add">
             <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Añadir Norma</button>
         </div>
     </mat-card>
-    
+
     <div class="responsive_table">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
             <ng-container matColumnDef="nombre_reglamento">
@@ -37,14 +37,19 @@
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef>Acciones</th>
                 <td mat-cell *matCellDef="let element" class="action-link">
-                    <button mat-icon-button color="accent" matTooltip="Edit" (click)="handleEditAction(element)">
+                    <button mat-icon-button color="accent" matTooltip="Edit" (click)="handleEditAction(element)"
+                        [disabled]="role === 'user'">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button color="accent" matTooltip="Delete" (click)="handleDeleteAction(element)">
+
+                    <button mat-icon-button color="accent" matTooltip="Delete" (click)="handleDeleteAction(element)"
+                        [disabled]="role === 'user'">
                         <mat-icon>delete</mat-icon>
                     </button>
+
                     <mat-slide-toggle (change)="onChange($event.checked, element.id)"
-                        matTooltip="Activar o Desactivar Norma" [checked]="element.estado">
+                        matTooltip="Activar o Desactivar Norma" [checked]="element.estado"
+                        [disabled]="role === 'user'">
                     </mat-slide-toggle>
                 </td>
             </ng-container>

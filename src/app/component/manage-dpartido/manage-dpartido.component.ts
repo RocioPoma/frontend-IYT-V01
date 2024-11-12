@@ -9,6 +9,7 @@ import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { PartidoComponent } from '../dialog/partido/partido.component';
+import jwt_decode from 'jwt-decode';
 
 export interface PeriodicElement {
   equipo: string;
@@ -48,6 +49,8 @@ export class ManageDpartidoComponent implements OnInit {
   responseMessage: any;
   dataFixture: any;
   dataCategoriad: any;
+  role: any;
+
 
   id: string | null = '';
 
@@ -62,10 +65,21 @@ export class ManageDpartidoComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id_contempla');
     this.dataCategoria(this.id);
     //console.log('DATOS SISTEMA SE JUEGO ' + this.dataCategoriad.sistema_de_juego);
-    
-
+  
     this.tableData();
     this.tableData2();
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decodificar el token y extraer el nombre
+      const decodedToken: any = jwt_decode(token);
+      this.role = decodedToken?.role || 'Rol desconocido';
+      
+      console.log('Rol:', this.role);
+    } else {
+      console.log('No hay token en localStorage');
+    }
+    
   }
 
 

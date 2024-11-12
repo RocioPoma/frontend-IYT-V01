@@ -9,6 +9,7 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { EquipoComponent } from '../dialog/equipo/equipo.component';
 import { JugadorEquipoComponent } from '../dialog/jugador-equipo/jugador-equipo.component';
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-manage-dequipo',
@@ -21,6 +22,9 @@ export class ManageDequipoComponent implements OnInit {
   dataDcategoria: any = []; //para datos de una categoria especifica(Tabla contempla)
   responseMessage: any;
   id_contempla: string | null = ''; //contempla categoria disciplina y campeonato
+  id_club: any;
+  role: any;
+  estadoUsuario='true';
 
   imgURL = '../../../assets/img/deportes/';
   extension = '.jpg';
@@ -34,20 +38,37 @@ export class ManageDequipoComponent implements OnInit {
     private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decodificar el token y extraer datos
+      const decodedToken: any = jwt_decode(token);
+      this.id_club = decodedToken?.id_club || 'Id_club desconocido';
+      this.role = decodedToken?.role || 'Rol desconocido';
+
+      console.log('Id Club:', this.id_club);
+    } else {
+      console.log('No hay token en localStorage');
+    }
+
     this.id_contempla = this.route.snapshot.paramMap.get('id_contempla');
+
+
     this.dataTable(this.id_contempla);
 
     this.dataCategoria(this.id_contempla);
   }
 
-  //---------------------LISTA EQUIPOS QUE PERTENECEN A UNA CATEGORIA ESPECIFICO  -------------
-  dataTable(id: any) {
-    this.equipoService.get(id).subscribe(res => {
+  //-------------------- LISTA EQUIPOS QUE PERTENECEN A UNA CATEGORIA ESPECIFICO  -------------
+  dataTable(id_contempla: any) {
+    this.equipoService.get(id_contempla).subscribe(res => {
       this.dataSource = res;
     },
       err => console.log(err)
     )
   }
+
+
 
   //
 
@@ -61,7 +82,9 @@ export class ManageDequipoComponent implements OnInit {
     dialogConfig.data = {
       action: 'Add',
       data_categoria: this.dataDcategoria,
-      id_contempla: this.id_contempla
+      id_contempla: this.id_contempla,
+      id_club:this.id_club,
+      role:this.role
     }
     dialogConfig.width = "700px";
     const dialogRef = this.dialog.open(EquipoComponent, dialogConfig);
@@ -105,7 +128,7 @@ export class ManageDequipoComponent implements OnInit {
     });
   }
 
-  delete(id_club: any,id_contempla:any) {
+  delete(id_club: any, id_contempla: any) {
     this.equipoService.delete(id_club, id_contempla).subscribe((response: any) => {
       this.dataTable(this.id_contempla);
       this.responseMessage = response?.message;
@@ -121,8 +144,8 @@ export class ManageDequipoComponent implements OnInit {
     })
   }
 
-   //---------------------LISTA DISCIPLINA, CATEGORIA .. DE UN CAMPEONATO ESPECIFICO  -------------
-   dataCategoria(id: any) {
+  //---------------------LISTA DISCIPLINA, CATEGORIA .. DE UN CAMPEONATO ESPECIFICO  -------------
+  dataCategoria(id: any) {
     this.dcategoriacampeonatoService.getById(id).subscribe(res => {
       this.dataDcategoria = res;
     },

@@ -4,7 +4,7 @@
             <b><span>GESTION CAMPEONATOS</span></b>
         </div>
         <div>
-            <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Crear
+            <button mat-flat-button color="accent" class="float-right" *ngIf="role === 'admin'" (click)="handleAddAction()">Crear
                 Campeonato</button>
                 <!--
             <a href="../../../assets/img/reportes/7130e47b-abcb-468e-b8e6-72af9ea270c0.pdf" target="_blank">
@@ -55,7 +55,7 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="acciones">
+            <ng-container *ngIf="role !== 'user'"  matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef>Acciones</th>
                 <td mat-cell *matCellDef="let element" class="action-link">
                     <button mat-icon-button color="accent" matTooltip="Modificar" (click)="handleEditAction(element)">
@@ -71,11 +71,11 @@
                 </td>
             </ng-container>
 
-            <ng-container matColumnDef="administrar">
+            <ng-container matColumnDef="ver">
                 <th mat-header-cell *matHeaderCellDef> Administrar</th>
                 <td mat-cell *matCellDef="let element">
                     <button mat-flat-button color="accent" class="float-center"
-                        (click)="handleAction(element)">ADMINISTRAR</button>
+                        (click)="handleAction(element)">VER</button>
                 </td>
                 <!--  <td mat-cell *matCellDef="let element"> {{element.gestion}} </td> 
         <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">Crear Campeonato</button> -->

@@ -28,6 +28,10 @@ export class ClubService {
     return this.httpClient.get(this.url + "/club/get/")
   }
 
+  getClubsConId(id_club: any) {
+    return this.httpClient.get(this.url + "/club/get/"+ id_club)
+  }
+
   //----------------------API PARA ELIMINAR CLUB ------------------------------
   delete(id: any) {
     return this.httpClient.delete(this.url +

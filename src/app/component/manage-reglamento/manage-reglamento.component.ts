@@ -8,6 +8,7 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 import { environment } from 'src/environments/environment';
 import { ReglamentoComponent } from '../dialog/reglamento/reglamento.component';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-manage-reglamento',
@@ -23,6 +24,7 @@ export class ManageReglamentoComponent implements OnInit {
   url = environment.apiUrl;
   //----creamos la url para las imagenes
   imgURL = this.url + '/uploads/img/';
+  role: any;
 
   constructor( private reglamentoService: ReglamentoService,
     private dialog: MatDialog,
@@ -31,6 +33,17 @@ export class ManageReglamentoComponent implements OnInit {
 
   ngOnInit(): void {
     this.tableData();
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+      // Decodificar el token y extraer el nombre
+      const decodedToken: any = jwt_decode(token);
+      this.role = decodedToken?.role || 'Rol desconocido';
+      
+      console.log('Rol:', this.role);
+    } else {
+      console.log('No hay token en localStorage');
+    }
   }
 
   tableData() {

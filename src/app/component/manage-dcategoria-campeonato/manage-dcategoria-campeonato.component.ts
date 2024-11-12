@@ -7,6 +7,7 @@ import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { DcategoriaCampeonatoComponent } from '../dialog/dcategoria-campeonato/dcategoria-campeonato.component';
+import jwt_decode from 'jwt-decode';
 
 @Component({
   selector: 'app-manage-dcategoria-campeonato',
@@ -18,6 +19,7 @@ export class ManageDcategoriaCampeonatoComponent implements OnInit {
   responseMessage: any;
   arraycamp: any = [];
   id: string | null = ''; //Id Campeonato
+  role: any;
 
   imgURL = '../../../assets/img/deportes/';
   extension = '.jpg';
@@ -33,6 +35,17 @@ export class ManageDcategoriaCampeonatoComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.dataTable(this.id);
     this.datosCampeonato(this.id);
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decodificar el token y extraer el nombre
+      const decodedToken: any = jwt_decode(token);
+      this.role = decodedToken?.role || 'Rol desconocido';
+      
+      console.log('Rol:', this.role);
+    } else {
+      console.log('No hay token en localStorage');
+    }
   }
 
   //---------------------LISTA DISC, CAT DE UN CAMPEONATO ESPECIFICO  -------------

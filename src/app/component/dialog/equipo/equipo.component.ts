@@ -53,7 +53,13 @@ export class EquipoComponent implements OnInit {
       this.equipoForm.patchValue(this.dialogData.data);
       this.changeSelect(this.dialogData.data.id_club);
     }
-    this.getClub();
+
+    if(this.dialogData.role==='admin'){
+      this.getClub();
+    }else{
+    }
+
+   // this.getClub();
     this.getSerie();
   }
 
@@ -71,6 +77,21 @@ export class EquipoComponent implements OnInit {
       this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
     });
   }
+
+    //------------------- OBTENEMOS LISTA DE CLUB SEGUN ID --------------------------------------------------
+    getClubConId(id_club:any) {
+      this.clubService.getClubsConId(id_club).subscribe((response: any) => {
+        this.club = response;
+      }, (error: any) => {
+        if (error.error?.message) {
+          this.responseMessage = error.error?.message;
+        }
+        else {
+          this.responseMessage = GlobalCostants.genericError;
+        }
+        this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
+      });
+    }
 
   //------------------- OBTENEMOS LISTA DE SERIE --------------------------------------------------
   getSerie() {

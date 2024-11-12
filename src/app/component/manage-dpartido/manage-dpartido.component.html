@@ -12,8 +12,8 @@
         <mat-label>Filter</mat-label>
         <input matInput (keyup)="applyFilter($event)" #input>
     </mat-form-field>
-    <div class="btn-add">
-        <button style="margin-right: 10px;" [disabled]="comprobarArrayFixture()" mat-flat-button color="primary"
+    <div *ngIf="role !== 'user'" class="btn-add">
+        <button  style="margin-right: 10px;" [disabled]="comprobarArrayFixture()" mat-flat-button color="primary"
             class="float-right" (click)="handleAddAction()">Generar Fixture</button>
         <button [disabled]="!comprobarArrayFixture()" mat-flat-button color="primary" class="float-right"
             (click)="handleDeleteAction()">Emininar Fixture</button>

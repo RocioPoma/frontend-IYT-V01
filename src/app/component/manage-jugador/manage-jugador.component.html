@@ -1,9 +1,9 @@
 <mat-card >
     <b><span>GESTION JUGADORES</span></b>
-    <button mat-flat-button color="primary" class="float-right"  (click)="handleAddAction()" >Registrar Jugador</button>
+    <button mat-flat-button color="primary" class="float-right"  *ngIf="role !== 'user'" (click)="handleAddAction()" >Registrar Jugador</button>
   <!-- <button mat-flat-button color="primary" class="float-right" (click)="craatePdf()">Reporte</button>-->
   
-    <button mat-raised-button color="accent" class="float-right" (click)="generatePDF()">Generar PDF</button>
+    <button mat-raised-button color="accent" class="float-right" (click)="generatePDF()">Reporte PDF</button>
 
 </mat-card>
 <hr>
@@ -86,7 +86,7 @@
             </td>
         </ng-container>
 
-        <ng-container matColumnDef="edit">
+        <ng-container *ngIf="role !== 'user'" matColumnDef="edit">
             <th mat-header-cell *matHeaderCellDef>Acciones</th>
             <td mat-cell *matCellDef="let element" class="action-link">
                 <button mat-icon-button color="accent" matTooltip="Subir documentación" (click)="handleUploadFile(element)">
