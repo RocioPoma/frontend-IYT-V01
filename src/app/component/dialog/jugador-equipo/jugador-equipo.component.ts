@@ -1,15 +1,20 @@
 import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { EquipoJugadorService } from 'src/app/servicios/equipo-jugador.service';
 import { EquipoService } from 'src/app/servicios/equipo.service';
 import { JugadorService } from 'src/app/servicios/jugador.service';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogConfig } from '@angular/material/dialog';
+import jwt_decode from 'jwt-decode';
 //reporte
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { ConfirmationComponent } from '../confirmation/confirmation.component';
 
 
 @Component({
@@ -23,6 +28,8 @@ export class JugadorEquipoComponent implements OnInit {
   action: any = "Agregar";
   dataSource: any;
   dataEquipoJugador: any;
+  role: any;
+  num_max_jugadores: any;
 
   onAdd = new EventEmitter();
   onEdit = new EventEmitter();
@@ -33,12 +40,15 @@ export class JugadorEquipoComponent implements OnInit {
   disciplina: any;
 
   //-----PARA REPORTES
-  userName: string = 'Rocio Poma Silvestre';
+  userName: string = '';
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
     private equipoJugadorService: EquipoJugadorService,
     private formBuilder: FormBuilder,
     private jugadorService: JugadorService,
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private ngxService: NgxUiLoaderService,
     private dialogRef: MatDialogRef<JugadorEquipoComponent>,
     private snackbarService: SnackbarService) { }
 
@@ -50,7 +60,18 @@ export class JugadorEquipoComponent implements OnInit {
       this.action = (this.dialogData.data_equipo.nombre_club).toUpperCase(); //Club
       console.log('datos Equipo ' + JSON.stringify(this.dialogData.data_equipo));
       console.log('datos Categoria (CONTEMPLA) ' + JSON.stringify(this.dialogData.data_categoria));
+      this.num_max_jugadores = this.dialogData.data_categoria.num_max_jugadores;
       this.getJugadoresByEdad(this.dialogData.data_equipo.id_club);
+    }
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Decodificar el token y extraer el Rol
+      const decodedToken: any = jwt_decode(token);
+      this.role = decodedToken?.role || 'Rol desconocido';
+      this.userName = decodedToken?.nombre || 'Nombre desconocido';
+    } else {
+      console.log('No hay token en localStorage');
     }
   }
 
@@ -100,10 +121,32 @@ export class JugadorEquipoComponent implements OnInit {
       ci: ci,
     }
     if (checked) {
-      this.equipoJugadorService.add(data).subscribe((response: any) => {
-        console.log("AGREGADO CORRECTAMENTE");
-        this.getEquipoJugador();
-      })
+      // this.equipoJugadorService.add(data).subscribe((response: any) => {
+      //   console.log("AGREGADO CORRECTAMENTE");
+      //   this.getEquipoJugador();
+      // })
+
+      if (this.dataEquipoJugador.length < this.num_max_jugadores) {
+        this.equipoJugadorService.add(data).subscribe((response: any) => {
+          console.log("AGREGADO CORRECTAMENTE");
+          this.getEquipoJugador();
+        });
+      } else {
+        this.snackBar.open("No se puede agregar más jugadores. Se alcanzó el número máximo permitido.", "Cerrar", {
+          duration: 7000, // Duración en milisegundos (3 segundos)
+        });
+
+        // const dialogConfig = new MatDialogConfig();
+        // dialogConfig.data = {
+        //   message: 'Se alcanzó el número máximo de jugadores permitido: ' + this.num_max_jugadores
+        // };
+        // const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
+        // const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe((response) => {
+        //   this.ngxService.start();
+        //   dialogRef.close();
+        // });
+
+      }
     } else {
       this.equipoJugadorService.delete(data.id_club, data.id_contempla, data.ci).subscribe((response: any) => {
         console.log("ELIMINADO CORRECTAMENTE");
@@ -363,78 +406,78 @@ export class JugadorEquipoComponent implements OnInit {
 
   generateCarnetsPDF3() {
     const doc = new jsPDF('portrait', 'mm', 'a4'); // Documento A4 en milímetros
-  
+
     const carnetWidth = 90;  // 9 cm de ancho
     const carnetHeight = 80; // 8 cm de alto
-  
+
     const carnetsPorFila = 2; // Dos carnets por fila
     const carnetsPorColumna = 3; // Tres carnets por columna
     const espacioEntreCarnets = 10; // Espacio entre carnets en mm
-  
+
     const jugadores = [
       { nombre: 'Juan', apellidos: 'Pérez García', numero: 10, club: 'Club A', disciplina: 'Fútbol 8' },
       { nombre: 'Carlos', apellidos: 'Lopez Sánchez', numero: 7, club: 'Club B', disciplina: 'Fútbol 8' },
       // Añade más jugadores según sea necesario
     ];
-  
+
     let posX = 10; // Posición inicial en X
     let posY = 10; // Posición inicial en Y
-  
+
     jugadores.forEach((jugador, index) => {
       // Dibujar fondo de color rojo
       doc.setFillColor(255, 0, 0); // Color rojo
       doc.rect(posX, posY, carnetWidth, carnetHeight * 0.2, 'F'); // Fondo rojo (20%)
-  
+
       // Dibujar fondo azul en la parte inferior
       doc.setFillColor(0, 0, 255); // Color azul
       doc.rect(posX, posY + carnetHeight - 5, carnetWidth, 5, 'F'); // Fondo azul (5 mm)
-  
+
       // Encabezado en negrita y centrado
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(255, 255, 255); // Color blanco
       doc.text('CAMPEONATO DE INTEGRACIÓN GESTIÓN 2024', posX + carnetWidth / 2, posY + 10, { align: 'center' });
-  
+
       // Subtítulo centrado
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.text('CARNET DE JUGADOR FUTBOL 8', posX + carnetWidth / 2, posY + 20, { align: 'center' });
-  
+
       // Cuadro para la foto (3x3 cm)
       doc.setTextColor(0, 0, 0); // Cambiar color de texto a negro
       doc.rect(posX + 5, posY + 25, 30, 30); // Posición de la foto
-  
+
       // Información del jugador a la derecha de la foto
       doc.setFontSize(10);
       doc.text(`Club: ${jugador.club}`, posX + 40, posY + 30);
       doc.text(`Nombre: ${jugador.nombre}`, posX + 40, posY + 35);
       doc.text(`Apellidos: ${jugador.apellidos}`, posX + 40, posY + 40);
       doc.text(`Nro. Camiseta: ${jugador.numero}`, posX + 40, posY + 45);
-  
+
       // Espacio para firmas en la misma fila, centradas
       const firmaPosY = posY + 70; // Posición Y de las firmas
       const firmaWidth = 25; // Ancho de cada firma
       const firmaGap = 4; // Separación entre las firmas en mm
-  
+
       // Líneas para las firmas
       doc.line(posX + 10, firmaPosY, posX + 10 + firmaWidth, firmaPosY); // Firma Presidente
       doc.line(posX + 10 + firmaWidth + firmaGap, firmaPosY, posX + 10 + firmaWidth + firmaGap + firmaWidth, firmaPosY); // Firma Jugador
       doc.line(posX + 10 + (firmaWidth + firmaGap) * 2, firmaPosY, posX + 10 + (firmaWidth + firmaGap) * 2 + firmaWidth, firmaPosY); // Firma Comité Técnico
-  
+
       // Textos debajo de las líneas de firma
       doc.setFontSize(8);
       doc.text('Presidente', posX + 10, firmaPosY + 5);
       doc.text('Jugador', posX + 10 + firmaWidth + firmaGap, firmaPosY + 5);
       doc.text('Comité Técnico', posX + 10 + (firmaWidth + firmaGap) * 2, firmaPosY + 5);
-  
+
       // Ajustar posición para el siguiente carnet
       posX += carnetWidth + espacioEntreCarnets; // Mover a la siguiente columna
-  
+
       // Si alcanzamos el límite de carnets por fila, pasar a la siguiente fila
       if ((index + 1) % carnetsPorFila === 0) {
         posX = 10; // Resetea la posición X para la siguiente fila
         posY += carnetHeight + espacioEntreCarnets; // Mueve a la siguiente fila
-  
+
         // Si también llegamos al límite de carnets por columna, crear una nueva página
         if ((index + 1) % (carnetsPorFila * carnetsPorColumna) === 0) {
           doc.addPage(); // Añadir nueva página si se excede el espacio vertical
@@ -443,88 +486,88 @@ export class JugadorEquipoComponent implements OnInit {
         }
       }
     });
-  
+
     // Guardar el PDF
     doc.save('carnets_jugadores.pdf');
   }
 
   generateCarnetsPDF4() {
     const doc = new jsPDF('portrait', 'mm', 'a4'); // Documento A4 en milímetros
-  
+
     const carnetWidth = 90;  // 9 cm de ancho
     const carnetHeight = 80; // 8 cm de alto
-  
+
     const carnetsPorFila = 2; // Dos carnets por fila
     const carnetsPorColumna = 3; // Tres carnets por columna
     const espacioEntreCarnets = 10; // Espacio entre carnets en mm
-  
-   
 
-     // Obtener los datos filtrados
-     const DataEJ = this.dataEquipoJugador;
-  
+
+
+    // Obtener los datos filtrados
+    const DataEJ = this.dataEquipoJugador;
+
     let posX = 10; // Posición inicial en X
     let posY = 10; // Posición inicial en Y
-  
+
     DataEJ.forEach((jugador, index) => {
       // Dibujar fondo de color rojo
       doc.setFillColor(0, 0, 255); // Color azul
       doc.rect(posX, posY, carnetWidth, carnetHeight * 0.2, 'F'); // Fondo rojo (20%)
-  
+
       // Dibujar fondo azul en la parte inferior
       doc.setFillColor(255, 0, 0); // Color rojo
       doc.rect(posX, posY + carnetHeight - 2, carnetWidth, 2, 'F'); // Fondo azul (5 mm)
-  
+
       // Dibujar borde negro
       doc.setDrawColor(0, 0, 0); // Color negro
       doc.rect(posX, posY, carnetWidth, carnetHeight, 'S'); // Borde del carnet
-  
+
       // Encabezado en negrita y centrado
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(255, 255, 255); // Color blanco
       doc.text('CAMPEONATO DE INTEGRACION 2024', posX + carnetWidth / 2, posY + 10, { align: 'center' });
-  
+
       // Subtítulo centrado
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.text('CARNET DE JUGADOR FUTBOL', posX + carnetWidth / 2, posY + 20, { align: 'center' });
-  
+
       // Cuadro para la foto (3x3 cm)
       doc.setTextColor(0, 0, 0); // Cambiar color de texto a negro
       doc.rect(posX + 5, posY + 25, 30, 30); // Posición de la foto
-  
+
       // Información del jugador a la derecha de la foto
       doc.setFontSize(10);
       doc.text(`Club: ${this.action}`, posX + 40, posY + 30);
       doc.text(`Nombre: ${jugador.nombre}`, posX + 40, posY + 35);
       doc.text(`Apellidos: ${jugador.ap_paterno + ' ' + jugador.ap_materno}`, posX + 40, posY + 40);
       doc.text(`Nro. Camiseta: ${'.......'}`, posX + 40, posY + 45);
-  
+
       // Espacio para firmas en la misma fila, centradas
       const firmaPosY = posY + 70; // Posición Y de las firmas
       const firmaWidth = 25; // Ancho de cada firma
       const firmaGap = 2; // Separación entre las firmas en mm
-  
+
       // Líneas para las firmas
       doc.line(posX + 3, firmaPosY, posX + 10 + firmaWidth, firmaPosY); // Firma Presidente
       doc.line(posX + 10 + firmaWidth + firmaGap, firmaPosY, posX + 10 + firmaWidth + firmaGap + firmaWidth, firmaPosY); // Firma Jugador
       doc.line(posX + 10 + (firmaWidth + firmaGap) * 2, firmaPosY, posX + 10 + (firmaWidth + firmaGap) * 2 + firmaWidth, firmaPosY); // Firma Comité Técnico
-  
+
       // Textos debajo de las líneas de firma, alineados con las líneas
       doc.setFontSize(8);
       doc.text('Presidente', posX + 0 + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
       doc.text('Jugador', posX + 10 + firmaWidth + firmaGap + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
       doc.text('Comité Técnico', posX + 10 + (firmaWidth + firmaGap) * 2 + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
-  
+
       // Ajustar posición para el siguiente carnet
       posX += carnetWidth + espacioEntreCarnets; // Mover a la siguiente columna
-  
+
       // Si alcanzamos el límite de carnets por fila, pasar a la siguiente fila
       if ((index + 1) % carnetsPorFila === 0) {
         posX = 10; // Resetea la posición X para la siguiente fila
         posY += carnetHeight + espacioEntreCarnets; // Mueve a la siguiente fila
-  
+
         // Si también llegamos al límite de carnets por columna, crear una nueva página
         if ((index + 1) % (carnetsPorFila * carnetsPorColumna) === 0) {
           doc.addPage(); // Añadir nueva página si se excede el espacio vertical
@@ -533,7 +576,7 @@ export class JugadorEquipoComponent implements OnInit {
         }
       }
     });
-  
+
     // Guardar el PDF
     //doc.save('carnets_jugadores.pdf');
     doc.save('CARNETS-' + this.disciplina + '-' + this.action + '.pdf')
@@ -541,80 +584,80 @@ export class JugadorEquipoComponent implements OnInit {
 
   generateCarnetsPDF5() {
     const doc = new jsPDF('portrait', 'mm', 'a4'); // Documento A4 en milímetros
-    
+
     const carnetWidth = 90;  // 9 cm de ancho
     const carnetHeight = 80; // 8 cm de alto
-  
+
     const carnetsPorFila = 2; // Dos carnets por fila
     const carnetsPorColumna = 3; // Tres carnets por columna
     const espacioEntreCarnets = 10; // Espacio entre carnets en mm
-  
+
     // Aquí va tu imagen en formato base64
     const imgBase64 = "data:image/png;base64,..."; // Base64 de tu imagen
-    
+
     const DataEJ = this.dataEquipoJugador;
-    
+
     let posX = 10; // Posición inicial en X
     let posY = 10; // Posición inicial en Y
-    
+
     DataEJ.forEach((jugador, index) => {
       // Agregar imagen de fondo
       doc.addImage(imgBase64, 'PNG', posX, posY, carnetWidth, carnetHeight); // Imagen ajustada al tamaño del carnet
-    
+
       // Dibujar fondo azul en la parte superior
       doc.setFillColor(0, 0, 255); // Color azul
       doc.rect(posX, posY, carnetWidth, carnetHeight * 0.2, 'F'); // Fondo azul (20%)
-      
+
       // Dibujar borde negro
       doc.setDrawColor(0, 0, 0); // Color negro
       doc.rect(posX, posY, carnetWidth, carnetHeight, 'S'); // Borde del carnet
-    
+
       // Encabezado en negrita y centrado
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(255, 255, 255); // Color blanco
       doc.text('CAMPEONATO DE INTEGRACION 2024', posX + carnetWidth / 2, posY + 10, { align: 'center' });
-    
+
       // Subtítulo centrado
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.text('CARNET DE JUGADOR FUTBOL', posX + carnetWidth / 2, posY + 20, { align: 'center' });
-    
+
       // Cuadro para la foto (3x3 cm)
       doc.setTextColor(0, 0, 0); // Cambiar color de texto a negro
       doc.rect(posX + 5, posY + 25, 30, 30); // Posición de la foto
-    
+
       // Información del jugador a la derecha de la foto
       doc.setFontSize(10);
       doc.text(`Club: ${this.action}`, posX + 40, posY + 30);
       doc.text(`Nombre: ${jugador.nombre}`, posX + 40, posY + 35);
       doc.text(`Apellidos: ${jugador.ap_paterno + ' ' + jugador.ap_materno}`, posX + 40, posY + 40);
       doc.text(`Nro. Camiseta: ${'.......'}`, posX + 40, posY + 45);
-    
+
       // Espacio para firmas en la misma fila, centradas
       const firmaPosY = posY + 70; // Posición Y de las firmas
       const firmaWidth = 25; // Ancho de cada firma
       const firmaGap = 2; // Separación entre las firmas en mm
-    
+
       // Líneas para las firmas
       doc.line(posX + 3, firmaPosY, posX + 10 + firmaWidth, firmaPosY); // Firma Presidente
       doc.line(posX + 10 + firmaWidth + firmaGap, firmaPosY, posX + 10 + firmaWidth + firmaGap + firmaWidth, firmaPosY); // Firma Jugador
       doc.line(posX + 10 + (firmaWidth + firmaGap) * 2, firmaPosY, posX + 10 + (firmaWidth + firmaGap) * 2 + firmaWidth, firmaPosY); // Firma Comité Técnico
-    
+
       // Textos debajo de las líneas de firma, alineados con las líneas
       doc.setFontSize(8);
       doc.text('Presidente', posX + 0 + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
       doc.text('Jugador', posX + 10 + firmaWidth + firmaGap + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
       doc.text('Comité Técnico', posX + 10 + (firmaWidth + firmaGap) * 2 + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
-    
+
       // Ajustar posición para el siguiente carnet
       posX += carnetWidth + espacioEntreCarnets; // Mover a la siguiente columna
-    
+
       // Si alcanzamos el límite de carnets por fila, pasar a la siguiente fila
       if ((index + 1) % carnetsPorFila === 0) {
         posX = 10; // Resetea la posición X para la siguiente fila
         posY += carnetHeight + espacioEntreCarnets; // Mueve a la siguiente fila
-    
+
         // Si también llegamos al límite de carnets por columna, crear una nueva página
         if ((index + 1) % (carnetsPorFila * carnetsPorColumna) === 0) {
           doc.addPage(); // Añadir nueva página si se excede el espacio vertical
@@ -623,43 +666,43 @@ export class JugadorEquipoComponent implements OnInit {
         }
       }
     });
-  
+
     // Guardar el PDF
     doc.save('CARNETS-' + this.disciplina + '-' + this.action + '.pdf');
   }
-  
-  
+
+
   generateCarnetsPDF() {
     const doc = new jsPDF('portrait', 'mm', 'legal'); // Documento Oficio en milímetros    
     const carnetWidth = 100;  // 9 cm de ancho
     const carnetHeight = 90; // 8 cm de alto
-    
+
     const carnetsPorFila = 2; // Dos carnets por fila
     const carnetsPorColumna = 3; // Tres carnets por columna
     const espacioEntreCarnets = 3; // Espacio entre carnets en mm
-  
+
     const logoImg = new Image();
     logoImg.src = '../../../assets/img/FONDO-DE-CARNET.png';
-  
+
     // Esperar a que la imagen se cargue
     logoImg.onload = () => {
       const DataEJ = this.dataEquipoJugador;
-      
+
       let posX = 7; // Posición inicial en X
       let posY = 10; // Posición inicial en Y
-      
+
       DataEJ.forEach((jugador, index) => {
         // Agregar imagen de fondo
         doc.addImage(logoImg, 'PNG', posX, posY, carnetWidth, carnetHeight); // Imagen ajustada al tamaño del carnet
-        
+
         // Dibujar fondo azul en la parte superior
         //doc.setFillColor(0, 0, 255); // Color azul
         //doc.rect(posX, posY, carnetWidth, carnetHeight * 0.2, 'F'); // Fondo azul (20%)
-        
+
         // Dibujar borde negro
         doc.setDrawColor(0, 0, 0); // Color negro
         doc.rect(posX, posY, carnetWidth, carnetHeight, 'S'); // Borde del carnet
-        
+
         // Encabezado en negrita y centrado
         doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
@@ -670,47 +713,47 @@ export class JugadorEquipoComponent implements OnInit {
         doc.setFont('helvetica', 'normal');
         doc.text('JILSTATA-2024', posX + carnetWidth / 2, posY + 17, { align: 'center' });
 
-        
+
         // Subtítulo centrado
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
         doc.text('CARNET DE JUGADOR ' + this.disciplina, posX + carnetWidth / 2, posY + 21, { align: 'center' });
-        
+
         // Cuadro para la foto (3x3 cm)
         doc.setTextColor(0, 0, 0); // Cambiar color de texto a negro
         doc.rect(posX + 5, posY + 25, 30, 30); // Posición de la foto
-        
+
         // Información del jugador a la derecha de la foto
         doc.setFontSize(10);
         doc.text(`Club: ${this.action}`, posX + 40, posY + 30);
         doc.text(`Nombre: ${jugador.nombre}`, posX + 40, posY + 35);
         doc.text(`Apellidos: ${jugador.ap_paterno + ' ' + jugador.ap_materno}`, posX + 40, posY + 40);
         doc.text(`Nro. Camiseta: ${'.......'}`, posX + 40, posY + 45);
-        
+
         // Espacio para firmas en la misma fila, centradas
         const firmaPosY = posY + 67; // Posición Y de las firmas
         const firmaWidth = 25; // Ancho de cada firma
         const firmaGap = 2; // Separación entre las firmas en mm
-        
+
         // Líneas para las firmas
         doc.line(posX + 7, firmaPosY, posX + 10 + firmaWidth, firmaPosY); // Firma Presidente
         doc.line(posX + 10 + firmaWidth + firmaGap, firmaPosY, posX + 10 + firmaWidth + firmaGap + firmaWidth, firmaPosY); // Firma Jugador
         doc.line(posX + 10 + (firmaWidth + firmaGap) * 2, firmaPosY, posX + 10 + (firmaWidth + firmaGap) * 2 + firmaWidth, firmaPosY); // Firma Comité Técnico
-        
+
         // Textos debajo de las líneas de firma, alineados con las líneas
         doc.setFontSize(8);
         doc.text('Presidente', posX + 7 + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
         doc.text('Jugador', posX + 10 + firmaWidth + firmaGap + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
         doc.text('Comité Técnico', posX + 10 + (firmaWidth + firmaGap) * 2 + firmaWidth / 2, firmaPosY + 5, { align: 'center' });
-        
+
         // Ajustar posición para el siguiente carnet
         posX += carnetWidth + espacioEntreCarnets; // Mover a la siguiente columna
-        
+
         // Si alcanzamos el límite de carnets por fila, pasar a la siguiente fila
         if ((index + 1) % carnetsPorFila === 0) {
           posX = 10; // Resetea la posición X para la siguiente fila
           posY += carnetHeight + espacioEntreCarnets; // Mueve a la siguiente fila
-          
+
           // Si también llegamos al límite de carnets por columna, crear una nueva página
           if ((index + 1) % (carnetsPorFila * carnetsPorColumna) === 0) {
             doc.addPage(); // Añadir nueva página si se excede el espacio vertical
@@ -719,12 +762,12 @@ export class JugadorEquipoComponent implements OnInit {
           }
         }
       });
-  
+
       // Guardar el PDF
       doc.save('CARNETS-' + this.disciplina + '-' + this.action + '.pdf');
     };
   }
-  
+
 
 
 

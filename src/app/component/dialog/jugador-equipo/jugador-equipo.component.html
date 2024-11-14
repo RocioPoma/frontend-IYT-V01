@@ -52,7 +52,7 @@
                     <img width="30px" height="30px" src="../../../../assets/img/pdf-icono.png" alt="Descargar PDF"
                         matTooltip="Nómina de Jugadores" style="cursor: pointer;" (click)="generatePDF()">
                         <!-- Imagen que genera y descarga el PDF al hacer clic -->
-                    <img width="32px" height="32px" src="../../../../assets/img/logo-carnet1.png" alt="Descargar PDF"
+                    <img *ngIf="role !== 'user'" width="32px" height="32px" src="../../../../assets/img/logo-carnet1.png" alt="Descargar PDF"
                     matTooltip="Carnets de Jugadores" style="cursor: pointer;" (click)="generateCarnetsPDF()">
                 </div>
 
