@@ -711,7 +711,7 @@ export class JugadorEquipoComponent implements OnInit {
         doc.text('INTEGRACION YARETANENCE', posX + carnetWidth / 2, posY + 13, { align: 'center' });
         doc.setFontSize(9);
         doc.setFont('helvetica', 'normal');
-        doc.text('JILSTATA-2024', posX + carnetWidth / 2, posY + 17, { align: 'center' });
+        doc.text('TAMBO TAMBILLO - 2025', posX + carnetWidth / 2, posY + 17, { align: 'center' });
 
 
         // Subtítulo centrado
