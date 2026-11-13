@@ -4,12 +4,10 @@
             <b><span>GESTION CAMPEONATOS</span></b>
         </div>
         <div>
-            <button mat-flat-button color="accent" class="float-right" *ngIf="role === 'admin'" (click)="handleAddAction()">Crear
+            <button mat-stroked-button color="primary" class="float-right boton-reporte" (click)="reportePDF()"><mat-icon>picture_as_pdf</mat-icon> Reporte PDF</button>
+        <button mat-flat-button color="accent" class="float-right" *ngIf="role === 'admin'" (click)="handleAddAction()">Crear
                 Campeonato</button>
                 <!--
-            <a href="../../../assets/img/reportes/7130e47b-abcb-468e-b8e6-72af9ea270c0.pdf" target="_blank">
-                <button style="margin-right: 10px;" mat-flat-button color="primary" class="float-right">Reporte</button>
-            </a>
             -->
         </div>
 

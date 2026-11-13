@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,8 @@ import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { PartidoComponent } from '../dialog/partido/partido.component';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { rolPantalla } from '../../shared/permisos';
 
 export interface PeriodicElement {
   equipo: string;
@@ -35,6 +36,8 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-dpartido',
   templateUrl: './manage-dpartido.component.html',
   styleUrls: ['./manage-dpartido.component.scss']
@@ -72,10 +75,8 @@ export class ManageDpartidoComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer el nombre
-      const decodedToken: any = jwt_decode(token);
-      this.role = decodedToken?.role || 'Rol desconocido';
-      
-      console.log('Rol:', this.role);
+      const decodedToken: any = jwtDecode(token);
+      this.role = rolPantalla('PARTIDOS'); // 'admin' = puede modificar en este módulo
     } else {
       console.log('No hay token en localStorage');
     }

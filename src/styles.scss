@@ -42,3 +42,56 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-top: 70px !important;
     padding: 20px !important;
 }
+// ------------------------------------------------------------------
+// Reemplazo de @angular/flex-layout (librería abandonada).
+// Mantiene los atributos fxLayout / fxFlex / fxShow que usan las plantillas.
+// ------------------------------------------------------------------
+[fxLayout] { display: flex; box-sizing: border-box; }
+[fxLayout="row"] { flex-direction: row; }
+[fxLayout="row wrap"] { flex-flow: row wrap; }
+[fxLayout="column"] { flex-direction: column; }
+[fxFlex] { flex: 1 1 0%; box-sizing: border-box; min-width: 0; }
+[fxLayout="column"] > [fxFlex] { flex: 1 1 auto; }
+[fxShow="false"] { display: none !important; }
+@media (min-width: 600px) {
+  [fxShow\.gt-xs] { display: initial !important; }
+}
+@media (max-width: 599px) {
+  [fxLayout="row wrap"] > [fxFlex] { flex-basis: 100%; }
+}
+
+// Nombres de clases de Angular Material actuales (antes .mat-table, .mat-cell, ...)
+@media (max-width: 800px) {
+  .mat-mdc-table { min-width: 800px; }
+}
+.mat-mdc-header-cell, .mat-mdc-cell {
+  text-align: center !important;
+  padding: 0 8px 0 15px !important;
+}
+
+.boton-reporte { margin-right: 10px; }
+
+// Menú lateral con las clases actuales de Angular Material (MDC)
+#snav {
+  .mat-mdc-list-item {
+    height: auto !important;
+    padding: 0 12px;
+    .mdc-list-item__content, .mat-mdc-list-item-unscoped-content { display: block; }
+    a {
+      height: 45px;
+      padding: 0 10px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      white-space: nowrap;
+      color: #e0f2f1;
+      text-decoration: none;
+      border-radius: 6px;
+      mat-icon { color: #80cbc4; }
+      &:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+    }
+    &.selected a, a.active { background: #00796b; color: #fff; mat-icon { color: #fff; } }
+  }
+}

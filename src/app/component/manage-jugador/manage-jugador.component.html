@@ -10,7 +10,7 @@
 <mat-card>
     <mat-form-field appearance="fill" fxFlex>
         <mat-label>Club</mat-label>
-        <mat-select formControlName="clubId" (selectionChange)="filterSelection($event)">
+        <mat-select (selectionChange)="filterSelection($event)">
             <mat-option  value="Todos">Todos</mat-option>
             <mat-option  *ngFor="let club of dataClub" [value]="club.nombre">{{club.nombre}}   
             </mat-option>
@@ -79,7 +79,7 @@
             <th mat-header-cell *matHeaderCellDef> Documento</th>
             <td mat-cell *matCellDef="let element">
                 <div *ngIf="(element.documento!=null)">
-                    <a [href]="imgURL + element.documento" target="_blank" matTooltip="Ver Documento">
+                    <a [href]="docPrivado(element.documento)" target="_blank" matTooltip="Ver Documento">
                         <img width="30px" height="30px" src="../../../assets/img/pdf-icono.png" alt="no exist">
                     </a>
                 </div>

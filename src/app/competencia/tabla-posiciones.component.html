@@ -1,0 +1,68 @@
+<div class="bloque">
+  <div class="bloque-cabecera">
+    <h3>Tabla de posiciones</h3>
+    <mat-slide-toggle [checked]="enVivo" (change)="cambiarEnVivo($event.checked)">Incluir partidos en vivo</mat-slide-toggle>
+  </div>
+
+  <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+  <p class="vacio" *ngIf="error">{{ error }}</p>
+  <p class="vacio" *ngIf="!cargando && !error && filas.length === 0">Todavía no hay equipos inscritos en esta categoría.</p>
+
+  <div class="tabla-scroll" *ngIf="filas.length">
+    <table mat-table [dataSource]="filas" class="tabla-competencia">
+      <ng-container matColumnDef="posicion">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let f"><span class="pos" [class.podio]="f.posicion <= 3">{{ f.posicion }}</span></td>
+      </ng-container>
+      <ng-container matColumnDef="equipo">
+        <th mat-header-cell *matHeaderCellDef class="izq">Equipo</th>
+        <td mat-cell *matCellDef="let f" class="izq">
+          <span class="equipo">
+            <img *ngIf="f.logo" [src]="imgUrl + f.logo" alt="" loading="lazy" />
+            <mat-icon *ngIf="!f.logo" class="escudo">shield</mat-icon>
+            {{ f.equipo }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="pts">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Puntos">PTS</th>
+        <td mat-cell *matCellDef="let f"><b>{{ f.pts }}</b></td>
+      </ng-container>
+      <ng-container matColumnDef="pj">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Partidos jugados">PJ</th>
+        <td mat-cell *matCellDef="let f">{{ f.pj }}</td>
+      </ng-container>
+      <ng-container matColumnDef="pg">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Partidos ganados">PG</th>
+        <td mat-cell *matCellDef="let f">{{ f.pg }}</td>
+      </ng-container>
+      <ng-container matColumnDef="pe">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Partidos empatados">PE</th>
+        <td mat-cell *matCellDef="let f">{{ f.pe }}</td>
+      </ng-container>
+      <ng-container matColumnDef="pp">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Partidos perdidos">PP</th>
+        <td mat-cell *matCellDef="let f">{{ f.pp }}</td>
+      </ng-container>
+      <ng-container matColumnDef="gf">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Goles a favor">GF</th>
+        <td mat-cell *matCellDef="let f">{{ f.gf }}</td>
+      </ng-container>
+      <ng-container matColumnDef="gc">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Goles en contra">GC</th>
+        <td mat-cell *matCellDef="let f">{{ f.gc }}</td>
+      </ng-container>
+      <ng-container matColumnDef="dg">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Diferencia de goles">DG</th>
+        <td mat-cell *matCellDef="let f">{{ f.dg > 0 ? '+' : '' }}{{ f.dg }}</td>
+      </ng-container>
+      <ng-container matColumnDef="rendimiento">
+        <th mat-header-cell *matHeaderCellDef matTooltip="Rendimiento: puntos obtenidos sobre los posibles">%</th>
+        <td mat-cell *matCellDef="let f">{{ f.rendimiento }}%</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+    </table>
+  </div>
+  <p class="nota">Orden: puntos, diferencia de goles y goles a favor. Se cuentan los partidos con estado "Cerrado".</p>
+</div>

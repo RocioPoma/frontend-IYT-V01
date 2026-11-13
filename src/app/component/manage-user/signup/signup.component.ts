@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { ROLES } from 'src/app/shared/permisos';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -10,6 +11,8 @@ import { GlobalCostants } from '../../../shared/global-constants';
 import { ClubService } from 'src/app/servicios/club.service';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
@@ -23,7 +26,8 @@ export class SignupComponent implements OnInit {
   responseMessage: any;
   club: any = [];
 
-  role = ['user', 'admin'];
+  roles = ROLES;
+  publico = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
     private formBuilder: FormBuilder,
@@ -40,17 +44,22 @@ export class SignupComponent implements OnInit {
       name: [null, [Validators.required, Validators.pattern(GlobalCostants.nameRegex)]],
       email: [null, [Validators.required, Validators.pattern(GlobalCostants.emailRegex)]],
       contactNumber: [null, [Validators.required, Validators.pattern(GlobalCostants.contactNumberRegex)]],
-      password: [null, [Validators.required]],
-      role: [null, Validators.required],
+      password: [null, [Validators.required, Validators.minLength(6)]],
+      role: ['delegado', Validators.required],
       clubId: [null, Validators.required]
       
     });
-    if (this.dialogData.action === 'Editar') {
-      //console.log('Password '+this.dialogData.data.password);
+    this.publico = !!this.dialogData?.publico || !localStorage.getItem('token');
+    if (this.publico) this.action = 'Registrarse';
+    if (this.dialogData?.action === 'Editar') {
       this.dialogAction = "Edit";
       this.action = "Actualizar";
-      this.userForm.patchValue(this.dialogData.data);
-      console.log(this.dialogData.data);
+      const datos = { ...this.dialogData.data, password: null };
+      if (datos.role === 'user') datos.role = 'delegado';
+      this.userForm.patchValue(datos);
+      // Al editar, la contraseña es opcional (vacía = se mantiene)
+      this.userForm.controls.password.setValidators([Validators.minLength(6)]);
+      this.userForm.controls.password.updateValueAndValidity();
     }
     this.getClubs();
   }

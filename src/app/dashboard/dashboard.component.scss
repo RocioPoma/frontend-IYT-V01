@@ -1,80 +1,11 @@
-.position-relative {
-	position: relative;
-}
-
-.add-contact {
-	position: absolute;
-    right: 17px;
-    top: 57px;
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
-  }
-  
-  html {
-    box-sizing: border-box;
-  }
-  
-  *, *:before, *:after {
-    box-sizing: inherit;
-  }
-  
-  .column {
-    float: left;
-    width: 33.3%;
-    margin-bottom: 16px;
-    padding: 0 8px;
-  }
-  
-  .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    margin: 8px;
-  }
-  
-  .about-section {
-    padding: 50px;
-    text-align: center;
-    background-color: #474e5d;
-    color: white;
-  }
-  
-  .container {
-    padding: 0 16px;
-  }
-  
-  .container::after, .row::after {
-    content: "";
-    clear: both;
-    display: table;
-  }
-  
-  .title {
-    color: black;
-    text-align: center !important;
-  }
-  
-  .button {
-    border: none;
-    outline: 0;
-    display: inline-block;
-    padding: 8px;
-    color: white;
-    background-color: #00796b;
-    text-align: center;
-    cursor: pointer;
-    width: 100%;
-    font-weight: bold;
-  }
-  
-  .button:hover {
-    background-color: #555;
-  }
-  
-  @media screen and (max-width: 650px) {
-    .column {
-      width: 100%;
-      display: block;
-    }
-  }
+.saludo { display: flex; align-items: center; justify-content: space-between; padding: 16px; margin-bottom: 12px; }
+.rol { font-size: 13px; color: #00695c; background: #e0f2f1; padding: 4px 10px; border-radius: 12px; }
+.avisos { display: grid; gap: 8px; margin-bottom: 12px; }
+.aviso { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #fff8e1; cursor: pointer; }
+.aviso mat-icon { color: #ef6c00; }
+.indicadores { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.indicador { display: flex; align-items: center; gap: 14px; padding: 18px; cursor: pointer; }
+.indicador mat-icon { font-size: 36px; width: 36px; height: 36px; color: #00695c; }
+.indicador.vivo mat-icon { color: #d32f2f; }
+.valor { font-size: 28px; font-weight: 700; line-height: 1; }
+.etiqueta { color: #616161; font-size: 13px; margin-top: 4px; }

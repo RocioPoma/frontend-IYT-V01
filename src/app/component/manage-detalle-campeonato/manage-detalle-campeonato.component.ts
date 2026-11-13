@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CampeonatoService } from 'src/app/servicios/campeonato.service';
 import { environment } from 'src/environments/environment';
 import { Campeonato } from 'src/app/model/campeonato.model';
@@ -10,6 +10,8 @@ import { Observable, Subject } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
 
   selector: 'app-manage-detalle-campeonato',
   templateUrl: './manage-detalle-campeonato.component.html',

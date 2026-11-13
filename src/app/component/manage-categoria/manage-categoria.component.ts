@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { exportarPDF } from 'src/app/shared/reporte-pdf';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -9,6 +10,8 @@ import { CategoriaComponent } from '../dialog/categoria/categoria.component';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-categoria',
   templateUrl: './manage-categoria.component.html',
   styleUrls: ['./manage-categoria.component.scss']
@@ -124,4 +127,15 @@ export class ManageCategoriaComponent implements OnInit {
     })
   }
 
+
+  /** Reporte PDF de la lista (respeta el filtro de búsqueda) */
+  reportePDF() {
+    const datos: any[] = this.dataSource?.filteredData || this.dataSource?.data || [];
+    exportarPDF({
+      titulo: 'Reporte de categorías',
+      columnas: ['N°', 'Nombre', 'Estado'],
+      filas: datos.map((f: any, i: number) => [i + 1, f.nombre, f.estado === 'true' ? 'Habilitada' : 'Deshabilitada']),
+      archivo: 'categorias',
+    });
+  }
 }

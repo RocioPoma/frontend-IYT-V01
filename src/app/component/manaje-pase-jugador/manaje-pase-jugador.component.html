@@ -1,6 +1,7 @@
 <mat-card class="responsive_table">
     <div>
         <b class="tamano_titulo"><span>GESTION PASE JUGADOR</span></b>
+        <button mat-stroked-button color="primary" class="float-right boton-reporte" (click)="reportePDF()"><mat-icon>picture_as_pdf</mat-icon> Reporte PDF</button>
         <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Agregar Pase</button>
     </div>
 </mat-card>
@@ -52,7 +53,7 @@
                 <th mat-header-cell *matHeaderCellDef> Documento PDF</th>
                 <td mat-cell *matCellDef="let element">
                     <div *ngIf="(element.documento!=null)">
-                        <a [href]="imgURL + element.documento" target="_blank" matTooltip="Ver Documento">
+                        <a [href]="docPrivado(element.documento)" target="_blank" matTooltip="Ver Documento">
                             <img width="30px" height="30px" src="../../../assets/img/pdf-icono.png" alt="no exist">
                         </a>
                     </div>

@@ -1,1 +1,74 @@
-<p>manage-campo-de-juego works!</p>
+<mat-card class="responsive_table">
+  <div class="cabecera">
+    <b><span>Campos de juego</span></b>
+    <div class="botones">
+      <button mat-stroked-button color="primary" (click)="reporte()"><mat-icon>picture_as_pdf</mat-icon> Reporte PDF</button>
+      <button mat-flat-button color="primary" *ngIf="puedeEditar" (click)="nuevo()"><mat-icon>add</mat-icon> Agregar</button>
+    </div>
+  </div>
+</mat-card>
+
+<mat-card class="responsive_table" *ngIf="mostrarForm">
+  <h3>{{ editando ? 'Modificar' : 'Agregar' }} campo de juego</h3>
+  <form [formGroup]="form" class="form-cancha" (ngSubmit)="guardar()">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" required />
+      <mat-error>El nombre es obligatorio</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Tipo</mat-label>
+      <mat-select formControlName="tipo">
+        <mat-option value="">Sin especificar</mat-option>
+        <mat-option *ngFor="let t of tipos" [value]="t">{{ t }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="ancho">
+      <mat-label>Dirección o referencia</mat-label>
+      <input matInput formControlName="direccion" />
+    </mat-form-field>
+    <div class="ancho acciones">
+      <button mat-button type="button" (click)="mostrarForm = false">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Guardar</button>
+    </div>
+  </form>
+</mat-card>
+
+<mat-card class="responsive_table">
+  <mat-form-field appearance="outline" class="buscador">
+    <mat-label>Buscar</mat-label>
+    <input matInput (keyup)="filtrar($event)" />
+  </mat-form-field>
+  <div class="tabla-scroll">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z0 tabla">
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef>Nombre</th>
+        <td mat-cell *matCellDef="let c">{{ c.nombre }}</td>
+      </ng-container>
+      <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+        <td mat-cell *matCellDef="let c">{{ c.tipo || '—' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="direccion">
+        <th mat-header-cell *matHeaderCellDef>Dirección</th>
+        <td mat-cell *matCellDef="let c">{{ c.direccion || '—' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef>Activo</th>
+        <td mat-cell *matCellDef="let c">
+          <mat-slide-toggle [checked]="c.estado === 'true'" [disabled]="!puedeEditar" (change)="cambiarEstado(c, $event.checked)"></mat-slide-toggle>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let c">
+          <button mat-icon-button color="primary" matTooltip="Modificar" *ngIf="puedeEditar" (click)="editar(c)"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button color="warn" matTooltip="Eliminar" *ngIf="puedeEditar" (click)="eliminar(c)"><mat-icon>delete</mat-icon></button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnas; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+      <tr class="mat-row" *matNoDataRow><td class="mat-cell vacio" [attr.colspan]="columnas.length">No hay campos de juego registrados.</td></tr>
+    </table>
+  </div>
+</mat-card>

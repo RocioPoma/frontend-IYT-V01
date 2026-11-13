@@ -1,11 +1,12 @@
 <mat-toolbar color="primary">
     <mat-toolbar-row fxLayout="row">
-        <span class="title-center">{{dialogData.action}} Usuario</span>
+        <span class="title-center">{{ publico ? 'Registro de delegado' : (dialogData?.action + ' Usuario') }}</span>
     </mat-toolbar-row>
 </mat-toolbar>
 
 
 <mat-dialog-content class="mat-typography">
+    <p *ngIf="publico" class="aviso-registro">Su cuenta quedará pendiente hasta que el administrador la apruebe.</p>
     <form [formGroup]="userForm">
         <div fxFlex fxLayout="column">
             <div fxLayout="row wrap">
@@ -21,7 +22,7 @@
                 <mat-form-field appearance="fill" fxFlex>
                     <mat-label>Email</mat-label>
                     <input matInput formControlName="email" required>
-                    <mat-error *ngIf="userForm.controls.email.touched && userForm.controls.name.invalid">
+                    <mat-error *ngIf="userForm.controls.email.touched && userForm.controls.email.invalid">
                         <span *ngIf="userForm.controls.email.errors.required">Este campo es obligatorio.</span>
                         <span *ngIf="userForm.controls.email.errors.pattern">Este campo no es válido.</span>
                     </mat-error>
@@ -31,7 +32,7 @@
                 <mat-form-field appearance="fill" fxFlex>
                     <mat-label>Telefono</mat-label>
                     <input matInput formControlName="contactNumber" required>
-                    <mat-error *ngIf="userForm.controls.contactNumber.touched && userForm.controls.name.invalid">
+                    <mat-error *ngIf="userForm.controls.contactNumber.touched && userForm.controls.contactNumber.invalid">
                         <span *ngIf="userForm.controls.contactNumber.errors.required">Este campo es obligatorio.</span>
                         <span *ngIf="userForm.controls.contactNumber.errors.pattern">Este campo no es válido.</span>
                     </mat-error>
@@ -39,18 +40,20 @@
 
                 <mat-form-field appearance="fill" fxFlex>
                     <mat-label>Contraseña</mat-label>
-                    <input matInput formControlName="password" type="password" required>
-                    <mat-error *ngIf="userForm.controls.password.touched && userForm.controls.name.invalid">
+                    <input matInput formControlName="password" type="password" [required]="dialogAction !== 'Edit'" autocomplete="new-password">
+                    <mat-hint *ngIf="dialogAction === 'Edit'">Déjelo vacío para mantener la contraseña actual</mat-hint>
+                    <mat-hint *ngIf="dialogAction !== 'Edit'">Mínimo 6 caracteres</mat-hint>
+                    <mat-error *ngIf="userForm.controls.password.touched && userForm.controls.password.invalid">
                         <span *ngIf="userForm.controls.password.errors.required">Este campo es obligatorio.</span>
-                        <span *ngIf="userForm.controls.password.errors.pattern">Este campo no es válido.</span>
+                        <span *ngIf="userForm.controls.password.errors.minlength">Mínimo 6 caracteres.</span>
                     </mat-error>
                 </mat-form-field>
             </div>
             <div fxLayout="row wrap">
-                <mat-form-field appearance="fill" fxFlex>
+                <mat-form-field appearance="fill" fxFlex *ngIf="!publico">
                     <mat-label>Rol</mat-label>
                     <mat-select formControlName="role">
-                        <mat-option *ngFor="let role of role" [value]="role">{{role}}
+                        <mat-option *ngFor="let r of roles" [value]="r.valor">{{r.nombre}}
                         </mat-option>
                     </mat-select>
                     <mat-error

@@ -1,0 +1,44 @@
+.bloque { padding: 8px 4px 16px; }
+.bloque-cabecera {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;
+  h3 { margin: 0; font-size: 18px; font-weight: 600; }
+}
+.selector { width: 200px; margin-bottom: -1.25em; }
+.tabla-scroll { overflow-x: auto; }
+.tabla-competencia { width: 100%; min-width: 520px; }
+.tabla-competencia th, .tabla-competencia td { text-align: center; padding: 0 6px !important; }
+.tabla-competencia .izq { text-align: left !important; }
+.equipo { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; }
+.equipo img { width: 26px; height: 26px; object-fit: contain; }
+.equipo img.redonda { border-radius: 50%; object-fit: cover; }
+.escudo { color: #9e9e9e; font-size: 22px; width: 22px; height: 22px; }
+.pos { display: inline-block; min-width: 24px; padding: 2px 6px; border-radius: 12px; background: #eceff1; font-weight: 600; }
+.pos.podio { background: #00695c; color: #fff; }
+.vacio { color: #757575; padding: 16px 4px; }
+.nota { color: #9e9e9e; font-size: 12px; margin-top: 8px; }
+
+/* Fixture */
+.ronda { margin-bottom: 16px; }
+.ronda h4 { margin: 8px 0; font-size: 15px; color: #00695c; }
+.partido {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px;
+  padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 8px; background: #fff;
+}
+.partido .local { text-align: right; }
+.partido .marcador { min-width: 72px; text-align: center; font-weight: 700; font-size: 18px; }
+.partido .detalle { grid-column: 1 / -1; font-size: 12px; color: #616161; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.partido .detalle mat-icon { font-size: 15px; width: 15px; height: 15px; vertical-align: -3px; }
+.estado { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #eeeeee; }
+.estado.vivo { background: #d32f2f; color: #fff; }
+.estado.cerrado { background: #00695c; color: #fff; }
+.acciones-partido { grid-column: 1 / -1; display: flex; justify-content: center; }
+
+/* Medallero */
+.podio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.medalla { border-radius: 12px; padding: 16px; text-align: center; color: #212121; }
+.medalla mat-icon { font-size: 36px; width: 36px; height: 36px; }
+.medalla.oro { background: #fff8e1; } .medalla.oro mat-icon { color: #f9a825; }
+.medalla.plata { background: #f5f5f5; } .medalla.plata mat-icon { color: #9e9e9e; }
+.medalla.bronce { background: #fbe9e7; } .medalla.bronce mat-icon { color: #a1887f; }
+.medalla .club { font-weight: 600; margin-top: 4px; }
+.form-medallero { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 16px; }

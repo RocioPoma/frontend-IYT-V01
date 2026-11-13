@@ -1,12 +1,10 @@
-import { enableProdMode } from '@angular/core';
+import { provideZoneChangeDetection } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
 import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
 
-if (environment.production) {
-  enableProdMode();
-}
-
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+platformBrowserDynamic()
+  .bootstrapModule(AppModule, {
+    // La aplicación usa zone.js para detectar cambios (desde Angular 21 el modo por defecto es sin zone.js)
+    applicationProviders: [provideZoneChangeDetection({ eventCoalescing: true })],
+  })
+  .catch((err) => console.error(err));

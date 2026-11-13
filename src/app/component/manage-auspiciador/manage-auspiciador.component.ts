@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { exportarPDF } from 'src/app/shared/reporte-pdf';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -9,6 +10,8 @@ import { AuspiciadorComponent } from '../dialog/auspiciador/auspiciador.componen
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-auspiciador',
   templateUrl: './manage-auspiciador.component.html',
   styleUrls: ['./manage-auspiciador.component.scss']
@@ -122,5 +125,17 @@ export class ManageAuspiciadorComponent implements OnInit {
       }
       this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
     })
+  }
+
+  /** Reporte PDF de la lista (respeta el filtro de búsqueda) */
+  reportePDF() {
+    const datos: any[] = this.dataSource?.filteredData || this.dataSource?.data || [];
+    exportarPDF({
+      titulo: 'Reporte de auspiciadores',
+      columnas: ['N°', 'Auspiciador', 'NIT / CI', 'Teléfono', 'Sitio web', 'Tipo'],
+      filas: datos.map((f: any, i: number) => [i + 1, [f.nombre, f.ap_paterno, f.ap_materno].filter(Boolean).join(' '), f.nit || f.ci, f.telefono, f.sitio, f.tipo]),
+      archivo: 'auspiciadores',
+      orientacion: 'landscape',
+    });
   }
 }

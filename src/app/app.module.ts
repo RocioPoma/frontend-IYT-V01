@@ -6,23 +6,23 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './shared/material-module';
 import { HomeComponent } from './home/home.component';
-import { BestSellerComponent } from './best-seller/best-seller.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { SharedModule } from './shared/shared.module';
+import { CompetenciaModule } from './competencia/competencia.module';
 import { FullComponent } from './layouts/full/full.component';
 import { AppHeaderComponent } from './layouts/full/header/header.component';
 import { AppSidebarComponent } from './layouts/full/sidebar/sidebar.component';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { SignupComponent } from './component/manage-user/signup/signup.component';
 import { NgxUiLoaderModule, NgxUiLoaderConfig, SPINNER, PB_DIRECTION } from "ngx-ui-loader";
 import { ForgotPasswordComponent } from './component/manage-user/forgot-password/forgot-password.component';
-import { LoginComponent } from './component/manage-user/login/login.component'
+import { LoginComponent } from './component/manage-user/login/login.component';
+import { RestablecerComponent } from './component/manage-user/restablecer/restablecer.component';
 import { TokenInterceptorInterceptor } from './servicios/token-interceptor.interceptor';
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
-  text: "Loading...",
-  textColor: "eFFFFFF",
+  text: "Cargando...",
+  textColor: "#FFFFFF",
   textPosition:"center-center",
   pbColor: "red",
   bgsColor: "red",
@@ -37,13 +37,13 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   declarations: [
     AppComponent,
     HomeComponent,
-    BestSellerComponent,
     FullComponent,
     AppHeaderComponent,
     AppSidebarComponent,
     SignupComponent,
     ForgotPasswordComponent,
-    LoginComponent
+    LoginComponent,
+    RestablecerComponent
   ],
   imports: [
     BrowserModule,
@@ -52,12 +52,14 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    FlexLayoutModule,
     SharedModule,
-    HttpClientModule, 
+    CompetenciaModule,
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig)
   ],
-  providers: [HttpClientModule,{provide:HTTP_INTERCEPTORS,useClass:TokenInterceptorInterceptor,multi:true}],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

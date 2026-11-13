@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChangePasswordComponent } from 'src/app/component/dialog/change-password/change-password.component';
 import { ConfirmationComponent } from 'src/app/component/dialog/confirmation/confirmation.component';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: []

@@ -30,6 +30,6 @@
 
 <mat-dialog-actions align="center">
     <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
-        [disabled]="![clubForm.valid && clubForm.dirty]">{{action}}</button>
+        [disabled]="!(clubForm.valid && clubForm.dirty)">{{action}}</button>
         <button mat-raised-button color="primary" mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>

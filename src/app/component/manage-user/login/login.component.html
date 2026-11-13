@@ -26,10 +26,14 @@
             </mat-form-field>
         </div>
     </form>
+    <div class="enlaces-login">
+        <a href="" (click)="$event.preventDefault(); olvide()">¿Olvidó su contraseña?</a>
+        <a href="" (click)="$event.preventDefault(); registrarse()">Registrarse como delegado</a>
+    </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
-    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()" (keyup.enter)="handleSubmit()"
     [disabled]="!(loginForm.valid && loginForm.dirty)">Iniciar</button>
     <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
 </mat-dialog-actions>

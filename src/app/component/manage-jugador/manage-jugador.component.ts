@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { urlDocumentoPrivado } from 'src/app/shared/permisos';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -9,20 +10,19 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 import { environment } from 'src/environments/environment';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { JugadorComponent } from '../dialog/jugador/jugador.component';
-import * as _ from 'lodash';
 import { ClubService } from 'src/app/servicios/club.service';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { rolPantalla } from '../../shared/permisos';
 
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonsts from 'pdfmake/build/vfs_fonts';
-pdfMake.vfs = pdfFonsts.pdfMake.vfs;
 
 
 //reporte
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-jugador',
   templateUrl: './manage-jugador.component.html',
   styleUrls: ['./manage-jugador.component.scss']
@@ -64,11 +64,9 @@ export class ManageJugadorComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer el nombre
-      const decodedToken: any = jwt_decode(token);
-      this.role = decodedToken?.role || 'Rol desconocido';
+      const decodedToken: any = jwtDecode(token);
+      this.role = rolPantalla('GESTION'); // 'admin' = puede modificar en este módulo
       this.userName = decodedToken?.nombre || 'Usuario desconocido';
-      
-      console.log('Rol:', this.role);
     } else {
       console.log('No hay token en localStorage');
     }
@@ -77,43 +75,6 @@ export class ManageJugadorComponent implements OnInit {
       ? ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento']  // Agrega las columnas que sí pueden ver los usuarios "user"
       : ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento', 'edit'];
   
-  }
-
-  craatePdf() {
-    const fecha = new Date();
-    const pdfDefinition: any = {
-
-      header: {
-        margin: 20,
-        alignment: "center",
-        columns: [
-          'INTEGRACION YARETANENSE'
-        ]
-      },
-
-      footer: {
-        margin: 10,
-        columns: [
-          'USUARIO: Rocio Poma silvestre',
-          { text: fecha, alignment: 'right' }
-        ]
-      },
-
-      content: [
-        {
-          text: 'Reporte de Jugadores'
-        },
-        {
-
-          // you'll most often use dataURI images on the browser side
-          // if no width/height/fit is provided, the original size will be used
-          // image: '../../../assets/img/futbol.jpg'
-        }
-        //{ stack: htmlToPdfmake(this.apiResponse) },
-      ]
-    }
-    const pdf = pdfMake.createPdf(pdfDefinition);
-    pdf.open();
   }
 
   //----------------------- LISTA  JUGADORES--------------------------------
@@ -146,7 +107,7 @@ export class ManageJugadorComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   filterSelection($event: any) {
-    let filterData = _.filter(this.apiResponse, (item) => {
+    let filterData = (this.apiResponse || []).filter((item: any) => {
       return item.NombreClub.toLowerCase() == $event.value.toLowerCase();
     })
     if ($event.value == 'Todos') {
@@ -187,7 +148,7 @@ export class ManageJugadorComponent implements OnInit {
      ]);
  
      // Agregar la tabla al PDF usando autoTable
-     (doc as any).autoTable({
+     autoTable(doc, {
        head: [columns],
        body: rows,
        startY: 30, // Ajusta la posición de inicio de la tabla
@@ -231,7 +192,7 @@ export class ManageJugadorComponent implements OnInit {
       const addHeaderAndFooter = () => {
 
         // Agregar numeración de página en el pie de página
-        const pageCount = doc.internal.getNumberOfPages();
+        const pageCount = doc.getNumberOfPages();
         for (let i = 1; i <= pageCount; i++) {
           doc.setPage(i);
           doc.text(`Página ${i}`, 100, doc.internal.pageSize.getHeight() - 10);
@@ -256,7 +217,7 @@ export class ManageJugadorComponent implements OnInit {
       ]);
 
       // Agregar la tabla al PDF usando autoTable
-      (doc as any).autoTable({
+      autoTable(doc, {
         head: [columns],
         body: rows,
         startY: 30, // Ajusta la posición de inicio de la tabla
@@ -375,4 +336,9 @@ export class ManageJugadorComponent implements OnInit {
   }
 
 
+
+  /** Los documentos personales solo se abren con sesión iniciada */
+  docPrivado(nombre: string): string {
+    return urlDocumentoPrivado(this.imgURL, nombre);
+  }
 }

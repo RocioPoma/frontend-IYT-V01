@@ -9,7 +9,7 @@ export class GlobalCostants {
     public static productAdded: string = "Jugador agregado con Exito";
     
     //Restricciones
-    public static nameRegex: string = "[a-zA-Z0-9 ]*";
+    public static nameRegex: string = "[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9 .'-]*";
 
     public static emailRegex: string = "[A-Za-z0-9._%-]+@[A-Za-z0-9._%-]+\\.[a-z]{2,3}";
 

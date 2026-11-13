@@ -10,6 +10,7 @@ import { AccordionLinkDirective } from './accordionlink.directive';
 import { filter } from 'rxjs/operators';
 
 @Directive({
+  standalone: false,
   selector: '[appAccordion]'
 })
 export class AccordionDirective implements AfterContentChecked {

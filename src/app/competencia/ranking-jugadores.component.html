@@ -1,0 +1,42 @@
+<div class="bloque">
+  <div class="bloque-cabecera">
+    <h3>Ranking de jugadores</h3>
+    <mat-form-field appearance="outline" class="selector" *ngIf="tipos.length">
+      <mat-label>Ver</mat-label>
+      <mat-select [(value)]="idHecho" (selectionChange)="cargar()">
+        <mat-option *ngFor="let t of tipos" [value]="t.id_hecho">{{ t.nombre }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+  <p class="vacio" *ngIf="!cargando && filas.length === 0">Todavía no hay registros para esta categoría.</p>
+
+  <div class="tabla-scroll" *ngIf="filas.length">
+    <table mat-table [dataSource]="filas" class="tabla-competencia">
+      <ng-container matColumnDef="posicion">
+        <th mat-header-cell *matHeaderCellDef>#</th>
+        <td mat-cell *matCellDef="let f"><span class="pos" [class.podio]="f.posicion <= 3">{{ f.posicion }}</span></td>
+      </ng-container>
+      <ng-container matColumnDef="jugador">
+        <th mat-header-cell *matHeaderCellDef class="izq">Jugador</th>
+        <td mat-cell *matCellDef="let f" class="izq">
+          <span class="equipo">
+            <img *ngIf="f.foto" [src]="imgUrl + f.foto" alt="" loading="lazy" class="redonda" />
+            <mat-icon *ngIf="!f.foto" class="escudo">person</mat-icon>
+            {{ f.nombre }} {{ f.ap_paterno }} {{ f.ap_materno }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="club">
+        <th mat-header-cell *matHeaderCellDef>Club</th>
+        <td mat-cell *matCellDef="let f">{{ f.club }}</td>
+      </ng-container>
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef>{{ filas[0]?.hecho || 'Total' }}</th>
+        <td mat-cell *matCellDef="let f"><b>{{ f.total }}</b></td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+      <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+    </table>
+  </div>
+</div>

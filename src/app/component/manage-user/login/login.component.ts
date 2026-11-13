@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
+import { SignupComponent } from '../signup/signup.component';
 import { Router } from '@angular/router';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { SnackbarService } from '../../../servicios/snackbar.service';
@@ -9,6 +11,8 @@ import { GlobalCostants } from '../../../shared/global-constants';
 
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -26,7 +30,18 @@ export class LoginComponent implements OnInit {
     private userService: UserService,
     private dialogRef: MatDialogRef<LoginComponent>,
     private ngxService: NgxUiLoaderService,
-    private snackbarService: SnackbarService) { }
+    private snackbarService: SnackbarService,
+    private dialog: MatDialog) { }
+
+  olvide() {
+    this.dialogRef.close();
+    this.dialog.open(ForgotPasswordComponent, { width: '450px' });
+  }
+
+  registrarse() {
+    this.dialogRef.close();
+    this.dialog.open(SignupComponent, { width: '550px', data: { action: 'Registrarse', publico: true } });
+  }
 
 
   ngOnInit(): void {
@@ -48,11 +63,10 @@ export class LoginComponent implements OnInit {
       this.dialogRef.close();
       localStorage.setItem('token',response.token);
 
-      console.log('TOKEN: '+response.token);
       this.xusuario=response.data.nombre;
     //  this.ejecutar( this.router, this.xusuario);
      // this.userService.disparadorDeUser.emit(this.xusuario)
-      this.router.navigate(['/integracion/campeonato']);
+      this.router.navigate(['/integracion/dashboard']);
       
       //this.router.navigate([{ outlets: { pie: ['pie', this.xusuario] } }]);
      // this.ejecutar( this.router, this.xusuario);
@@ -62,11 +76,9 @@ export class LoginComponent implements OnInit {
       this.ngxService.stop();
       if (error.error?.message) {
         this.responseMessage = error.error?.message;
-        console.log('salio error 1');
       }
       else {
         this.responseMessage = GlobalCostants.genericError;
-        console.log('salio error 2');
       }
       this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
     })
