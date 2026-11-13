@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DisciplinaService } from 'src/app/servicios/disciplina.service';
 import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-disciplina',
   templateUrl: './manage-disciplina.component.html',
   styleUrls: ['./manage-disciplina.component.scss']

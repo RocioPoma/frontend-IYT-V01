@@ -1,23 +1,123 @@
-<!--
-<div class="bg-image" align="center"  >
-  <img  src="../../assets/img/deportes.jpg" alt="error">
-</div>
--->
+<header class="barra">
+  <div class="marca">
+    <mat-icon>emoji_events</mat-icon>
+    <span>Integración Yaretanense</span>
+  </div>
+  <div class="barra-acciones">
+    <button mat-flat-button color="primary" *ngIf="conSesion" (click)="irAlPanel()">Ir al panel</button>
+    <ng-container *ngIf="!conSesion">
+      <button mat-button class="claro" (click)="signupAction()">Registrarse</button>
+      <button mat-flat-button color="primary" (click)="loginAction()">Iniciar sesión</button>
+    </ng-container>
+  </div>
+</header>
 
-  
-<app-best-seller></app-best-seller>
-
-<div class="wrapper sticky">
-  <nav class="navbar-fixed-top">
-    <a href="#" class="logo">
-      <mat-icon>diversity_2</mat-icon> . Integracion Yaretanence
+<section class="portada">
+  <div class="portada-texto">
+    <h1>{{ campeonato?.nombre_campeonato || 'Campeonatos de la Integración Yaretanense' }}</h1>
+    <p *ngIf="campeonato">Gestión {{ campeonato.gestion }} · {{ campeonato.fecha_i }} al {{ campeonato.fecha_f }}</p>
+    <mat-form-field appearance="outline" class="selector-campeonato" *ngIf="campeonatos.length > 1">
+      <mat-label>Campeonato</mat-label>
+      <mat-select [value]="campeonato" (selectionChange)="elegirCampeonato($event.value)">
+        <mat-option *ngFor="let c of campeonatos" [value]="c">{{ c.nombre_campeonato }} ({{ c.gestion }})</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <a *ngIf="campeonato?.convocatoria" mat-stroked-button class="claro" [href]="imgUrl + campeonato.convocatoria" target="_blank" rel="noopener">
+      <mat-icon>description</mat-icon> Ver convocatoria
     </a>
-    <ul>
-      <li><a (click)="loginAction()" class="color-letra">Iniciar Sesion</a></li>
-     <!-- <li><a (click)="forgotPasswordAction()" class="color-letra">Forgot Password</a></li>-->
-    </ul>
-  </nav>
-</div>
-<div class="footer" id="signup">
-  <h5>All right reserved @Rocio Poma Silvestre</h5>
-</div>
+  </div>
+</section>
+
+<main class="contenido">
+  <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+
+  <!-- En vivo y próximos -->
+  <section *ngIf="enVivo.length || proximos.length" class="tarjeta">
+    <h2><span class="punto-vivo" *ngIf="enVivo.length"></span> {{ enVivo.length ? 'En vivo y próximos partidos' : 'Próximos partidos' }}</h2>
+    <div class="carrusel">
+      <div class="mini-partido" *ngFor="let p of enVivo.concat(proximos)" [class.vivo]="p.estado === 'En vivo'">
+        <div class="mp-estado">{{ p.estado === 'En vivo' ? 'EN VIVO' : (p.fecha_f + ' ' + (p.hora_f || '')) }}</div>
+        <div class="mp-equipo"><span>{{ p.equipo1 }}</span><b *ngIf="p.estado === 'En vivo'">{{ p.total_equipo1 }}</b></div>
+        <div class="mp-equipo"><span>{{ p.equipo2 }}</span><b *ngIf="p.estado === 'En vivo'">{{ p.total_equipo2 }}</b></div>
+        <div class="mp-lugar" *ngIf="p.nombre_cancha"><mat-icon>location_on</mat-icon>{{ p.nombre_cancha }}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tarjeta" *ngIf="campeonato">
+    <mat-tab-group mat-stretch-tabs="false" animationDuration="150ms">
+      <mat-tab label="Competencia">
+        <ng-template matTabContent>
+          <p class="vacio" *ngIf="!categorias.length">Este campeonato todavía no tiene categorías habilitadas.</p>
+          <mat-chip-listbox *ngIf="categorias.length" class="chips" aria-label="Categorías">
+            <mat-chip-option *ngFor="let c of categorias" [selected]="c === categoria" (click)="categoria = c">
+              {{ nombreCategoria(c) }}
+            </mat-chip-option>
+          </mat-chip-listbox>
+          <mat-tab-group *ngIf="categoria" mat-stretch-tabs="false" class="sub-tabs">
+            <mat-tab label="Fixture">
+              <ng-template matTabContent><app-fixture [idContempla]="categoria.id"></app-fixture></ng-template>
+            </mat-tab>
+            <mat-tab label="Tabla de posiciones">
+              <ng-template matTabContent><app-manage-tabla-posiciones [idContempla]="categoria.id"></app-manage-tabla-posiciones></ng-template>
+            </mat-tab>
+            <mat-tab label="Ranking de jugadores">
+              <ng-template matTabContent><app-manage-ranking-jugadores [idContempla]="categoria.id"></app-manage-ranking-jugadores></ng-template>
+            </mat-tab>
+            <mat-tab label="Medallero">
+              <ng-template matTabContent><app-medallero-categoria [idContempla]="categoria.id"></app-medallero-categoria></ng-template>
+            </mat-tab>
+          </mat-tab-group>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab label="Medallero general">
+        <ng-template matTabContent><app-medallero-campeonato [idCampeonato]="campeonato.id"></app-medallero-campeonato></ng-template>
+      </mat-tab>
+
+      <mat-tab label="Noticias">
+        <ng-template matTabContent>
+          <p class="vacio" *ngIf="!noticias.length">No hay noticias publicadas.</p>
+          <div class="noticias">
+            <article class="noticia" *ngFor="let n of noticias">
+              <img *ngIf="n.imagen" [src]="imgUrl + n.imagen" alt="" loading="lazy" />
+              <div class="noticia-cuerpo">
+                <small>{{ n.fecha }}</small>
+                <h3>{{ n.titulo }}</h3>
+                <p>{{ n.descripcion }}</p>
+              </div>
+            </article>
+          </div>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab label="Campos de juego">
+        <ng-template matTabContent>
+          <p class="vacio" *ngIf="!canchas.length">No hay campos de juego registrados.</p>
+          <div class="canchas">
+            <div class="cancha" *ngFor="let c of canchas">
+              <mat-icon>stadium</mat-icon>
+              <div>
+                <b>{{ c.nombre }}</b>
+                <div class="gris">{{ c.tipo }}</div>
+                <div class="gris">{{ c.direccion }}</div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </section>
+
+  <section class="tarjeta" *ngIf="auspiciadores.length">
+    <h2>Auspiciadores</h2>
+    <div class="auspiciadores">
+      <span *ngFor="let a of auspiciadores">
+        <a *ngIf="a.sitio; else sinSitio" [href]="a.sitio.startsWith('http') ? a.sitio : 'https://' + a.sitio" target="_blank" rel="noopener">{{ a.nombre }} {{ a.ap_paterno }}</a>
+        <ng-template #sinSitio>{{ a.nombre }} {{ a.ap_paterno }}</ng-template>
+      </span>
+    </div>
+  </section>
+</main>
+
+<footer class="pie">© {{ campeonato?.gestion || '' }} Integración Yaretanense · Sistema de gestión de campeonatos</footer>

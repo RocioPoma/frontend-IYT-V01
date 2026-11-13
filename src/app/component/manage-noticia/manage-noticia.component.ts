@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,9 +12,12 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 
 import { environment } from 'src/environments/environment';
 import { CampeonatoService } from 'src/app/servicios/campeonato.service';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { rolPantalla } from '../../shared/permisos';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-noticia',
   templateUrl: './manage-noticia.component.html',
   styleUrls: ['./manage-noticia.component.scss']
@@ -53,10 +56,8 @@ export class ManageNoticiaComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer el nombre
-      const decodedToken: any = jwt_decode(token);
-      this.role = decodedToken?.role || 'Rol desconocido';
-      
-      console.log('Rol:', this.role);
+      const decodedToken: any = jwtDecode(token);
+      this.role = rolPantalla('NOTICIAS'); // 'admin' = puede modificar en este módulo
     } else {
       console.log('No hay token en localStorage');
     }

@@ -3,6 +3,7 @@ import { Directive, HostListener, Inject } from '@angular/core';
 import { AccordionLinkDirective } from './accordionlink.directive';
 
 @Directive({
+  standalone: false,
   selector: '[appAccordionToggle]'
 })
 export class AccordionAnchorDirective {

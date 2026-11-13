@@ -1,9 +1,5 @@
+// Desarrollo local: `npm start` usa este archivo (backend en http://localhost:4000)
 export const environment = {
-
-  production: true,
-  apiUrl: 'https://backend-iyt.onrender.com'
-
-  // production:  false,
-  // apiUrl: 'http://localhost:4000'   
+  production: false,
+  apiUrl: 'http://localhost:4000',
 };
- 

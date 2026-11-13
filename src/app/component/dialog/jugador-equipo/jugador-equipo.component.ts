@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { EquipoJugadorService } from 'src/app/servicios/equipo-jugador.service';
@@ -10,14 +10,17 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialogConfig } from '@angular/material/dialog';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { rolPantalla } from '../../../shared/permisos';
 //reporte
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
 
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-jugador-equipo',
   templateUrl: './jugador-equipo.component.html',
   styleUrls: ['./jugador-equipo.component.scss']
@@ -67,8 +70,8 @@ export class JugadorEquipoComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer el Rol
-      const decodedToken: any = jwt_decode(token);
-      this.role = decodedToken?.role || 'Rol desconocido';
+      const decodedToken: any = jwtDecode(token);
+      this.role = rolPantalla('EQUIPOS'); // 'admin' = puede modificar en este módulo
       this.userName = decodedToken?.nombre || 'Nombre desconocido';
     } else {
       console.log('No hay token en localStorage');
@@ -201,7 +204,7 @@ export class JugadorEquipoComponent implements OnInit {
       const addHeaderAndFooter = () => {
 
         // Agregar numeración de página en el pie de página
-        const pageCount = doc.internal.getNumberOfPages();
+        const pageCount = doc.getNumberOfPages();
         for (let i = 1; i <= pageCount; i++) {
           doc.setPage(i);
           doc.text(`Página ${i}`, 100, doc.internal.pageSize.getHeight() - 10);
@@ -225,7 +228,7 @@ export class JugadorEquipoComponent implements OnInit {
       ]);
 
       // Agregar la tabla al PDF usando autoTable
-      (doc as any).autoTable({
+      autoTable(doc, {
         head: [columns],
         body: rows,
         startY: 30, // Ajusta la posición de inicio de la tabla

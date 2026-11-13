@@ -12,7 +12,8 @@
             <input matInput (keyup)="applyFilter($event)" autocomplete="off">
         </mat-form-field>
         <div class="btn-add">
-            <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Añadir Categoria</button>
+            <button mat-stroked-button color="primary" class="float-right boton-reporte" (click)="reportePDF()"><mat-icon>picture_as_pdf</mat-icon> Reporte PDF</button>
+        <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Añadir Categoria</button>
         </div>
     </mat-card>
     

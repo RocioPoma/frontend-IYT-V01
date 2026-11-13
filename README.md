@@ -1,27 +1,38 @@
-# Frontend
+# Frontend IYT: Sistema de campeonatos de la Integración Yaretanense
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.9.
+Aplicación **Angular 22** + Angular Material.
 
-## Development server
+## Ejecutar en local
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Requisitos: **Node.js 22** y el backend corriendo en `http://localhost:4000`.
 
-## Code scaffolding
+```bash
+npm install
+npm start          # http://localhost:4200
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- `src/environments/environment.ts`: URL del backend en desarrollo.
+- `src/environments/environment.prod.ts`: URL del backend en producción (Render o Contabo).
 
-## Build
+## Construir para producción
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```bash
+npm run build      # genera dist/Frontend
+```
 
-## Running unit tests
+Netlify usa `netlify.toml`: comando `npm run build`, carpeta `dist/Frontend`, Node 22.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Estructura relevante
 
-## Running end-to-end tests
+| Carpeta / archivo | Contenido |
+|---|---|
+| `src/app/home` | Página pública (RF01): partidos en vivo y próximos, fixture, tabla, ranking, medallero, noticias y campos de juego |
+| `src/app/competencia` | Componentes reutilizables: tabla de posiciones, ranking, fixture, programar partido y medallero |
+| `src/app/shared/permisos.ts` | Roles y permisos (los mismos grupos que el backend) |
+| `src/app/shared/reporte-pdf.ts` | Generador común de reportes PDF |
+| `src/app/servicios/sesion.service.ts` | Renueva la sesión mientras hay actividad y la cierra tras 30 min de inactividad |
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## Roles
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+`admin`, `presidente`, `comite_tecnico`, `responsable_categoria` y `delegado`. El menú y las pantallas
+se muestran según `shared/permisos.ts`; el backend vuelve a validar cada operación.

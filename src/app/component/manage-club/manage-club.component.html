@@ -10,10 +10,8 @@
         <input matInput (keyup)="applyFilter($event)" #input>
     </mat-form-field> 
     <div class="btn-add">
+        <button mat-stroked-button color="primary" class="float-right boton-reporte" (click)="reportePDF()"><mat-icon>picture_as_pdf</mat-icon> Reporte PDF</button>
         <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Registrar Club</button>
-        <a href="../../../assets/img/reportes/b882823d-64bc-4be0-a644-1d13e2b7b8a2.pdf" target="_blank">
-            <button style="margin-right: 10px;" mat-flat-button color="accent" class="float-right">Reporte</button>
-        </a>
     </div>
 </mat-card>
 

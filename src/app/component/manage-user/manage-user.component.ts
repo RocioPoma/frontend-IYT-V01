@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { exportarPDF } from 'src/app/shared/reporte-pdf';
+import { nombreRol } from 'src/app/shared/permisos';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -10,11 +12,14 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 import { SignupComponent } from './signup/signup.component';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-user',
   templateUrl: './manage-user.component.html',
   styleUrls: ['./manage-user.component.scss']
 })
 export class ManageUserComponent implements OnInit {
+  nombreRol = nombreRol;
   displayedColumns: string[] = ['nombre', 'email', 'celular','rol','NombreClub', 'acciones'];
   dataSource: any;
   responseMessage: any;
@@ -177,5 +182,16 @@ export class ManageUserComponent implements OnInit {
       }
       this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
     })
+  }
+
+  /** Reporte PDF de la lista (respeta el filtro de búsqueda) */
+  reportePDF() {
+    const datos: any[] = this.dataSource?.filteredData || this.dataSource?.data || [];
+    exportarPDF({
+      titulo: 'Reporte de usuarios',
+      columnas: ['N°', 'Nombre', 'Correo', 'Teléfono', 'Rol', 'Club', 'Estado'],
+      filas: datos.map((f: any, i: number) => [i + 1, f.name, f.email, f.contactNumber, nombreRol(f.role), f.NombreClub, f.status === 'true' ? 'Activo' : 'Pendiente/Inactivo']),
+      archivo: 'usuarios',
+    });
   }
 }

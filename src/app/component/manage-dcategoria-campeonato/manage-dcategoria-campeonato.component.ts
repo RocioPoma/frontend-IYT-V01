@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CampeonatoService } from 'src/app/servicios/campeonato.service';
@@ -7,9 +7,12 @@ import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { DcategoriaCampeonatoComponent } from '../dialog/dcategoria-campeonato/dcategoria-campeonato.component';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { rolPantalla } from '../../shared/permisos';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-dcategoria-campeonato',
   templateUrl: './manage-dcategoria-campeonato.component.html',
   styleUrls: ['./manage-dcategoria-campeonato.component.scss']
@@ -39,10 +42,8 @@ export class ManageDcategoriaCampeonatoComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer el nombre
-      const decodedToken: any = jwt_decode(token);
-      this.role = decodedToken?.role || 'Rol desconocido';
-      
-      console.log('Rol:', this.role);
+      const decodedToken: any = jwtDecode(token);
+      this.role = rolPantalla('GESTION'); // 'admin' = puede modificar en este módulo
     } else {
       console.log('No hay token en localStorage');
     }

@@ -1,0 +1,11 @@
+.cabecera { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 8px; }
+.botones { display: flex; gap: 8px; flex-wrap: wrap; }
+.form-cancha { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; padding: 0 8px; }
+.form-cancha .ancho { grid-column: 1 / -1; }
+.acciones { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 8px; }
+.buscador { width: 100%; max-width: 400px; margin: 8px; }
+.tabla-scroll { overflow-x: auto; }
+.tabla { width: 100%; }
+.vacio { padding: 16px; color: #757575; text-align: center; }
+h3 { margin: 8px; }
+@media (max-width: 600px) { .form-cancha { grid-template-columns: 1fr; } }

@@ -1,0 +1,43 @@
+<div class="bloque">
+  <div class="bloque-cabecera">
+    <h3>Fixture</h3>
+    <mat-form-field appearance="outline" class="selector" *ngIf="clubs.length">
+      <mat-label>Filtrar por club</mat-label>
+      <mat-select [(value)]="filtroClub" (selectionChange)="agrupar()">
+        <mat-option value="">Todos</mat-option>
+        <mat-option *ngFor="let c of clubs" [value]="c">{{ c }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+  <p class="vacio" *ngIf="!cargando && todos.length === 0">Todavía no se generó el fixture de esta categoría.</p>
+
+  <div class="ronda" *ngFor="let r of rondas">
+    <h4>{{ r.numero ? 'Fecha ' + r.numero : 'Partidos' }}</h4>
+    <div class="partido" *ngFor="let p of r.partidos">
+      <span class="local equipo">
+        {{ p.equipo1 }}
+        <img *ngIf="p.logo1" [src]="imgUrl + p.logo1" alt="" loading="lazy" />
+      </span>
+      <span class="marcador">
+        <ng-container *ngIf="p.estado !== 'No realizado'; else vs">{{ p.total_equipo1 }} - {{ p.total_equipo2 }}</ng-container>
+        <ng-template #vs>vs</ng-template>
+      </span>
+      <span class="equipo">
+        <img *ngIf="p.logo2" [src]="imgUrl + p.logo2" alt="" loading="lazy" />
+        {{ p.equipo2 }}
+      </span>
+      <div class="detalle">
+        <span class="estado" [ngClass]="claseEstado(p.estado)">{{ p.estado }}</span>
+        <span><mat-icon>event</mat-icon> {{ p.fecha_f || 'Fecha por definir' }} {{ p.hora_f || '' }}</span>
+        <span *ngIf="p.nombre_cancha"><mat-icon>location_on</mat-icon> {{ p.nombre_cancha }}</span>
+        <span *ngIf="p.nombre_arbitro"><mat-icon>sports</mat-icon> {{ p.nombre_arbitro }}</span>
+      </div>
+      <div class="acciones-partido" *ngIf="puedeProgramar">
+        <button mat-stroked-button color="primary" (click)="programar(p)">
+          <mat-icon>edit_calendar</mat-icon> Programar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

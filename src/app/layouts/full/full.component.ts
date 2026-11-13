@@ -1,13 +1,15 @@
 import { MediaMatcher } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy, AfterViewInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CampeonatoService } from 'src/app/servicios/campeonato.service';
 import { UserService } from 'src/app/servicios/user.service';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 
 /** @title Responsive sidenav */
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-full-layout',
   templateUrl: 'full.component.html',
   styleUrls: []
@@ -36,7 +38,7 @@ export class FullComponent implements OnDestroy, AfterViewInit {
     
     if (token) {
       // Decodificar el token y extraer el nombre
-      const decodedToken: any = jwt_decode(token);
+      const decodedToken: any = jwtDecode(token);
       this.usuario = decodedToken?.nombre || 'Usuario desconocido';
       
       console.log('Nombre del usuario logueado:', this.usuario);

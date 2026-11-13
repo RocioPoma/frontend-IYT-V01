@@ -11,7 +11,7 @@
         <input matInput (keyup)="applyFilter($event)" #input autocomplete="off">
     </mat-form-field>
     <div class="btn-add">
-        <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">Registrar Equipo</button>
+        <button mat-flat-button color="primary" class="float-right" *ngIf="puedeInscribir" (click)="handleAddAction()">Registrar Equipo</button>
     </div>
 </mat-card>
 <hr>
@@ -25,6 +25,20 @@
                         <mat-card-title align="left">{{element.nombre_club}}</mat-card-title>
                         <mat-card-subtitle align="left">
                             <div>{{element.comunidad}}</div>
+                            <div class="estado-equipo" [ngClass]="element.estado">
+                                {{ element.estado === 'pendiente' ? 'Pendiente de aprobación' : element.estado === 'rechazado' ? 'Rechazado' : 'Aprobado' }}
+                                · {{ element.total_jugadores || 0 }} jugadores
+                            </div>
+                            <ng-container *ngIf="puedeAprobar && element.estado !== 'aprobado'">
+                                <button mat-icon-button color="primary" matTooltip="Aprobar inscripción" (click)="cambiarEstado(element, 'aprobado')">
+                                    <mat-icon>check_circle</mat-icon>
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="puedeAprobar && element.estado === 'pendiente'">
+                                <button mat-icon-button color="warn" matTooltip="Rechazar inscripción" (click)="cambiarEstado(element, 'rechazado')">
+                                    <mat-icon>cancel</mat-icon>
+                                </button>
+                            </ng-container>
 
                             <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Agregar jugadores"
                                 (click)="handleAddJugador(element)">
@@ -40,7 +54,8 @@
                             </button>
 
                         </mat-card-subtitle>
-                        <img class="img" mat-card-sm-image src="../../../assets/img/logo2.png">
+                        <img class="img" mat-card-sm-image *ngIf="element.logo" [src]="urlArchivos + element.logo" alt="" loading="lazy">
+                        <mat-icon *ngIf="!element.logo" class="escudo-equipo">shield</mat-icon>
                     </mat-card-title-group>
                 </mat-card>
             </div>

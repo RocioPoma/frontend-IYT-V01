@@ -63,3 +63,8 @@ mat-card-title{
       display: block;
     }
   }
+.estado-equipo { font-size: 12px; margin: 4px 0; text-transform: none; }
+.estado-equipo.pendiente { color: #ef6c00; font-weight: 600; }
+.estado-equipo.rechazado { color: #c62828; font-weight: 600; }
+.estado-equipo.aprobado { color: #2e7d32; }
+.escudo-equipo { font-size: 48px; width: 48px; height: 48px; color: #b0bec5; }

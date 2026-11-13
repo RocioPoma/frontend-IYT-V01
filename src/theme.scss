@@ -1,0 +1,14 @@
+// Tema de Angular Material (Material 3). Tonos verde azulado, como el tema original (teal).
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light;
+  @include mat.theme((
+    color: (
+      primary: mat.$cyan-palette,
+      tertiary: mat.$spring-green-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}

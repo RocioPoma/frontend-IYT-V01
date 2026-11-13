@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClubService } from 'src/app/servicios/club.service';
@@ -9,14 +9,24 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { EquipoComponent } from '../dialog/equipo/equipo.component';
 import { JugadorEquipoComponent } from '../dialog/jugador-equipo/jugador-equipo.component';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { puede } from 'src/app/shared/permisos';
+import { CompetenciaService } from 'src/app/servicios/competencia.service';
+import { environment as envArchivos } from 'src/environments/environment';
+import { rolPantalla } from '../../shared/permisos';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-dequipo',
   templateUrl: './manage-dequipo.component.html',
   styleUrls: ['./manage-dequipo.component.scss']
 })
 export class ManageDequipoComponent implements OnInit {
+  puedeInscribir = puede('EQUIPOS');
+  puedeAprobar = puede('GESTION');
+  urlArchivos = envArchivos.apiUrl + '/uploads/img/';
+
 
   dataSource: any = [];
   dataDcategoria: any = []; //para datos de una categoria especifica(Tabla contempla)
@@ -29,7 +39,8 @@ export class ManageDequipoComponent implements OnInit {
   imgURL = '../../../assets/img/deportes/';
   extension = '.jpg';
 
-  constructor(private equipoService: EquipoService,
+  constructor(private competenciaService: CompetenciaService,
+    private equipoService: EquipoService,
     private dcategoriacampeonatoService: DcategoriacampeonatoService,
     private clubService: ClubService,
     private snackbarService: SnackbarService,
@@ -42,11 +53,9 @@ export class ManageDequipoComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer datos
-      const decodedToken: any = jwt_decode(token);
+      const decodedToken: any = jwtDecode(token);
       this.id_club = decodedToken?.id_club || 'Id_club desconocido';
-      this.role = decodedToken?.role || 'Rol desconocido';
-
-      console.log('Id Club:', this.id_club);
+      this.role = rolPantalla('GESTION'); // 'admin' = puede modificar en este módulo
     } else {
       console.log('No hay token en localStorage');
     }
@@ -174,4 +183,12 @@ export class ManageDequipoComponent implements OnInit {
     //this.router.navigate(['/integracion/dcategoria_f',this.id,values.id]);
   }
 
+
+  /** Requisito 3.3.2: el administrador / comité técnico aprueba la inscripción de equipos */
+  cambiarEstado(element: any, estado: 'aprobado' | 'rechazado') {
+    this.competenciaService.estadoEquipo({ id_club: element.id_club, id_contempla: element.id_contempla, estado }).subscribe({
+      next: (r: any) => { this.snackbarService.openSnackBar(r.message, 'success'); this.dataTable(element.id_contempla); },
+      error: (e: any) => this.snackbarService.openSnackBar(e.error?.message || GlobalCostants.genericError, GlobalCostants.error),
+    });
+  }
 }

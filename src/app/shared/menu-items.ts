@@ -1,31 +1,31 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 export interface Menu {
-    state: string;
-    name: string;
-    icon: string;
-    role: string;
+  state: string;
+  name: string;
+  icon: string;
+  /** Grupo de permisos que ve la opción (shared/permisos.ts). Vacío = todos los usuarios con sesión. */
+  role: string;
 }
 
-const MENUITEMS = [
-    { state: 'dashboard', name: 'Dashboard', icon: 'dashboard', role: '' },
-    { state: 'campeonato', name: 'Campeonatos', icon: 'emoji_events', role: ''},
-    { state: 'user', name: 'Gestion Usuarios', icon: 'people', role: 'admin'},
-    { state: 'club', name: 'Gestion Clubs', icon: 'category', role: 'admin'},
-    { state: 'jugador', name: 'Gestion Jugadores', icon: 'badge', role: ''},
-    { state: 'pase', name: 'Pase jugador', icon: 'badge', role: 'admin'},
-    { state: 'reglamento', name: 'Reglamento', icon: 'file_present', role: ''},
-    { state: 'disciplina', name: 'Disciplinas', icon: 'sports_soccer', role: 'admin'},
-    { state: 'arbitro', name: 'Arbitros', icon: 'assignment_ind', role: 'admin'},
-    { state: 'categoria', name: 'Categorias', icon: 'engineering', role: 'admin'},
-    { state: 'sitio', name: 'Campo de juego', icon: 'location_on', role: 'admin'}, 
-    // { state: 'auspiciador', name: 'Auspiciadores', icon: 'feed', role: ''},
-    //{ state: 'reporte', name: 'Reportes', icon: 'list_alt', role: ''}      
+const MENUITEMS: Menu[] = [
+  { state: 'dashboard', name: 'Inicio', icon: 'dashboard', role: '' },
+  { state: 'campeonato', name: 'Campeonatos', icon: 'emoji_events', role: '' },
+  { state: 'user', name: 'Gestión usuarios', icon: 'people', role: 'ADMIN' },
+  { state: 'club', name: 'Gestión clubs', icon: 'category', role: 'GESTION' },
+  { state: 'jugador', name: 'Gestión jugadores', icon: 'badge', role: '' },
+  { state: 'pase', name: 'Pase jugador', icon: 'swap_horiz', role: 'GESTION' },
+  { state: 'reglamento', name: 'Reglamento', icon: 'file_present', role: '' },
+  { state: 'disciplina', name: 'Disciplinas', icon: 'sports_soccer', role: 'GESTION' },
+  { state: 'arbitro', name: 'Árbitros', icon: 'assignment_ind', role: 'GESTION' },
+  { state: 'categoria', name: 'Categorías', icon: 'engineering', role: 'GESTION' },
+  { state: 'sitio', name: 'Campos de juego', icon: 'location_on', role: 'GESTION' },
+  { state: 'auspiciador', name: 'Auspiciadores', icon: 'card_giftcard', role: 'AUSPICIO' },
 ];
 
 @Injectable()
 export class MenuItems {
-    getMenuitem(): Menu[] {
-        return MENUITEMS;
-    }
+  getMenuitem(): Menu[] {
+    return MENUITEMS;
+  }
 }
