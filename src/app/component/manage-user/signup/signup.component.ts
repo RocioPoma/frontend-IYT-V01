@@ -46,10 +46,17 @@ export class SignupComponent implements OnInit {
       contactNumber: [null, [Validators.required, Validators.pattern(GlobalCostants.contactNumberRegex)]],
       password: [null, [Validators.required, Validators.minLength(6)]],
       role: ['delegado', Validators.required],
-      clubId: [null, Validators.required]
+      clubId: [null, Validators.required],
+      // Gestión (año) en la que el delegado puede inscribir equipos
+      gestion: [new Date().getFullYear(), [Validators.min(2000), Validators.max(2100)]]
       
     });
     this.publico = !!this.dialogData?.publico || !localStorage.getItem('token');
+    const ajustarClub = (rol: string) => {
+      this.userForm.controls.clubId.setValidators(rol === 'delegado' ? [Validators.required] : []);
+      this.userForm.controls.clubId.updateValueAndValidity({ emitEvent: false });
+    };
+    this.userForm.controls.role.valueChanges.subscribe((r: any) => ajustarClub(r));
     if (this.publico) this.action = 'Registrarse';
     if (this.dialogData?.action === 'Editar') {
       this.dialogAction = "Edit";
@@ -57,6 +64,7 @@ export class SignupComponent implements OnInit {
       const datos = { ...this.dialogData.data, password: null };
       if (datos.role === 'user') datos.role = 'delegado';
       this.userForm.patchValue(datos);
+      ajustarClub(datos.role);
       // Al editar, la contraseña es opcional (vacía = se mantiene)
       this.userForm.controls.password.setValidators([Validators.minLength(6)]);
       this.userForm.controls.password.updateValueAndValidity();
@@ -97,7 +105,7 @@ export class SignupComponent implements OnInit {
       password: formData.password,
       role:formData.role,
       clubId: formData.clubId,
-
+      gestion: formData.role === 'delegado' ? formData.gestion : null,
     }
     this.userService.signup(data).subscribe((response: any) => {
       this.dialogRef.close();
@@ -125,7 +133,8 @@ export class SignupComponent implements OnInit {
       contactNumber: formData.contactNumber,
       password: formData.password,
       role:formData.role,
-      clubId: formData.clubId
+      clubId: formData.clubId,
+      gestion: formData.role === 'delegado' ? formData.gestion : null
     }
     this.userService.update(data).subscribe((response: any) => {
       this.dialogRef.close();

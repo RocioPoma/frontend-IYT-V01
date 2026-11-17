@@ -95,3 +95,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     &.selected a, a.active { background: #00796b; color: #fff; mat-icon { color: #fff; } }
   }
 }
+
+// Encabezados de las listas: los botones "float-right" a la derecha, en una sola fila
+// (las tarjetas de Material actual son flex en columna y estiraban los botones a todo el ancho)
+.mat-mdc-card:has(> .float-right),
+.mat-mdc-card:has(> div > .float-right) { display: block; }
+.float-right { float: right; margin-left: 8px; }
+.mat-mdc-card:has(> .float-right)::after,
+.mat-mdc-card:has(> div > .float-right)::after { content: ''; display: block; clear: both; }

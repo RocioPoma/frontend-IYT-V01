@@ -10,8 +10,9 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 import { EquipoComponent } from '../dialog/equipo/equipo.component';
 import { JugadorEquipoComponent } from '../dialog/jugador-equipo/jugador-equipo.component';
 import { jwtDecode } from 'jwt-decode';
-import { puede } from 'src/app/shared/permisos';
-import { CompetenciaService } from 'src/app/servicios/competencia.service';
+import { leerToken, puede } from 'src/app/shared/permisos';
+import { ESTADOS, SolicitudesService } from 'src/app/solicitudes/solicitudes.service';
+import { MotivoDialogComponent } from 'src/app/solicitudes/motivo-dialog.component';
 import { environment as envArchivos } from 'src/environments/environment';
 import { rolPantalla } from '../../shared/permisos';
 
@@ -25,6 +26,8 @@ import { rolPantalla } from '../../shared/permisos';
 export class ManageDequipoComponent implements OnInit {
   puedeInscribir = puede('EQUIPOS');
   puedeAprobar = puede('GESTION');
+  esDelegado = leerToken()?.role === 'delegado';
+  estados = ESTADOS;
   urlArchivos = envArchivos.apiUrl + '/uploads/img/';
 
 
@@ -39,7 +42,7 @@ export class ManageDequipoComponent implements OnInit {
   imgURL = '../../../assets/img/deportes/';
   extension = '.jpg';
 
-  constructor(private competenciaService: CompetenciaService,
+  constructor(private solicitudes: SolicitudesService,
     private equipoService: EquipoService,
     private dcategoriacampeonatoService: DcategoriacampeonatoService,
     private clubService: ClubService,
@@ -184,11 +187,42 @@ export class ManageDequipoComponent implements OnInit {
   }
 
 
-  /** Requisito 3.3.2: el administrador / comité técnico aprueba la inscripción de equipos */
-  cambiarEstado(element: any, estado: 'aprobado' | 'rechazado') {
-    this.competenciaService.estadoEquipo({ id_club: element.id_club, id_contempla: element.id_contempla, estado }).subscribe({
-      next: (r: any) => { this.snackbarService.openSnackBar(r.message, 'success'); this.dataTable(element.id_contempla); },
-      error: (e: any) => this.snackbarService.openSnackBar(e.error?.message || GlobalCostants.genericError, GlobalCostants.error),
+  // ---------- Inscripción: el delegado solicita, el comité técnico revisa ----------
+  esMiEquipo(e: any): boolean {
+    return this.esDelegado && String(e.id_club) === String(this.id_club);
+  }
+
+  /** El delegado solo modifica su equipo en borrador u observado; el comité siempre */
+  puedeModificar(e: any): boolean {
+    if (!this.esDelegado) return this.role !== 'user';
+    return this.esMiEquipo(e) && (e.estado === 'borrador' || e.estado === 'observado');
+  }
+
+  solicitarInscripcion(e: any) {
+    this.solicitudes.solicitarInscripcion(e.id_club, e.id_contempla).subscribe({
+      next: (r: any) => { this.snackbarService.openSnackBar(r.message, 'success'); this.dataTable(e.id_contempla); },
+      error: (x: any) => this.snackbarService.openSnackBar(x.error?.message || GlobalCostants.genericError, GlobalCostants.error),
+    });
+  }
+
+  revisar(e: any, estado: 'aprobado' | 'observado' | 'rechazado') {
+    const titulos = { aprobado: 'Aprobar inscripción', observado: 'Observar inscripción', rechazado: 'Rechazar inscripción' };
+    this.dialog.open(MotivoDialogComponent, {
+      width: '440px',
+      data: {
+        titulo: titulos[estado],
+        mensaje: `${e.nombre_club}: ${e.total_jugadores || 0} jugadores inscritos.`,
+        obligatorio: estado !== 'aprobado',
+        etiqueta: estado === 'aprobado' ? 'Comentario (opcional)' : 'Motivo para el delegado',
+        boton: titulos[estado].split(' ')[0],
+        color: estado === 'aprobado' ? 'primary' : 'warn',
+      },
+    }).afterClosed().subscribe((texto: string | undefined) => {
+      if (texto === undefined) return;
+      this.solicitudes.revisarEquipo({ id_club: e.id_club, id_contempla: e.id_contempla, estado, observacion: texto || undefined }).subscribe({
+        next: (r: any) => { this.snackbarService.openSnackBar(r.message, 'success'); this.dataTable(e.id_contempla); },
+        error: (x: any) => this.snackbarService.openSnackBar(x.error?.message || GlobalCostants.genericError, GlobalCostants.error),
+      });
     });
   }
 }

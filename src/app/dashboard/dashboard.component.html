@@ -3,14 +3,45 @@
   <span class="rol">{{ rol }}</span>
 </mat-card>
 
-<div class="avisos" *ngIf="esAdmin && (data?.usuarios_pendientes || data?.equipos_pendientes)">
-  <mat-card class="aviso" *ngIf="data?.usuarios_pendientes" [routerLink]="['/integracion/user']">
+<div class="avisos" *ngIf="esComite && (data?.jugadores_pendientes || data?.equipos_pendientes || data?.pases_pendientes)">
+  <mat-card class="aviso" [routerLink]="['/integracion/solicitudes']">
+    <mat-icon>fact_check</mat-icon>
+    <span>
+      Por revisar:
+      <b>{{ data.jugadores_pendientes || 0 }}</b> solicitud(es) de jugadores ·
+      <b>{{ data.equipos_pendientes || 0 }}</b> inscripción(es) de equipos ·
+      <b>{{ data.pases_pendientes || 0 }}</b> pase(s)
+    </span>
+  </mat-card>
+</div>
+<div class="avisos" *ngIf="esAdmin && data?.usuarios_pendientes">
+  <mat-card class="aviso" [routerLink]="['/integracion/user']">
     <mat-icon>person_add</mat-icon>
     <span><b>{{ data.usuarios_pendientes }}</b> usuario(s) esperan aprobación</span>
   </mat-card>
-  <mat-card class="aviso" *ngIf="data?.equipos_pendientes">
+</div>
+
+<!-- Delegado -->
+<div class="avisos" *ngIf="esDelegado">
+  <mat-card class="aviso info" *ngIf="!data?.gestion">
+    <mat-icon>event_busy</mat-icon>
+    <span>Su usuario no tiene una gestión asignada. Pida al administrador que se la asigne para poder inscribir equipos.</span>
+  </mat-card>
+  <mat-card class="aviso info" *ngIf="data?.gestion">
+    <mat-icon>event_available</mat-icon>
+    <span>Puede inscribir a su equipo en los campeonatos de la <b>gestión {{ data.gestion }}</b>.</span>
+  </mat-card>
+  <mat-card class="aviso" *ngIf="data?.mis_solicitudes_observadas" [routerLink]="['/integracion/jugador']">
+    <mat-icon>feedback</mat-icon>
+    <span><b>{{ data.mis_solicitudes_observadas }}</b> solicitud(es) de jugadores fueron observadas por el comité técnico. Revíselas en "Mis solicitudes".</span>
+  </mat-card>
+  <mat-card class="aviso" *ngIf="data?.mis_equipos_observados" [routerLink]="['/integracion/campeonato']">
     <mat-icon>groups</mat-icon>
-    <span><b>{{ data.equipos_pendientes }}</b> equipo(s) inscritos esperan aprobación (ver cada categoría)</span>
+    <span><b>{{ data.mis_equipos_observados }}</b> inscripción(es) de equipo observada(s).</span>
+  </mat-card>
+  <mat-card class="aviso" *ngIf="data?.pases_por_responder" [routerLink]="['/integracion/pase']">
+    <mat-icon>swap_horiz</mat-icon>
+    <span>Otro club solicita el pase de <b>{{ data.pases_por_responder }}</b> jugador(es) de su club. Debe aceptarlo o rechazarlo.</span>
   </mat-card>
 </div>
 

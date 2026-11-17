@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { BandejaComiteComponent } from '../solicitudes/bandeja-comite.component';
 import { RouteGuardService } from '../servicios/route-guard.service';
 import { ManageClubComponent } from './manage-club/manage-club.component';
 import { ManageJugadorComponent } from './manage-jugador/manage-jugador.component';
@@ -23,6 +24,13 @@ import { ManageCampoDeJuegoComponent } from './manage-campo-de-juego/manage-camp
 
 export const MaterialRoutes: Routes = [
     {
+        // Bandeja del comité técnico: jugadores, inscripciones de equipos y pases por aprobar
+        path: 'solicitudes',
+        component: BandejaComiteComponent,
+        canActivate: [RouteGuardService],
+        data: { grupo: 'GESTION' }
+    },
+    {
         path: 'campeonato',
         component: ManageCampeonatoComponent,
         canActivate: [RouteGuardService],
@@ -39,7 +47,7 @@ export const MaterialRoutes: Routes = [
         path: 'pase',
         component: ManajePaseJugadorComponent,
         canActivate: [RouteGuardService],
-        data: { grupo: 'GESTION' }
+        data: { grupo: 'EQUIPOS' }
     },
     {
         path: 'user',

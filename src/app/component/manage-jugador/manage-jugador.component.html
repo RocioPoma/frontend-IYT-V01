@@ -1,14 +1,32 @@
 <mat-card >
     <b><span>GESTION JUGADORES</span></b>
     <button mat-flat-button color="primary" class="float-right"  *ngIf="role !== 'user'" (click)="handleAddAction()" >Registrar Jugador</button>
+    <button mat-flat-button color="primary" class="float-right" *ngIf="esDelegado" (click)="nuevaSolicitud()"><mat-icon>person_add</mat-icon> Registrar jugador</button>
   <!-- <button mat-flat-button color="primary" class="float-right" (click)="craatePdf()">Reporte</button>-->
   
     <button mat-raised-button color="accent" class="float-right" (click)="generatePDF()">Reporte PDF</button>
 
 </mat-card>
+<ng-container *ngIf="!esDelegado; else vistaDelegado">
+    <ng-container *ngTemplateOutlet="listaOficial"></ng-container>
+</ng-container>
+
+<ng-template #vistaDelegado>
+    <mat-tab-group mat-stretch-tabs="false" animationDuration="150ms" [(selectedIndex)]="pestana">
+        <mat-tab label="Jugadores de mi club">
+            <ng-container *ngTemplateOutlet="listaOficial"></ng-container>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>Mis solicitudes</ng-template>
+            <mat-card><app-solicitudes-jugador #misSolicitudes modo="delegado"></app-solicitudes-jugador></mat-card>
+        </mat-tab>
+    </mat-tab-group>
+</ng-template>
+
+<ng-template #listaOficial>
 <hr>
 <mat-card>
-    <mat-form-field appearance="fill" fxFlex>
+    <mat-form-field appearance="fill" fxFlex *ngIf="!esDelegado">
         <mat-label>Club</mat-label>
         <mat-select (selectionChange)="filterSelection($event)">
             <mat-option  value="Todos">Todos</mat-option>
@@ -103,7 +121,16 @@
                 </mat-slide-toggle>
             </td>
         </ng-container>
+        <ng-container matColumnDef="solicitar">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let element" class="action-link">
+                <button mat-icon-button color="accent" matTooltip="Editar (se enviará al comité técnico)" (click)="solicitarActualizacion(element)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
         <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
     </table>
 </div>
+</ng-template>

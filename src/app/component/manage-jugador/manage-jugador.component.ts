@@ -1,5 +1,5 @@
 import { urlDocumentoPrivado } from 'src/app/shared/permisos';
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -12,6 +12,9 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 import { JugadorComponent } from '../dialog/jugador/jugador.component';
 import { ClubService } from 'src/app/servicios/club.service';
 import { jwtDecode } from 'jwt-decode';
+import { leerToken } from 'src/app/shared/permisos';
+import { SolicitudJugadorDialogComponent } from 'src/app/solicitudes/solicitud-jugador-dialog.component';
+import { SolicitudesJugadorComponent } from 'src/app/solicitudes/solicitudes-jugador.component';
 import { rolPantalla } from '../../shared/permisos';
 
 
@@ -33,6 +36,10 @@ export class ManageJugadorComponent implements OnInit {
   dataClub: any = [];
   responseMessage: any;
   role: any;
+  /** El delegado no modifica la lista oficial: envía solicitudes al comité técnico */
+  esDelegado = leerToken()?.role === 'delegado';
+  pestana = 0;
+  @ViewChild('misSolicitudes') misSolicitudes?: SolicitudesJugadorComponent;
 
   //----url del servidor backend
   url = environment.apiUrl;
@@ -71,7 +78,9 @@ export class ManageJugadorComponent implements OnInit {
       console.log('No hay token en localStorage');
     }
 
-    this.displayedColumns = this.role === 'user' 
+    this.displayedColumns = this.esDelegado
+      ? ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento', 'solicitar']
+      : this.role === 'user'
       ? ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento']  // Agrega las columnas que sí pueden ver los usuarios "user"
       : ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento', 'edit'];
   
@@ -340,5 +349,24 @@ export class ManageJugadorComponent implements OnInit {
   /** Los documentos personales solo se abren con sesión iniciada */
   docPrivado(nombre: string): string {
     return urlDocumentoPrivado(this.imgURL, nombre);
+  }
+
+  // ---------- Delegado: solicitudes al comité técnico ----------
+  nuevaSolicitud() {
+    this.dialog.open(SolicitudJugadorDialogComponent, { width: '760px', maxWidth: '96vw', data: { modo: 'alta' } })
+      .afterClosed().subscribe((ok) => {
+        if (!ok) return;
+        this.pestana = 1;
+        setTimeout(() => this.misSolicitudes?.cargar());
+      });
+  }
+
+  solicitarActualizacion(jugador: any) {
+    this.dialog.open(SolicitudJugadorDialogComponent, { width: '760px', maxWidth: '96vw', data: { modo: 'actualizacion', jugador } })
+      .afterClosed().subscribe((ok) => {
+        if (!ok) return;
+        this.pestana = 1;
+        setTimeout(() => this.misSolicitudes?.cargar());
+      });
   }
 }

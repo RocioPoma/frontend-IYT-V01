@@ -25,30 +25,41 @@
                         <mat-card-title align="left">{{element.nombre_club}}</mat-card-title>
                         <mat-card-subtitle align="left">
                             <div>{{element.comunidad}}</div>
-                            <div class="estado-equipo" [ngClass]="element.estado">
-                                {{ element.estado === 'pendiente' ? 'Pendiente de aprobación' : element.estado === 'rechazado' ? 'Rechazado' : 'Aprobado' }}
+                            <div class="estado-equipo">
+                                <span class="estado" [ngClass]="estados[element.estado]?.clase">{{ estados[element.estado]?.texto || element.estado }}</span>
                                 · {{ element.total_jugadores || 0 }} jugadores
                             </div>
-                            <ng-container *ngIf="puedeAprobar && element.estado !== 'aprobado'">
-                                <button mat-icon-button color="primary" matTooltip="Aprobar inscripción" (click)="cambiarEstado(element, 'aprobado')">
+                            <div class="obs-equipo" *ngIf="element.observacion && (element.estado === 'observado' || element.estado === 'rechazado')">
+                                <mat-icon>feedback</mat-icon> {{ element.observacion }}
+                            </div>
+                            <!-- Delegado: enviar al comité técnico cuando el equipo está completo -->
+                            <button mat-flat-button color="primary" class="boton-solicitar"
+                                *ngIf="esMiEquipo(element) && (element.estado === 'borrador' || element.estado === 'observado')"
+                                (click)="solicitarInscripcion(element)">
+                                <mat-icon>send</mat-icon> Solicitar inscripción
+                            </button>
+                            <!-- Comité técnico -->
+                            <ng-container *ngIf="puedeAprobar && element.estado === 'solicitado'">
+                                <button mat-icon-button color="primary" matTooltip="Aprobar inscripción" (click)="revisar(element, 'aprobado')">
                                     <mat-icon>check_circle</mat-icon>
                                 </button>
-                            </ng-container>
-                            <ng-container *ngIf="puedeAprobar && element.estado === 'pendiente'">
-                                <button mat-icon-button color="warn" matTooltip="Rechazar inscripción" (click)="cambiarEstado(element, 'rechazado')">
+                                <button mat-icon-button color="warn" matTooltip="Observar (con comentario)" (click)="revisar(element, 'observado')">
+                                    <mat-icon>feedback</mat-icon>
+                                </button>
+                                <button mat-icon-button color="warn" matTooltip="Rechazar inscripción" (click)="revisar(element, 'rechazado')">
                                     <mat-icon>cancel</mat-icon>
                                 </button>
                             </ng-container>
 
-                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Agregar jugadores"
+                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Jugadores del equipo"
                                 (click)="handleAddJugador(element)">
                                 <mat-icon>group_add</mat-icon>
                             </button>
-                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Editar"
+                            <button [disabled]="!puedeModificar(element)" mat-icon-button color="primary" matTooltip="Editar"
                                 (click)="handleEditAction(element)">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Eliminar"
+                            <button [disabled]="!puedeModificar(element)" mat-icon-button color="primary" matTooltip="Eliminar"
                                 (click)="handleDeleteAction(element)">
                                 <mat-icon>delete</mat-icon>
                             </button>

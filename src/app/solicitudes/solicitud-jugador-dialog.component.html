@@ -1,0 +1,82 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span class="title-center">{{ titulo }}</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-dialog-content class="mat-typography">
+  <div class="aviso observado" *ngIf="observacion">
+    <mat-icon>feedback</mat-icon>
+    <div><b>Observación del comité técnico:</b><br />{{ observacion }}</div>
+  </div>
+  <p class="aviso-flujo">
+    <mat-icon>info</mat-icon>
+    <span *ngIf="tipo === 'alta'">El jugador se agregará a la lista oficial de <b>{{ club }}</b> cuando el comité técnico acepte la solicitud.</span>
+    <span *ngIf="tipo === 'actualizacion'">Los cambios se aplicarán cuando el comité técnico los acepte. El CI y el club no se pueden modificar.</span>
+  </p>
+
+  <form [formGroup]="form" class="form-jugador">
+    <div class="foto">
+      <input type="file" class="ocultar" accept="image/*" (change)="elegirFoto($event)" #inputFoto />
+      <img [src]="vistaFoto || 'assets/img/user1.png'" alt="Foto del jugador" (click)="inputFoto.click()" />
+      <button mat-stroked-button type="button" (click)="inputFoto.click()"><mat-icon>photo_camera</mat-icon> {{ vistaFoto ? 'Cambiar foto' : 'Subir foto' }}</button>
+    </div>
+
+    <div class="campos">
+      <mat-form-field appearance="fill">
+        <mat-label>CI</mat-label>
+        <input matInput formControlName="ci" required />
+        <mat-hint *ngIf="tipo === 'actualizacion'">No se puede modificar</mat-hint>
+        <mat-error>CI obligatorio (4 a 15 caracteres)</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Club</mat-label>
+        <input matInput [value]="club" disabled />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" required />
+        <mat-error>El nombre es obligatorio</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Apellido paterno</mat-label>
+        <input matInput formControlName="ap_paterno" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Apellido materno</mat-label>
+        <input matInput formControlName="ap_materno" />
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Fecha de nacimiento</mat-label>
+        <input matInput type="date" formControlName="fecha_nacimiento" required />
+        <mat-error>La fecha de nacimiento es obligatoria</mat-error>
+      </mat-form-field>
+      <div class="radio">
+        <mat-label>Sexo *</mat-label>
+        <mat-radio-group formControlName="sexo">
+          <mat-radio-button *ngFor="let s of sexos" [value]="s">{{ s }}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <mat-form-field appearance="fill">
+        <mat-label>Descendencia</mat-label>
+        <mat-select formControlName="decendencia">
+          <mat-option *ngFor="let d of decendencias" [value]="d">{{ d }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="documento">
+        <input type="file" class="ocultar" accept="application/pdf,image/*" (change)="elegirDocumento($event)" #inputDoc />
+        <button mat-stroked-button type="button" (click)="inputDoc.click()"><mat-icon>attach_file</mat-icon> Archivo adjunto (PDF o imagen)</button>
+        <span class="nombre-archivo">{{ documento?.name }}</span>
+        <a *ngIf="!documento && documentoActual" [href]="documentoActual" target="_blank" rel="noopener">Ver archivo actual</a>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="center">
+  <button mat-flat-button color="primary" (click)="guardar(true)" [disabled]="guardando">
+    <mat-icon>send</mat-icon> {{ tipo === 'alta' ? 'Guardar y solicitar' : 'Solicitar actualización' }}
+  </button>
+  <button mat-stroked-button (click)="guardar(false)" [disabled]="guardando">Guardar borrador</button>
+  <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

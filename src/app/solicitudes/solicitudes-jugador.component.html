@@ -1,0 +1,86 @@
+<mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+<p class="vacio" *ngIf="!cargando && filas.length === 0">
+  {{ modo === 'comite' ? 'No hay solicitudes de jugadores por revisar.' : 'No tiene solicitudes de jugadores.' }}
+</p>
+
+<div class="tabla-scroll" *ngIf="filas.length">
+  <table mat-table [dataSource]="filas" class="tabla">
+    <ng-container matColumnDef="foto">
+      <th mat-header-cell *matHeaderCellDef>Foto</th>
+      <td mat-cell *matCellDef="let s">
+        <img class="miniatura" [src]="urlFoto(s) || 'assets/img/user1.png'" alt="" onerror="this.onerror=null; this.src='assets/img/user1.png';" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tipo">
+      <th mat-header-cell *matHeaderCellDef>Tipo</th>
+      <td mat-cell *matCellDef="let s">{{ s.tipo === 'alta' ? 'Jugador nuevo' : 'Actualización' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="jugador">
+      <th mat-header-cell *matHeaderCellDef>Jugador</th>
+      <td mat-cell *matCellDef="let s">
+        <b>{{ nombre(s) }}</b><br /><small>CI {{ s.ci }}</small>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="club">
+      <th mat-header-cell *matHeaderCellDef>Club</th>
+      <td mat-cell *matCellDef="let s">{{ s.club }}<br /><small>{{ s.solicitado_por_nombre }}</small></td>
+    </ng-container>
+
+    <ng-container matColumnDef="cambios">
+      <th mat-header-cell *matHeaderCellDef>Datos / cambios</th>
+      <td mat-cell *matCellDef="let s">
+        <ng-container *ngIf="s.tipo === 'alta'">
+          <small>{{ s.fecha_nacimiento }} · {{ s.sexo }} · {{ s.decendencia || '—' }}</small>
+        </ng-container>
+        <div class="cambio" *ngFor="let c of cambios(s)">
+          {{ c.campo }}: <span class="antes" *ngIf="c.antes">{{ c.antes }}</span><span class="despues">{{ c.despues }}</span>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="documento">
+      <th mat-header-cell *matHeaderCellDef>Archivo</th>
+      <td mat-cell *matCellDef="let s">
+        <a *ngIf="urlDocumento(s)" [href]="urlDocumento(s)" target="_blank" rel="noopener" matTooltip="Ver archivo adjunto">
+          <img width="28" height="28" src="assets/img/pdf-icono.png" alt="Archivo" />
+        </a>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let s">
+        <span class="estado" [ngClass]="estados[s.estado]?.clase">{{ estados[s.estado]?.texto }}</span>
+        <div class="obs" *ngIf="s.estado === 'observado' && s.observacion">{{ s.observacion }}</div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="fecha">
+      <th mat-header-cell *matHeaderCellDef>Enviada</th>
+      <td mat-cell *matCellDef="let s"><small>{{ s.fecha_solicitud_f || '—' }}</small></td>
+    </ng-container>
+
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <td mat-cell *matCellDef="let s" class="acciones">
+        <ng-container *ngIf="modo === 'delegado'">
+          <button mat-icon-button color="primary" matTooltip="Editar" *ngIf="editable(s)" (click)="editar(s)"><mat-icon>edit</mat-icon></button>
+          <button mat-flat-button color="primary" *ngIf="editable(s)" (click)="enviar(s)">
+            {{ s.tipo === 'alta' ? 'Solicitar' : 'Solicitar actualización' }}
+          </button>
+          <button mat-icon-button color="warn" matTooltip="Anular" *ngIf="s.estado !== 'aprobado'" (click)="anular(s)"><mat-icon>block</mat-icon></button>
+        </ng-container>
+        <ng-container *ngIf="modo === 'comite'">
+          <button mat-flat-button color="primary" (click)="aceptar(s)"><mat-icon>check</mat-icon> Aceptar</button>
+          <button mat-stroked-button color="warn" (click)="observar(s)"><mat-icon>feedback</mat-icon> Observar</button>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+  </table>
+</div>

@@ -3,7 +3,7 @@ import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { DashboardService } from '../servicios/dashboard.service';
 import { SnackbarService } from '../servicios/snackbar.service';
 import { GlobalCostants } from '../shared/global-constants';
-import { leerToken, nombreRol } from '../shared/permisos';
+import { leerToken, nombreRol, puede } from '../shared/permisos';
 
 @Component({
   standalone: false,
@@ -18,6 +18,8 @@ export class DashboardComponent implements AfterViewInit {
 	nombre = leerToken()?.nombre || '';
 	rol = nombreRol(leerToken()?.role);
 	esAdmin = leerToken()?.role === 'admin';
+	esComite = puede('GESTION');
+	esDelegado = leerToken()?.role === 'delegado';
 	
 	ngAfterViewInit() { }
 

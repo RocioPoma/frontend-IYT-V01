@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialRoutes } from './material.routing';
 import { MaterialModule } from '../shared/material-module';
 import { CompetenciaModule } from '../competencia/competencia.module';
+import { SolicitudesModule } from '../solicitudes/solicitudes.module';
 import { ConfirmationComponent } from './dialog/confirmation/confirmation.component';
 import { ChangePasswordComponent } from './dialog/change-password/change-password.component';
 import { ManageClubComponent } from './manage-club/manage-club.component';
@@ -51,7 +52,8 @@ import { AuspiciadorComponent } from './dialog/auspiciador/auspiciador.component
     FormsModule,
     ReactiveFormsModule,
     CdkTableModule,
-    CompetenciaModule
+    CompetenciaModule,
+    SolicitudesModule
   ],
   providers: [],
   declarations: [
