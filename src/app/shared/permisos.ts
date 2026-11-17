@@ -14,6 +14,8 @@ export const ROLES: { valor: Rol; nombre: string }[] = [
 export const GRUPOS = {
   TODOS: ['admin', 'presidente', 'comite_tecnico', 'responsable_categoria', 'delegado'] as Rol[],
   ADMIN: ['admin'] as Rol[],
+  // Gestión de usuarios: el comité técnico solo gestiona delegados
+  USUARIOS: ['admin', 'comite_tecnico'] as Rol[],
   GESTION: ['admin', 'comite_tecnico'] as Rol[],
   PARTIDOS: ['admin', 'comite_tecnico', 'responsable_categoria'] as Rol[],
   EQUIPOS: ['admin', 'comite_tecnico', 'delegado'] as Rol[],

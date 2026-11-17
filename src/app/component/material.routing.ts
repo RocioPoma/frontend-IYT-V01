@@ -53,7 +53,7 @@ export const MaterialRoutes: Routes = [
         path: 'user',
         component: ManageUserComponent,
         canActivate: [RouteGuardService],
-        data: { grupo: 'ADMIN' }
+        data: { grupo: 'USUARIOS' }
     },
     {
         path: 'club',

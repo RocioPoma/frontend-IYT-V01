@@ -1,5 +1,5 @@
 import { exportarPDF } from 'src/app/shared/reporte-pdf';
-import { nombreRol } from 'src/app/shared/permisos';
+import { leerToken, nombreRol } from 'src/app/shared/permisos';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -20,6 +20,8 @@ import { SignupComponent } from './signup/signup.component';
 })
 export class ManageUserComponent implements OnInit {
   nombreRol = nombreRol;
+  /** El comité técnico solo gestiona delegados (crear, editar, activar); no elimina */
+  esComite = leerToken()?.role === 'comite_tecnico';
   displayedColumns: string[] = ['nombre', 'email', 'celular','rol','NombreClub', 'acciones'];
   dataSource: any;
   responseMessage: any;

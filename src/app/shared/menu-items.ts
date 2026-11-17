@@ -12,7 +12,7 @@ const MENUITEMS: Menu[] = [
   { state: 'dashboard', name: 'Inicio', icon: 'dashboard', role: '' },
   { state: 'solicitudes', name: 'Solicitudes por revisar', icon: 'fact_check', role: 'GESTION' },
   { state: 'campeonato', name: 'Campeonatos', icon: 'emoji_events', role: '' },
-  { state: 'user', name: 'Gestión usuarios', icon: 'people', role: 'ADMIN' },
+  { state: 'user', name: 'Gestión usuarios', icon: 'people', role: 'USUARIOS' },
   { state: 'club', name: 'Gestión clubs', icon: 'category', role: 'GESTION' },
   { state: 'jugador', name: 'Gestión jugadores', icon: 'badge', role: '' },
   { state: 'pase', name: 'Pase jugador', icon: 'swap_horiz', role: 'EQUIPOS' },

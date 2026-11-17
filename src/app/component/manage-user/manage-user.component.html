@@ -1,7 +1,7 @@
 <mat-card>
-    <b><span>GESTION USUARIOS</span></b>
+    <b><span>{{ esComite ? 'GESTIÓN DE DELEGADOS' : 'GESTION USUARIOS' }}</span></b>
         <button mat-stroked-button color="primary" class="float-right boton-reporte" (click)="reportePDF()"><mat-icon>picture_as_pdf</mat-icon> Reporte PDF</button>
-        <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Registrar usuario</button>
+        <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">{{ esComite ? 'Registrar delegado' : 'Registrar usuario' }}</button>
 
 <br>
     <mat-form-field appearance="fill">
@@ -43,7 +43,7 @@
                 <button mat-icon-button color="accent" matTooltip="Edit" (click)="handleEditAction(element)">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="accent" matTooltip="Delete" (click)="handleDeleteAction(element)">
+                <button mat-icon-button color="accent" matTooltip="Eliminar" *ngIf="!esComite" (click)="handleDeleteAction(element)">
                     <mat-icon>delete</mat-icon>
                 </button>
                 <mat-slide-toggle (change)="handleChangeAction($event.checked, element.id)"

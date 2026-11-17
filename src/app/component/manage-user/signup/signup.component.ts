@@ -1,4 +1,4 @@
-import { ROLES } from 'src/app/shared/permisos';
+import { ROLES, leerToken } from 'src/app/shared/permisos';
 import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
@@ -26,7 +26,8 @@ export class SignupComponent implements OnInit {
   responseMessage: any;
   club: any = [];
 
-  roles = ROLES;
+  /** El comité técnico solo puede registrar delegados */
+  roles = leerToken()?.role === 'comite_tecnico' ? ROLES.filter((r) => r.valor === 'delegado') : ROLES;
   publico = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
