@@ -22,7 +22,11 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "stylePreprocessorOptions": { "includePaths": ["src/assets/styles"] },
+            "allowedCommonJsDependencies": ["core-js", "raf", "rgbcolor", "html2canvas", "dompurify", "canvg"],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/assets/styles"],
+              "sass": { "silenceDeprecations": ["import"] }
+            },
             "assets": [
               { "glob": "**/*", "input": "src/assets", "output": "assets" },
               "src/favicon.ico"
