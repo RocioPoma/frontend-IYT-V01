@@ -2,7 +2,7 @@
   <header class="barra">
     <div class="barra-interior">
       <a class="marca" (click)="irA('campeonatos')">
-        <img src="assets/img/logo-iyt.png" alt="" />
+        <mat-icon class="copa">emoji_events</mat-icon>
         <span>Integración Yaretanense</span>
       </a>
       <nav class="menu" aria-label="Secciones">
@@ -10,14 +10,16 @@
           <mat-icon>emoji_events</mat-icon> Campeonatos
         </button>
         <button type="button" [class.activo]="seccion === 'sobre'" (click)="irA('sobre')">
-          <mat-icon>info</mat-icon> Sobre la Integración
+          <mat-icon>groups</mat-icon> Sobre la Integración
+        </button>
+        <button type="button" [class.activo]="seccion === 'sistema'" (click)="irA('sistema')">
+          <mat-icon>devices</mat-icon> Sobre el Sistema
         </button>
       </nav>
       <div class="barra-acciones">
-        <button mat-flat-button class="btn-claro" *ngIf="conSesion" (click)="irAlPanel()"><mat-icon>dashboard</mat-icon> <span class="txt">Ir al panel</span></button>
+        <button mat-flat-button class="btn-claro" aria-label="Ir al panel" *ngIf="conSesion" (click)="irAlPanel()"><mat-icon>dashboard</mat-icon> <span class="txt">Ir al panel</span></button>
         <ng-container *ngIf="!conSesion">
-          <button mat-button class="btn-texto" (click)="signupAction()">Registrarse</button>
-          <button mat-flat-button class="btn-claro" (click)="loginAction()"><mat-icon>login</mat-icon> <span class="txt">Iniciar sesión</span></button>
+          <button mat-flat-button class="btn-claro" aria-label="Iniciar sesión" (click)="loginAction()"><mat-icon>login</mat-icon> <span class="txt">Iniciar sesión</span></button>
         </ng-container>
       </div>
     </div>
@@ -48,23 +50,10 @@
     <main class="contenido">
       <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
 
-      <!-- En vivo y próximos -->
-      <section *ngIf="enVivo.length || proximos.length" class="vidrio">
-        <h2><span class="punto-vivo" *ngIf="enVivo.length"></span> {{ enVivo.length ? 'En vivo y próximos partidos' : 'Próximos partidos' }}</h2>
-        <div class="carrusel">
-          <div class="mini-partido" *ngFor="let p of enVivo.concat(proximos)" [class.vivo]="p.estado === 'En vivo'">
-            <div class="mp-estado">{{ p.estado === 'En vivo' ? 'EN VIVO' : (p.fecha_f + ' · ' + (p.hora_f || '')) }}</div>
-            <div class="mp-equipo"><span>{{ p.equipo1 }}</span><b *ngIf="p.estado === 'En vivo'">{{ p.total_equipo1 }}</b></div>
-            <div class="mp-equipo"><span>{{ p.equipo2 }}</span><b *ngIf="p.estado === 'En vivo'">{{ p.total_equipo2 }}</b></div>
-            <div class="mp-lugar" *ngIf="p.nombre_cancha"><mat-icon>location_on</mat-icon>{{ p.nombre_cancha }}</div>
-          </div>
-        </div>
-      </section>
-
       <section class="vidrio" *ngIf="campeonato">
         <mat-tab-group mat-stretch-tabs="false" animationDuration="150ms">
           <mat-tab>
-            <ng-template mat-tab-label><mat-icon class="tab-icono">scoreboard</mat-icon> Competencia</ng-template>
+            <ng-template mat-tab-label><mat-icon class="tab-icono">category</mat-icon> Categorías</ng-template>
             <ng-template matTabContent>
               <p class="vacio" *ngIf="!categorias.length">Este campeonato todavía no tiene categorías habilitadas.</p>
               <mat-chip-listbox *ngIf="categorias.length" class="chips" aria-label="Categorías">
@@ -149,14 +138,13 @@
   <!-- ======================= SOBRE LA INTEGRACIÓN ======================= -->
   <ng-container *ngIf="seccion === 'sobre'">
     <section class="portada portada-sobre">
-      <span class="etiqueta-portada"><mat-icon>info</mat-icon> Conózcanos</span>
-      <h1>Sobre la Integración</h1>
+      <img class="logo-portada" src="assets/img/logo-iyt.png" alt="Logo de la Integración Yaretanense" />
+      <h1>Sobre la Integración Yaretanence</h1>
       <p class="fechas"><span><mat-icon>place</mat-icon> Provincia Ladislao Cabrera · Oruro, Bolivia</span></p>
     </section>
 
     <main class="contenido">
       <section class="vidrio sobre">
-        <h2><mat-icon>groups</mat-icon> Sobre la Integración Yaretanence</h2>
         <p class="parrafo">
           El campeonato de integración Yaretanense ubicada en la provincia Ladislao Cabrera departamento de Oruro-Bolivia,
           fundada el 23 de diciembre de 2004, con sus 17 comunidades: {{ comunidades.join(', ') }}, es una entidad
@@ -173,10 +161,18 @@
           <span class="comunidad" *ngFor="let c of comunidades"><mat-icon>location_on</mat-icon>{{ c }}</span>
         </div>
       </section>
+    </main>
+  </ng-container>
 
+  <!-- ======================= SOBRE EL SISTEMA ======================= -->
+  <ng-container *ngIf="seccion === 'sistema'">
+    <section class="portada portada-sobre">
+      <span class="etiqueta-portada"><mat-icon>devices</mat-icon> Sobre el Sistema</span>
+      <h1>Evolución del Sistema de Integración Yaretanence</h1>
+    </section>
+
+    <main class="contenido">
       <section class="vidrio sobre">
-        <h2><mat-icon>devices</mat-icon> Sobre El Sistema</h2>
-        <h3 class="subtitulo-chico">Evolución del Sistema de Integración Yaretanence</h3>
         <p class="parrafo">
           El Sistema de Integración Yaretanence surge como una iniciativa tecnológica orientada a modernizar y optimizar
           la organización, administración y seguimiento de los campeonatos deportivos del Ayllu Kulli Yaretani.

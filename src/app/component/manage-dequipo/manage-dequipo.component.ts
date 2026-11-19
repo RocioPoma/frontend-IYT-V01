@@ -174,7 +174,8 @@ export class ManageDequipoComponent implements OnInit {
       id_contempla: this.id_contempla,
       data_categoria: this.dataDcategoria
     }
-    dialogConfig.width = "750px";
+    dialogConfig.width = "960px";
+    dialogConfig.maxWidth = "96vw";
     const dialogRef = this.dialog.open(JugadorEquipoComponent, dialogConfig);
     this.router.events.subscribe(() => {
       dialogRef.close();

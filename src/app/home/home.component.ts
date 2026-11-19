@@ -29,15 +29,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   noticias: any[] = [];
   canchas: Cancha[] = [];
   auspiciadores: any[] = [];
-  enVivo: Partido[] = [];
-  proximos: Partido[] = [];
   cargando = true;
   conSesion = !!leerToken();
   imgUrl = environment.apiUrl + '/uploads/img/';
   private temporizador: any;
 
   /** Menú del portal: "Campeonatos" se abre por defecto */
-  seccion: 'campeonatos' | 'sobre' = 'campeonatos';
+  seccion: 'campeonatos' | 'sobre' | 'sistema' = 'campeonatos';
 
   readonly comunidades = [
     'Cañavícota', 'Catuyo', 'Cajuata', 'Challgua', 'Challuma', 'Chite', 'Cochevillque', 'Jayocota Vinto',
@@ -76,7 +74,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     },
   ];
 
-  irA(seccion: 'campeonatos' | 'sobre'): void {
+  irA(seccion: 'campeonatos' | 'sobre' | 'sistema'): void {
     this.seccion = seccion;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -100,24 +98,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       },
       error: () => (this.cargando = false),
     });
-    this.cargarPartidos();
-    this.temporizador = setInterval(() => this.cargarPartidos(), 60000);
     this.canchaService.listar(true).subscribe({ next: (c) => (this.canchas = c), error: () => {} });
     this.publico.auspiciadores().subscribe({ next: (a) => (this.auspiciadores = a), error: () => {} });
   }
 
   ngOnDestroy(): void {
     clearInterval(this.temporizador);
-  }
-
-  cargarPartidos(): void {
-    this.competencia.proximos(20).subscribe({
-      next: (p) => {
-        this.enVivo = p.filter((x) => x.estado === 'En vivo');
-        this.proximos = p.filter((x) => x.estado !== 'En vivo').slice(0, 8);
-      },
-      error: () => {},
-    });
   }
 
   elegirCampeonato(c: any): void {

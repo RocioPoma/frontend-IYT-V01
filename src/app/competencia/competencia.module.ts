@@ -7,6 +7,7 @@ import { TablaPosicionesComponent } from './tabla-posiciones.component';
 import { RankingJugadoresComponent } from './ranking-jugadores.component';
 import { FixtureComponent } from './fixture.component';
 import { ProgramarPartidoComponent } from './programar-partido.component';
+import { GenerarFixtureComponent } from './generar-fixture.component';
 import { MedalleroCategoriaComponent } from './medallero-categoria.component';
 import { MedalleroCampeonatoComponent } from './medallero-campeonato.component';
 
@@ -15,6 +16,7 @@ const COMPONENTES = [
   RankingJugadoresComponent,
   FixtureComponent,
   ProgramarPartidoComponent,
+  GenerarFixtureComponent,
   MedalleroCategoriaComponent,
   MedalleroCampeonatoComponent,
 ];

@@ -1,293 +1,223 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ClubService } from 'src/app/servicios/club.service';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { DcategoriacampeonatoService } from 'src/app/servicios/dcategoriacampeonato.service';
 import { DpartidoService } from 'src/app/servicios/dpartido.service';
+import { EquipoService } from 'src/app/servicios/equipo.service';
 import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { PartidoComponent } from '../dialog/partido/partido.component';
-import { jwtDecode } from 'jwt-decode';
 import { rolPantalla } from '../../shared/permisos';
+import { environment } from 'src/environments/environment';
+import { ProgramarPartidoComponent } from 'src/app/competencia/programar-partido.component';
+import { GenerarFixtureComponent, OpcionesFixture } from 'src/app/competencia/generar-fixture.component';
+import { exportarFixturePDF } from 'src/app/shared/reporte-fixture';
 
-export interface PeriodicElement {
-  equipo: string;
-  puntos: number;
-  juegos: number;
-  ganados: number;
-  empates: number;
-  perdido: number;
-  golesfavor: number;
-  golescontra: number;
-  diferenciagoles: number;
-  aprovechamiento: number;
-  extra: number;
-}
+interface Ronda { numero: number; fecha: string | null; partidos: any[]; descansa: string[]; }
+interface Grupo { titulo: string; serie: number; partidos: any[]; rondas: Ronda[]; }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { equipo: 'Aurora', puntos: 3, juegos: 3, ganados: 1, empates: 1, perdido: 0, golesfavor: 0, golescontra: 0, diferenciagoles: 2, aprovechamiento: 0, extra: 3 },
-  { equipo: 'Ingavi', puntos: 3, juegos: 3, ganados: 1, empates: 1, perdido: 0, golesfavor: 0, golescontra: 0, diferenciagoles: 2, aprovechamiento: 0, extra: 3 },
-  { equipo: 'Real Maracana', puntos: 3, juegos: 3, ganados: 1, empates: 1, perdido: 0, golesfavor: 0, golescontra: 0, diferenciagoles: 2, aprovechamiento: 0, extra: 3 },
-  { equipo: 'Rosario Central', puntos: 3, juegos: 3, ganados: 1, empates: 1, perdido: 0, golesfavor: 0, golescontra: 0, diferenciagoles: 2, aprovechamiento: 0, extra: 3 },
-  { equipo: 'Bolivar 2', puntos: 3, juegos: 3, ganados: 1, empates: 1, perdido: 0, golesfavor: 0, golescontra: 0, diferenciagoles: 2, aprovechamiento: 0, extra: 3 },
-  { equipo: 'Hydrogen', puntos: 3, juegos: 3, ganados: 1, empates: 1, perdido: 0, golesfavor: 0, golescontra: 0, diferenciagoles: 2, aprovechamiento: 0, extra: 3 },
-];
-
+/** Fixture - Partidos de una categoría: generar (con logos, fecha y hora opcionales), programar, administrar y reporte PDF. */
 @Component({
   standalone: false,
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-dpartido',
   templateUrl: './manage-dpartido.component.html',
-  styleUrls: ['./manage-dpartido.component.scss']
+  styleUrls: ['./manage-dpartido.component.scss'],
 })
 export class ManageDpartidoComponent implements OnInit {
-  displayedColumns: string[] = ['numero', 'equipo1', 'vs', 'equipo2'];
-  displayedColumnsTP: string[] = ['numero', 'equipos', 'pts', 'j', 'g', 'e', 'p', 'gf', 'gc', 'dif', '%', 'pe'];
-  dataSource: any;
-  dataSource2: any; //se utiliza cyando es por series
-  //dataSourceTP: any;
-  dataSourceTP = ELEMENT_DATA;
-  responseMessage: any;
-  dataFixture: any;
-  dataCategoriad: any;
-  role: any;
-
-
+  readonly urlArchivos = environment.apiUrl + '/uploads/img/';
   id: string | null = '';
+  role: any;
+  dataCategoriad: any;
+  grupos: Grupo[] = [];
+  serieFiltro = '';
+  texto = '';
+  cargando = false;
+  generandoPDF = false;
 
-  constructor(private dpartidoService: DpartidoService,
+  constructor(
+    private dpartidoService: DpartidoService,
     private dcategoriacampeonatoService: DcategoriacampeonatoService,
+    private equipoService: EquipoService,
     private dialog: MatDialog,
     private snackbarService: SnackbarService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id_contempla');
-    this.dataCategoria(this.id);
-    //console.log('DATOS SISTEMA SE JUEGO ' + this.dataCategoriad.sistema_de_juego);
-  
-    this.tableData();
-    this.tableData2();
+    this.role = rolPantalla('PARTIDOS'); // 'admin' = puede modificar en este módulo
+    this.dcategoriacampeonatoService.getById(this.id).subscribe({
+      next: (res) => {
+        this.dataCategoriad = res;
+        this.cargar();
+      },
+      error: () => this.cargar(),
+    });
+  }
 
-    const token = localStorage.getItem('token');
-    if (token) {
-      // Decodificar el token y extraer el nombre
-      const decodedToken: any = jwtDecode(token);
-      this.role = rolPantalla('PARTIDOS'); // 'admin' = puede modificar en este módulo
-    } else {
-      console.log('No hay token en localStorage');
+  get porSerie(): boolean {
+    return this.dataCategoriad?.sistema_de_juego === 'por serie';
+  }
+
+  get hayPartidos(): boolean {
+    return this.grupos.some((g) => g.partidos.length > 0);
+  }
+
+  get resumen(): string {
+    const c = this.dataCategoriad;
+    const total = this.grupos.reduce((s, g) => s + g.partidos.length, 0);
+    const base = c ? `${c.nombre_disciplina} ${c.nombre_categoria} · ${this.porSerie ? 'Por series' : 'Todos contra todos'}` : '';
+    return total ? `${base} · ${total} partidos` : base;
+  }
+
+  /** Grupos con el filtro de serie y la búsqueda aplicados */
+  get gruposVisibles(): Grupo[] {
+    const t = this.normalizar(this.texto);
+    return this.grupos
+      .filter((g) => g.partidos.length && (!this.serieFiltro || g.titulo === this.serieFiltro))
+      .map((g) => ({
+        ...g,
+        rondas: g.rondas
+          .map((r) => ({ ...r, partidos: r.partidos.filter((p) => !t || this.normalizar(p.equipo1 + ' ' + p.equipo2).includes(t)) }))
+          .filter((r) => r.partidos.length),
+      }));
+  }
+
+  cargar(): void {
+    this.cargando = true;
+    // por series: serie 1 (A) y 2 (B); todos contra todos: serie 1 y, por compatibilidad, la 0
+    const series = this.porSerie ? [1, 2] : [1, 0];
+    forkJoin(series.map((s) => this.dpartidoService.get(this.id, s).pipe(catchError(() => of([]))))).subscribe((res: any[]) => {
+      this.cargando = false;
+      if (this.porSerie) {
+        this.grupos = res.map((partidos, i) => this.armarGrupo('Serie ' + (i === 0 ? 'A' : 'B'), series[i], partidos || []));
+      } else {
+        this.grupos = [this.armarGrupo('Todos contra todos', 1, [...(res[0] || []), ...(res[1] || [])])];
+      }
+    });
+  }
+
+  private armarGrupo(titulo: string, serie: number, partidos: any[]): Grupo {
+    const mapa = new Map<number, any[]>();
+    partidos.forEach((p) => {
+      const r = p.ronda || 1;
+      if (!mapa.has(r)) mapa.set(r, []);
+      mapa.get(r)!.push(p);
+    });
+    const equipos = new Set<string>();
+    partidos.forEach((p) => { equipos.add(p.equipo1); equipos.add(p.equipo2); });
+    const rondas = [...mapa.entries()]
+      .sort((a, b) => a[0] - b[0])
+      .map(([numero, ps]) => {
+        const fechas = [...new Set(ps.map((p) => p.fecha_f).filter(Boolean))];
+        const juegan = new Set<string>(ps.flatMap((p) => [p.equipo1, p.equipo2]));
+        const descansa = [...equipos].filter((e) => !juegan.has(e));
+        return { numero, fecha: fechas.length === 1 ? fechas[0] : fechas.length ? fechas.join(' / ') : null, partidos: ps, descansa };
+      });
+    return { titulo, serie, partidos, rondas };
+  }
+
+  applyFilter(event: Event): void {
+    this.texto = (event.target as HTMLInputElement).value;
+  }
+
+  private normalizar(s: string): string {
+    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  }
+
+  //--------------------------------- GENERAR FIXTURE ---------------------------------
+  handleAddAction(): void {
+    this.equipoService.get(this.id).subscribe({
+      next: (equipos: any) => {
+        const aprobados = (equipos || []).filter((e: any) => (e.estado || 'aprobado') === 'aprobado');
+        const c = this.dataCategoriad || {};
+        const ref = this.dialog.open(GenerarFixtureComponent, {
+          width: '760px',
+          maxWidth: '96vw',
+          data: { categoria: `${c.nombre_disciplina || ''} ${c.nombre_categoria || ''}`.trim(), porSerie: this.porSerie, equipos: aprobados },
+        });
+        ref.afterClosed().subscribe((op?: OpcionesFixture) => op && this.generar(op, aprobados));
+      },
+      error: (e: any) => this.error(e),
+    });
+  }
+
+  private generar(op: OpcionesFixture, equipos: any[]): void {
+    const series = this.porSerie
+      ? [1, 2].filter((s) => equipos.filter((e) => Number(e.id_serie) === s).length >= 2)
+      : [1];
+    if (!series.length) {
+      this.snackbarService.openSnackBar('Se necesitan al menos 2 equipos aprobados', GlobalCostants.error);
+      return;
     }
-    
+    this.cargando = true;
+    forkJoin(series.map((s) => this.dpartidoService.addFixture({ id_contempla: this.id, id_serie: s, ...op }))).subscribe({
+      next: (r: any[]) => {
+        this.snackbarService.openSnackBar(r.map((x) => x.message).join(' · '), 'success');
+        this.cargar();
+      },
+      error: (e: any) => {
+        this.error(e);
+        this.cargar();
+      },
+    });
   }
 
-
-  tableData() {
-    var id_serie = 1
-    this.dpartidoService.get(this.id, id_serie).subscribe((response: any) => {
-      this.dataSource = new MatTableDataSource(response);
-      this.dataFixture = response
-    }, (error: any) => {
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
-      }
-      else {
-        this.responseMessage = GlobalCostants.genericError;
-      }
-      this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
-    })
-  }
-
-  tableData2() {
-    var id_serie = 2
-    this.dpartidoService.get(this.id, id_serie).subscribe((response: any) => {
-      this.dataSource2 = new MatTableDataSource(response);
-      //this.dataFixture = response
-    }, (error: any) => {
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
-      }
-      else {
-        this.responseMessage = GlobalCostants.genericError;
-      }
-      this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
-    })
-  }
-
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  //--------------------- LISTA DISCIPLINA, CATEGORIA .. DE UN CAMPEONATO ESPECIFICO  -------------
-  dataCategoria(id: any) {
-    this.dcategoriacampeonatoService.getById(id).subscribe(res => {
-      this.dataCategoriad = res;
-      // console.log("datos RES: " + JSON.stringify(this.dataSource));
-    },
-      err => console.log(err)
-    )
-  }
-
-  //--------------------------------- GENERAR FIXTURE ------------------------------------------------------
-  handleAddAction() {
-    console.log('DATOS SISTEMA SE JUEGO ' + this.dataCategoriad.sistema_de_juego)
-    var id_serie = 1;
-    var n = 1;
-    if (this.dataCategoriad.sistema_de_juego == 'por serie') {
-      n = 2;
-    }
-    for (var i = 1; i <= n; i++) {
-
-      id_serie = i;
-
-      var data = {
-        id_contempla: this.id,
-        id_serie: id_serie
-      }
-
-      this.dpartidoService.addFixture(data).subscribe((response: any) => {
-        this.responseMessage = response.message;
-        this.snackbarService.openSnackBar(this.responseMessage, "success");
-        this.tableData();
-        this.tableData2();
-      }, (error: any) => {
-        if (error.error?.message) {
-          this.responseMessage = error.error?.message;
-        }
-        else {
-          this.responseMessage = GlobalCostants.genericError;
-        }
-        this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
-      })
-    }
-  }
-
-
-  handleDeleteAction() {
+  handleDeleteAction(): void {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {
-      message: ' eliminar el presente fixture'
-    };
+    dialogConfig.data = { message: ' eliminar el presente fixture' };
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-    const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe((response) => {
-      //this.ngxService.start();
-      this.deleteFixture(this.id);
+    dialogRef.componentInstance.onEmitStatusChange.subscribe(() => {
       dialogRef.close();
+      this.dpartidoService.deleteFixture(this.id).subscribe({
+        next: (r: any) => {
+          this.snackbarService.openSnackBar(r?.message, 'success');
+          this.cargar();
+        },
+        error: (e: any) => this.error(e),
+      });
     });
   }
 
-  deleteFixture(id_contempla: any) {
-    this.dpartidoService.deleteFixture(id_contempla).subscribe((response: any) => {
-      this.tableData();
-      this.tableData2();
-      this.responseMessage = response?.message;
-      this.snackbarService.openSnackBar(this.responseMessage, "success");
-    }, (error: any) => {
-      if (error.error?.message) {
-        this.responseMessage = error.error?.message;
-      }
-      else {
-        this.responseMessage = GlobalCostants.genericError;
-      }
-      this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
-    })
+  //--------------------------------- PROGRAMAR Y ADMINISTRAR ---------------------------------
+  programar(p: any): void {
+    const ref = this.dialog.open(ProgramarPartidoComponent, { width: '520px', maxWidth: '96vw', data: p });
+    ref.afterClosed().subscribe((ok) => ok && this.cargar());
   }
 
-  //--------COMPROBAR ARRAY DE FIXTURE 
-
-  comprobarArrayFixture() {
-    //const estado= false;
-    if (JSON.stringify(this.dataFixture) == '[]') {
-      return false;
-    }
-    else {
-      return true;
-    }
-    //console.log("DTAOS FISTURE "+JSON.stringify(this.dataFixture))
-    //return false;
-  }
-
-
-  //--------ADMINISTRAR PARTIDO
-  hechosPartido(id_partido: any, id_equipo1: any, id_equipo2: any) {
-
+  hechosPartido(id_partido: any, id_equipo1: any, id_equipo2: any): void {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {
-      action: 'addHechos',
-      id_partido: id_partido,
-      id_equipo1: id_equipo1,
-      id_equipo2: id_equipo2,
-      id_contempla: this.id
-    }
-    dialogConfig.width = "800px";
+    dialogConfig.data = { action: 'addHechos', id_partido, id_equipo1, id_equipo2, id_contempla: this.id };
+    dialogConfig.width = '900px';
+    dialogConfig.maxWidth = '96vw';
     const dialogRef = this.dialog.open(PartidoComponent, dialogConfig);
-    this.router.events.subscribe(() => {
-      dialogRef.close();
-  
-    });
-    const sub = dialogRef.componentInstance.onAdd.subscribe((response) => {
-      this.tableData();
-      this.tableData2();
-    })
-
-    console.log("id partido: " + id_partido);
-    console.log("id equipo 1: " + id_equipo1);
-    console.log("id equipo 2: " + id_equipo2);
+    this.router.events.subscribe(() => dialogRef.close());
+    dialogRef.componentInstance.onAdd.subscribe(() => this.cargar());
   }
 
-
-}
-
-/*
-
-handleEditAction(values: any) {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.data = {
-    action: 'Edit',
-    data:values
+  //--------------------------------- REPORTE PDF ---------------------------------
+  async reportePDF(): Promise<void> {
+    const c = this.dataCategoriad || {};
+    this.generandoPDF = true;
+    try {
+      await exportarFixturePDF({
+        titulo: `FIXTURE ${c.nombre_disciplina || ''} ${c.nombre_categoria || ''}`.toUpperCase().trim(),
+        subtitulo: [c.nombre_campeonato, c.gestion ? 'Gestión ' + c.gestion : '', c.genero].filter(Boolean).join(' · '),
+        grupos: this.grupos.filter((g) => g.partidos.length).map((g) => ({ titulo: this.porSerie ? g.titulo.toUpperCase() : '', partidos: g.partidos })),
+        urlArchivos: this.urlArchivos,
+        archivo: 'fixture',
+      });
+    } finally {
+      this.generandoPDF = false;
+    }
   }
-  dialogConfig.width = "850px";
-  const dialogRef = this.dialog.open(ClubComponent, dialogConfig);
-  this.router.events.subscribe(() => {
-    dialogRef.close();
-  });
-  const sub = dialogRef.componentInstance.onEditClub.subscribe((response) => {
-    this.tableData();
-  })
+
+  private error(e: any): void {
+    this.snackbarService.openSnackBar(e?.error?.message || GlobalCostants.genericError, GlobalCostants.error);
+  }
 }
-
-//------------------ LIMINAR CLUB --------------------------------
-handleDeleteAction(values: any) {
-  const dialogConfig = new MatDialogConfig();
-  dialogConfig.data = {
-    message: ' eliminar  el Club ' + values.nombre
-  };
-  const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-  const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe((response) => {
-    this.deleteReglamento(values.id);
-    dialogRef.close();
-  });
-}
-
-deleteReglamento(id: any) {
-  this.clubService.delete(id).subscribe((response: any) => {
-    this.tableData();
-    this.responseMessage = response?.message;
-    this.snackbarService.openSnackBar(this.responseMessage, "success");
-  }, (error: any) => {
-    if (error.error?.message) {
-      this.responseMessage = error.error?.message;
-    }
-    else {
-      this.responseMessage = GlobalCostants.genericError;
-    }
-    this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
-  })
-}
-*/
-
-

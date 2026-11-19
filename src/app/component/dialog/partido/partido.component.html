@@ -1,12 +1,12 @@
 <div *ngFor="let element of dataPartido">
-    <mat-toolbar color="primary" align="center">
+    <mat-toolbar class="barra-partido">
+        <span class="titulo-partido">Administrar partido</span>
+        <span class="espaciador"></span>
         <div class="divestado">
-            <!-- <span class="title-center">Agregar Jugadores al equipo: {{action}} </span> -->
-            <mat-form-field class="estado" appearance="fill">
-                <mat-label>Estado Partido</mat-label>
+            <mat-form-field class="estado" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Estado del partido</mat-label>
                 <mat-select [(value)]="element.estado" (selectionChange)="changeSelectEstado($event.value,id_partido)">
-                    <mat-option>None</mat-option>
-                    <mat-option value="Cerrado">CERRADO</mat-option>
+                                        <mat-option value="Cerrado">CERRADO</mat-option>
                     <mat-option value="En vivo">EN VIVO</mat-option>
                     <mat-option value="No realizado">NO REALIZADO</mat-option>
                 </mat-select>
@@ -18,10 +18,10 @@
 
         <!-- EQUIPO 1  -->
         <div>
-            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="cards-wrapper">
+            <h4 class="equipo-hechos"><mat-icon>groups</mat-icon> {{element.equipo1}}</h4>
+<mat-tab-group mat-stretch-tabs="false" class="tabs-hechos" animationDuration="150ms">
+    <mat-tab label="Jugadores">
+<div class="cards-wrapper">
 
                             <div class="card">
                                 <div align="center" class="encavezado">EN CANCHA</div>
@@ -55,7 +55,7 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">CAMBIO</div>
                                 <hr>
                                 <div class="card-body">
@@ -87,10 +87,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="cards-wrapper">
+    </mat-tab>
+    <mat-tab label="Goles y faltas">
+<div class="cards-wrapper">
                             
                             <div class="card">
                                 <div align="center" class="encavezado">GOLES</div>
@@ -124,7 +123,7 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">FALTAS</div>
                                 <hr>
                                 <div class="card-body">
@@ -157,10 +156,9 @@
                             </div>
                 
                         </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="cards-wrapper">
+    </mat-tab>
+    <mat-tab label="Tarjetas">
+<div class="cards-wrapper">
                             
                             <div class="card">
                                 <div align="center" class="encavezado">TARJETA AMARILLA</div>
@@ -194,7 +192,7 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">TARJETA ROJA</div>
                                 <hr>
                                 <div class="card-body">
@@ -226,20 +224,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
+    </mat-tab>
+</mat-tab-group>
         </div>
         <hr>
         <!-- FIN EQUIPO 1-->
@@ -247,11 +233,13 @@
 
         <!---->
         <div class="div-padre" align="center">
-            <div class="div-equipo" fxFlex>{{element.equipo1}}</div>
+            <div class="div-equipo" fxFlex>
+                <span class="escudo-p"><img *ngIf="element.logo1; else l1" [src]="urlArchivos + element.logo1" alt=""><ng-template #l1><mat-icon>shield</mat-icon></ng-template></span>
+                {{element.equipo1}}</div>
             <div fxFlex class="contenedorDiv" matTooltip="Agregar Resultado" 
                 (click)="addResultado(element.id_equipo1,element.id_equipo2,element.equipo1,element.equipo2,'resultado')" >
-                <div class="div1">1</div> 
-                <div class="div2"> {{totalGolesE1[0].total}} : {{totalGolesE2[0].total}} </div>
+                <div class="div2"> {{ totalGolesE1?.[0]?.total ?? 0 }} : {{ totalGolesE2?.[0]?.total ?? 0 }} </div>
+                <div class="div-ayuda">Clic para registrar el resultado</div>
                 <!--<div class="div2"> {{element.total_equipo1}} : {{element.total_equipo2}} </div>-->
                 <!--
                 <div class="div2" *ngIf="(totalGolesE1[0].total!=totalGolesOldE1[0].total || totalGolesE2[0].total!=totalGolesOldE2[0].total)">
@@ -261,10 +249,11 @@
                     {{element.total_equipo1}} : {{element.total_equipo2}} 
                 </div>-->
                 
-                <!--<div class="div2" *ngIf="actualizarResultadoPartido(totalGolesE1[0].total,totalGolesE2[0].total)"> {{element.total_equipo1}} : {{element.total_equipo2}} </div>-->
-                <div class="div1">1</div>
+
             </div>
-            <div class="div-equipo" fxFlex>{{element.equipo2}}</div>
+            <div class="div-equipo" fxFlex>
+                <span class="escudo-p"><img *ngIf="element.logo2; else l2" [src]="urlArchivos + element.logo2" alt=""><ng-template #l2><mat-icon>shield</mat-icon></ng-template></span>
+                {{element.equipo2}}</div>
         </div>
         <hr>
         <!---->
@@ -272,10 +261,10 @@
 
         <!-- EQUIPO 2-->
         <div>
-            <div id="carouselEquipo2" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="cards-wrapper">
+            <h4 class="equipo-hechos"><mat-icon>groups</mat-icon> {{element.equipo2}}</h4>
+<mat-tab-group mat-stretch-tabs="false" class="tabs-hechos" animationDuration="150ms">
+    <mat-tab label="Jugadores">
+<div class="cards-wrapper">
 
                             <div class="card">
                                 <div align="center" class="encavezado">EN CANCHA</div>
@@ -309,7 +298,7 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">CAMBIO</div>
                                 <hr>
                                 <div class="card-body">
@@ -341,10 +330,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="cards-wrapper">
+    </mat-tab>
+    <mat-tab label="Goles y faltas">
+<div class="cards-wrapper">
                             
                             <div class="card">
                                 <div align="center" class="encavezado">GOLES</div>
@@ -378,7 +366,7 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">FALTAS</div>
                                 <hr>
                                 <div class="card-body">
@@ -411,10 +399,9 @@
                             </div>
                 
                         </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="cards-wrapper">
+    </mat-tab>
+    <mat-tab label="Tarjetas">
+<div class="cards-wrapper">
                             
                             <div class="card">
                                 <div align="center" class="encavezado">TARJETA AMARILLA</div>
@@ -448,7 +435,7 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">TARJETA ROJA</div>
                                 <hr>
                                 <div class="card-body">
@@ -480,21 +467,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                </div>
-
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselEquipo2"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselEquipo2"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
+    </mat-tab>
+</mat-tab-group>
         </div>
         <!--FIN EQUIPO 2-->
 
@@ -561,7 +535,7 @@
     </mat-dialog-content>
 
     <mat-dialog-actions align="center">
-        <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'"  (click)="handleSubmit(totalGolesE1[0].total,totalGolesE2[0].total)">Guardar</button>
-        <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'"  (click)="handleSubmit(totalGolesE1?.[0]?.total ?? 0, totalGolesE2?.[0]?.total ?? 0)">Guardar</button>
+        <button mat-raised-button mat-dialog-close>Cerrar</button>
     </mat-dialog-actions>
 </div>

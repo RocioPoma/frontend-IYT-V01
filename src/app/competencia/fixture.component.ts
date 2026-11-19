@@ -15,11 +15,11 @@ import { ProgramarPartidoComponent } from './programar-partido.component';
 })
 export class FixtureComponent implements OnChanges {
   @Input() idContempla: number | string | null = null;
-  @Input() idSerie: number | string = 0;
+  @Input() idSerie: number | string = 'todas';
   /** Muestra el botón "Programar" (solo en el panel interno) */
   @Input() editable = false;
 
-  rondas: { numero: number | null; partidos: Partido[] }[] = [];
+  rondas: { numero: number | null; titulo: string; partidos: Partido[] }[] = [];
   todos: Partido[] = [];
   clubs: string[] = [];
   filtroClub = '';
@@ -55,12 +55,20 @@ export class FixtureComponent implements OnChanges {
     const lista = this.filtroClub
       ? this.todos.filter((p) => p.equipo1 === this.filtroClub || p.equipo2 === this.filtroClub)
       : this.todos;
-    const mapa = new Map<number | null, Partido[]>();
+    // con series (1 = A, 2 = B) el título indica la serie y la fecha
+    const conSeries = new Set(this.todos.map((p) => Number(p.id_serie) || 0)).size > 1 || this.todos.some((p) => Number(p.id_serie) === 2);
+    const mapa = new Map<string, { numero: number | null; titulo: string; partidos: Partido[] }>();
     for (const p of lista) {
-      const k = p.ronda ?? null;
-      mapa.set(k, [...(mapa.get(k) || []), p]);
+      const serie = Number(p.id_serie) || 0;
+      const numero = p.ronda ?? null;
+      const k = `${serie}-${numero}`;
+      if (!mapa.has(k)) {
+        const fecha = numero ? 'Fecha ' + numero : 'Partidos';
+        mapa.set(k, { numero, titulo: conSeries && serie ? `Serie ${serie === 1 ? 'A' : 'B'} · ${fecha}` : fecha, partidos: [] });
+      }
+      mapa.get(k)!.partidos.push(p);
     }
-    this.rondas = [...mapa.entries()].map(([numero, partidos]) => ({ numero, partidos }));
+    this.rondas = [...mapa.values()];
   }
 
   programar(p: Partido): void {

@@ -13,7 +13,7 @@ import { GlobalCostants } from '../shared/global-constants';
   changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-programar-partido',
   template: `
-    <h2 mat-dialog-title>Programar partido</h2>
+    <mat-toolbar><span>Programar partido</span></mat-toolbar>
     <mat-dialog-content>
       <p class="titulo-partido"><b>{{ p.equipo1 }}</b> vs <b>{{ p.equipo2 }}</b></p>
       <form [formGroup]="form" class="form-programar">
@@ -22,7 +22,7 @@ import { GlobalCostants } from '../shared/global-constants';
           <input matInput type="date" formControlName="fecha" />
         </mat-form-field>
         <mat-form-field appearance="outline">
-          <mat-label>Hora</mat-label>
+          <mat-label>Hora (opcional)</mat-label>
           <input matInput type="time" formControlName="hora" />
         </mat-form-field>
         <mat-form-field appearance="outline">
@@ -41,9 +41,9 @@ import { GlobalCostants } from '../shared/global-constants';
         </mat-form-field>
       </form>
     </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancelar</button>
-      <button mat-flat-button color="primary" (click)="guardar()" [disabled]="guardando">Guardar</button>
+    <mat-dialog-actions align="center">
+      <button mat-raised-button color="primary" (click)="guardar()" [disabled]="guardando">Guardar</button>
+      <button mat-raised-button mat-dialog-close>Cancelar</button>
     </mat-dialog-actions>
   `,
   styles: [`.form-programar { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; } .titulo-partido { text-align: center; margin-bottom: 12px; }

@@ -54,13 +54,13 @@ body {
   z-index: 3;
   .mat-icon, .mat-mdc-icon-button { color: #fff !important; }
   .topbar-marca { display: inline-flex; align-items: center; gap: 10px; margin-left: 6px; min-width: 0; }
-  .topbar-logo { height: 38px; width: auto; }
+  .topbar-copa { color: #ffd54f !important; font-size: 28px; width: 28px; height: 28px; }
   .topbar-nombre { font-size: 19px; font-weight: 500; letter-spacing: .2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .topbar-usuario { font-size: 14px; opacity: .9; margin-right: 4px; }
   @media (max-width: 599px) {
     .topbar-usuario { display: none; }
     .topbar-nombre { font-size: 16px; }
-    .topbar-logo { height: 30px; }
+    .topbar-copa { font-size: 24px; width: 24px; height: 24px; }
   }
 }
 
@@ -322,7 +322,7 @@ html .page-wrapper {
 
 // Colores de botones de icono (en Material 3 el atributo color ya no los pinta)
 .mat-mdc-icon-button.mat-primary, .mat-mdc-icon-button.mat-accent { color: var(--iyt-primario) !important; }
-.mat-mdc-icon-button.mat-warn { color: #c62828 !important; }
+.mat-mdc-icon-button.mat-warn { color: var(--iyt-primario) !important; }
 .mat-mdc-icon-button:disabled { color: rgba(0, 0, 0, .3) !important; }
 .mat-mdc-cell .mat-mdc-icon-button, .mat-mdc-cell .mat-mdc-slide-toggle { vertical-align: middle; }
 #snav .mat-mdc-list-item a mat-icon { flex: 0 0 22px; }
@@ -358,9 +358,9 @@ html .page-wrapper {
   .vacio, .nota { color: rgba(255, 255, 255, .55) !important; }
   .pos { background: rgba(255, 255, 255, .1); color: #fff; }
   .pos.podio { background: #80cbc4; color: #032420; }
-  .ronda h4 { color: #80cbc4; }
+  .ronda h4 { color: #80cbc4 !important; }
   .partido { background: rgba(255, 255, 255, .04); border-color: rgba(255, 255, 255, .1); color: #e8f1ef; }
-  .partido .detalle { color: rgba(255, 255, 255, .75); }
+  .partido .detalle, .partido .detalle * { color: rgba(255, 255, 255, .75) !important; }
   .estado { background: rgba(255, 255, 255, .1); color: #e8f1ef; }
   .estado.cerrado { background: #00796b; color: #fff; }
   .escudo { color: rgba(255, 255, 255, .45); }

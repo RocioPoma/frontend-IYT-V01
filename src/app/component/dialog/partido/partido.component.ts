@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import { ThisReceiver } from '@angular/compiler';
 import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -22,6 +23,7 @@ export class PartidoComponent implements OnInit {
   displayedColumns: string[] = ['numero', 'nombre', 'edad'];
   displayedColumnsHechos: string[] = ['camiseta', 'nombre', 'hecho'];
   action: any = "Agregar";
+  readonly urlArchivos = environment.apiUrl + '/uploads/img/';
   dataPartido: any;
   dataEquipoJugador: any;
 

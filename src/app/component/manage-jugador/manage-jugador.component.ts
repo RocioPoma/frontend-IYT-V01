@@ -230,12 +230,12 @@ export class ManageJugadorComponent implements OnInit {
 
     // Cargar la imagen del logo desde la carpeta de assets
     const logoImg = new Image();
-    logoImg.src = '../../../assets/img/logo2_1.png'; // Ruta de la imagen en tu proyecto
+    logoImg.src = '../../../assets/img/logo-iyt.png'; // Ruta de la imagen en tu proyecto
 
     logoImg.onload = () => {
       
       // Agregar el encabezado con el logo, usuario y fecha
-      doc.addImage(logoImg, 'PNG', 150, 5, 40, 20);// Ajusta la posición y tamaño según sea necesario
+      doc.addImage(logoImg, 'PNG', 170, 4, 24, 21);// Ajusta la posición y tamaño según sea necesario
       doc.setFontSize(12);
       doc.text('REPORTE JUGADORES', 75, 25);
 

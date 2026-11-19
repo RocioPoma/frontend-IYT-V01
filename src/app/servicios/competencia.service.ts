@@ -41,6 +41,7 @@ export interface Partido {
   logo1: string | null;
   logo2: string | null;
   ronda: number | null;
+  id_serie?: number | null;
   estado: string;
   fecha: string | null;
   fecha_f: string | null;
@@ -64,8 +65,8 @@ export class CompetenciaService {
 
   constructor(private http: HttpClient) {}
 
-  partidos(idContempla: number | string, idSerie: number | string = 0): Observable<Partido[]> {
-    return this.http.get<Partido[]>(`${this.url}/partido/get/${idContempla}/${idSerie || 0}`);
+  partidos(idContempla: number | string, idSerie: number | string = 'todas'): Observable<Partido[]> {
+    return this.http.get<Partido[]>(`${this.url}/partido/get/${idContempla}/${idSerie ?? 'todas'}`);
   }
 
   proximos(limite = 20): Observable<Partido[]> {

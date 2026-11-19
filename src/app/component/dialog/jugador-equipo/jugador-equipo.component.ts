@@ -31,6 +31,15 @@ export class JugadorEquipoComponent implements OnInit {
   action: any = "Agregar";
   dataSource: any;
   dataEquipoJugador: any;
+  buscar = '';
+
+  /** Jugadores del club que coinciden con la búsqueda (nombre, apellidos o CI) */
+  filtrados(): any[] {
+    const t = this.buscar.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const lista = Array.isArray(this.dataSource) ? this.dataSource : [];
+    if (!t) return lista;
+    return lista.filter((j: any) => `${j.nombre} ${j.ap_paterno} ${j.ap_materno} ${j.ci}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(t));
+  }
   role: any;
   num_max_jugadores: any;
 
@@ -186,12 +195,12 @@ export class JugadorEquipoComponent implements OnInit {
 
     // Cargar la imagen del logo desde la carpeta de assets
     const logoImg = new Image();
-    logoImg.src = '../../../assets/img/logo2_1.png'; // Ruta de la imagen en tu proyecto
+    logoImg.src = '../../../assets/img/logo-iyt.png'; // Ruta de la imagen en tu proyecto
 
     logoImg.onload = () => {
 
       // Agregar el encabezado con el logo, usuario y fecha
-      doc.addImage(logoImg, 'PNG', 150, 2, 40, 25);// Ajusta la posición y tamaño según sea necesario
+      doc.addImage(logoImg, 'PNG', 170, 3, 26, 23);// Ajusta la posición y tamaño según sea necesario
       doc.setFontSize(12);
       doc.text('NÓMINA ' + this.disciplina + ' CLUB ' + this.action, 50, 28);
 

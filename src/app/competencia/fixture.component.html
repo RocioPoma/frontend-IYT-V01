@@ -13,7 +13,7 @@
   <p class="vacio" *ngIf="!cargando && todos.length === 0">Todavía no se generó el fixture de esta categoría.</p>
 
   <div class="ronda" *ngFor="let r of rondas">
-    <h4>{{ r.numero ? 'Fecha ' + r.numero : 'Partidos' }}</h4>
+    <h4>{{ r.titulo }}</h4>
     <div class="partido" *ngFor="let p of r.partidos">
       <span class="local equipo">
         {{ p.equipo1 }}

@@ -57,7 +57,7 @@
               "optimization": { "scripts": true, "styles": { "minify": true, "inlineCritical": true }, "fonts": false },
               "budgets": [
                 { "type": "initial", "maximumWarning": "2mb", "maximumError": "3mb" },
-                { "type": "anyComponentStyle", "maximumWarning": "8kb", "maximumError": "16kb" }
+                { "type": "anyComponentStyle", "maximumWarning": "12kb", "maximumError": "16kb" }
               ]
             },
             "development": {
