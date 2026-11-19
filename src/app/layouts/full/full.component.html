@@ -1,31 +1,29 @@
 <div class="main-container">
-    <mat-toolbar color="primary" class="topbar telative">
-        <div class="navbar-header">
-            <button mat-icon-button (click)="snav.toggle()" value="sidebarclosed" style="vertical-align: bottom;">
-                <mat-icon>menu</mat-icon>
-            </button>
-            <button mat-icon-button (click)="handleAction()"  style="vertical-align: bottom;">
-                <mat-icon>home</mat-icon>
-            </button>
-            <span fxShow="false" fxShow.gt-xs>
-                Integracion Yaretanence
-            </span>
-            
-            
-        </div>
-        <span fxFlex></span>
-        <span fxShow="false" style="font-size: 15px;" fxShow.gt-xs>{{usuario}}</span>
+    <mat-toolbar class="topbar">
+        <button mat-icon-button (click)="snav.toggle()" aria-label="Mostrar u ocultar el menú">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <button mat-icon-button (click)="handleAction()" aria-label="Ir a campeonatos">
+            <mat-icon>home</mat-icon>
+        </button>
+        <span class="topbar-marca">
+            <mat-icon class="topbar-copa">emoji_events</mat-icon>
+            <span class="topbar-nombre">Integración Yaretanense</span>
+        </span>
+        <span class="espaciador"></span>
+        <span class="topbar-usuario">{{usuario}}</span>
         <app-header></app-header>
     </mat-toolbar>
-    <mat-sidenav-container class="example-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 0 : 0">
-        <mat-sidenav #snav id="snav" class="dark-sidebar pl-xs" [mode]="mobileQuery.matches ? 'side' : 'over'"
-            fixedTopGap="0" [opened]="mobileQuery.matches" [disableClose]="mobileQuery.matches">
+    <mat-sidenav-container class="example-sidenav-container">
+        <mat-sidenav #snav id="snav" class="dark-sidebar" [mode]="mobileQuery.matches ? 'side' : 'over'"
+            [opened]="mobileQuery.matches" [disableClose]="mobileQuery.matches">
             <app-sidebar></app-sidebar>
         </mat-sidenav>
         <mat-sidenav-content class="page-wrapper">
-            <div class="page-content">
+            <main class="page-content">
                 <router-outlet></router-outlet>
-            </div>
+            </main>
+            <app-pie></app-pie>
         </mat-sidenav-content>
     </mat-sidenav-container>
 </div>

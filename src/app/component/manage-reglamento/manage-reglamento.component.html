@@ -1,25 +1,19 @@
-<mat-card class="responsive_table">
-    <div align="center">
-        <b class="tamano_titulo"><span>GESTION REGLAMENTO Y NORMATIVA </span></b>
-    </div>
+<app-encabezado titulo="Reglamento y normativa" icono="gavel">
+    <button mat-flat-button color="primary" *ngIf="role === 'admin'" (click)="handleAddAction()"><mat-icon>add</mat-icon> Añadir norma</button>
+</app-encabezado>
+
+<mat-card class="barra-filtros">
+    <mat-form-field appearance="outline" class="filtro-buscar" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>Buscar norma</mat-label>
+        <input matInput (keyup)="applyFilter($event)" autocomplete="off">
+    </mat-form-field>
 </mat-card>
 
-<div>
-    <hr>
-    <mat-card>
-        <mat-form-field appearance="fill" fxFlex>
-            <mat-label>Buscar</mat-label>
-            <input matInput (keyup)="applyFilter($event)" autocomplete="off">
-        </mat-form-field>
-        <div *ngIf="role === 'admin'" class="btn-add">
-            <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Añadir Norma</button>
-        </div>
-    </mat-card>
-
-    <div class="responsive_table">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<div class="tabla-contenedor">
+        <table mat-table matSort [dataSource]="dataSource" [paginador]="paginador">
             <ng-container matColumnDef="nombre_reglamento">
-                <th mat-header-cell *matHeaderCellDef> Nombre Reglamento</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="nombre"> Nombre Reglamento</th>
                 <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
             </ng-container>
 
@@ -37,12 +31,12 @@
             <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef>Acciones</th>
                 <td mat-cell *matCellDef="let element" class="action-link">
-                    <button mat-icon-button color="accent" matTooltip="Edit" (click)="handleEditAction(element)"
+                    <button mat-icon-button color="primary" matTooltip="Editar" (click)="handleEditAction(element)"
                         [disabled]="role === 'user'">
                         <mat-icon>edit</mat-icon>
                     </button>
 
-                    <button mat-icon-button color="accent" matTooltip="Delete" (click)="handleDeleteAction(element)"
+                    <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="handleDeleteAction(element)"
                         [disabled]="role === 'user'">
                         <mat-icon>delete</mat-icon>
                     </button>
@@ -56,6 +50,7 @@
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
             <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+        <tr class="mat-mdc-no-data-row" *matNoDataRow><td class="mat-mdc-cell" [attr.colspan]="displayedColumns.length">No hay registros para mostrar.</td></tr>
         </table>
+    <mat-paginator #paginador [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="25" showFirstLastButtons aria-label="Páginas"></mat-paginator>
     </div>
-</div>

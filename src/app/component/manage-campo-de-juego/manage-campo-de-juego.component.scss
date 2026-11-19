@@ -1,0 +1,7 @@
+.tarjeta-form { padding: 16px 20px; margin-bottom: 16px; }
+.form-cancha { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+.form-cancha .ancho { grid-column: 1 / -1; }
+.acciones { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 8px; }
+.vacio { padding: 16px; color: #757575; text-align: center; }
+h3 { margin: 0 0 12px; font-size: 16px; font-weight: 600; }
+@media (max-width: 600px) { .form-cancha { grid-template-columns: 1fr; } }

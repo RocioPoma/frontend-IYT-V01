@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { exportarPDF } from 'src/app/shared/reporte-pdf';
+import { leerToken, nombreRol } from 'src/app/shared/permisos';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -8,32 +10,59 @@ import { UserService } from 'src/app/servicios/user.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { SignupComponent } from './signup/signup.component';
+import { ClubService } from 'src/app/servicios/club.service';
+import { ROLES } from 'src/app/shared/permisos';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-user',
   templateUrl: './manage-user.component.html',
   styleUrls: ['./manage-user.component.scss']
 })
 export class ManageUserComponent implements OnInit {
+  nombreRol = nombreRol;
+  /** El comité técnico solo gestiona delegados (crear, editar, activar); no elimina */
+  esComite = leerToken()?.role === 'comite_tecnico';
   displayedColumns: string[] = ['nombre', 'email', 'celular','rol','NombreClub', 'acciones'];
   dataSource: any;
   responseMessage: any;
+  todos: any[] = [];
+  clubs: any[] = [];
+  roles = ROLES;
+  rolFiltro = '';
+  clubFiltro: any = '';
 
   constructor(private ngxService: NgxUiLoaderService,
     private dialog: MatDialog,
     private userService: UserService,
     private snackbarService: SnackbarService,
-    private router: Router) { }
+    private router: Router,
+    private clubService: ClubService) { }
 
   ngOnInit(): void {
     this.ngxService.start();
     this.tableData();
+    this.clubService.getClubs().subscribe((r: any) => (this.clubs = r || []));
+  }
+
+  filtrarRol(rol: string) { this.rolFiltro = rol; this.aplicarFiltros(); }
+  filtrarClub(id: any) { this.clubFiltro = id; this.aplicarFiltros(); }
+
+  private aplicarFiltros() {
+    const texto = this.dataSource?.filter || '';
+    const datos = this.todos.filter((u: any) =>
+      (!this.rolFiltro || u.role === this.rolFiltro || (this.rolFiltro === 'delegado' && u.role === 'user')) &&
+      (!this.clubFiltro || String(u.clubId) === String(this.clubFiltro)));
+    this.dataSource = new MatTableDataSource(datos);
+    this.dataSource.filter = texto;
   }
 
   tableData() {
     this.userService.getUsers().subscribe((response: any) => {
       this.ngxService.stop();
-      this.dataSource = new MatTableDataSource(response);
+      this.todos = response || [];
+      this.aplicarFiltros();
     }, (error: any) => {
       this.ngxService.stop();
       if (error.error?.message) {
@@ -177,5 +206,16 @@ export class ManageUserComponent implements OnInit {
       }
       this.snackbarService.openSnackBar(this.responseMessage, GlobalCostants.error);
     })
+  }
+
+  /** Reporte PDF de la lista (respeta el filtro de búsqueda) */
+  reportePDF() {
+    const datos: any[] = this.dataSource?.filteredData || this.dataSource?.data || [];
+    exportarPDF({
+      titulo: 'Reporte de usuarios',
+      columnas: ['N°', 'Nombre', 'Correo', 'Teléfono', 'Rol', 'Club', 'Estado'],
+      filas: datos.map((f: any, i: number) => [i + 1, f.name, f.email, f.contactNumber, nombreRol(f.role), f.NombreClub, f.status === 'true' ? 'Activo' : 'Pendiente/Inactivo']),
+      archivo: 'usuarios',
+    });
   }
 }

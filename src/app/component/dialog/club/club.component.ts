@@ -1,11 +1,14 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClubService } from 'src/app/servicios/club.service';
 import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
+import { environment } from 'src/environments/environment';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-club',
   templateUrl: './club.component.html',
   styleUrls: ['./club.component.scss']
@@ -17,6 +20,9 @@ export class ClubComponent implements OnInit {
   dialogAction:any="Add";
   action:any="Registrar";
   responseMessage:any;
+  logo: File | null = null;
+  vistaLogo: string | null = null;
+  guardando = false;
   
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData:any,
   private formBuilder:FormBuilder,
@@ -33,7 +39,33 @@ export class ClubComponent implements OnInit {
       this.dialogAction="Edit";
       this.action ="Actualizar";
       this.clubForm.patchValue(this.dialogData.data);
+      if (this.dialogData.data?.logo) this.vistaLogo = environment.apiUrl + '/uploads/img/' + this.dialogData.data.logo;
     }
+  }
+
+  elegirLogo(evento: Event) {
+    const input = evento.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    input.value = '';
+    if (!archivo) return;
+    if (!/^image\/(png|jpe?g|webp)$/.test(archivo.type)) {
+      this.snackbarService.openSnackBar('El logo debe ser una imagen JPG, PNG o WEBP', GlobalCostants.error);
+      return;
+    }
+    if (archivo.size > 10 * 1024 * 1024) {
+      this.snackbarService.openSnackBar('El logo supera los 10 MB', GlobalCostants.error);
+      return;
+    }
+    this.logo = archivo;
+    const lector = new FileReader();
+    lector.onload = () => (this.vistaLogo = lector.result as string);
+    lector.readAsDataURL(archivo);
+  }
+
+  quitarLogo() {
+    this.logo = null;
+    const actual = this.dialogData.data?.logo;
+    this.vistaLogo = actual ? environment.apiUrl + '/uploads/img/' + actual : null;
   }
 
   handleSubmit(){
@@ -51,7 +83,8 @@ export class ClubComponent implements OnInit {
       nombre: formData.nombre,
       comunidad: formData.comunidad,
     }
-    this.clubService.add(data).subscribe((response:any)=>{
+    this.guardando = true;
+    this.clubService.add(data, this.logo).subscribe((response:any)=>{
       this.dialogRef.close();
       this.onAddClub.emit();
       this.responseMessage = response.message;
@@ -75,7 +108,8 @@ export class ClubComponent implements OnInit {
       nombre: formData.nombre,
       comunidad: formData.comunidad,
     }
-    this.clubService.update(data).subscribe((response:any)=>{
+    this.guardando = true;
+    this.clubService.update(data, this.logo).subscribe((response:any)=>{
       this.dialogRef.close();
       this.onEditClub.emit();
       this.responseMessage = response.message;

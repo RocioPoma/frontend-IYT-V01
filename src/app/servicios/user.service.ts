@@ -80,4 +80,14 @@ export class UserService {
   }
 
 
+
+  //----------------------RENOVAR SESIÓN (mientras el usuario está activo) ---------
+  refresh() {
+    return this.httpClient.post<{ token: string }>(this.url + "/user/refresh", {});
+  }
+
+  //----------------------RESTABLECER CONTRASEÑA CON EL ENLACE DEL CORREO ---------
+  resetPassword(data: { token: string; password: string }) {
+    return this.httpClient.post<{ message: string }>(this.url + "/user/resetPassword", data);
+  }
 }

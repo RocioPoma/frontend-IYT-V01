@@ -1,77 +1,93 @@
-<mat-card >
-    <b><span>GESTION JUGADORES</span></b>
-    <button mat-flat-button color="primary" class="float-right"  *ngIf="role !== 'user'" (click)="handleAddAction()" >Registrar Jugador</button>
-  <!-- <button mat-flat-button color="primary" class="float-right" (click)="craatePdf()">Reporte</button>-->
-  
-    <button mat-raised-button color="accent" class="float-right" (click)="generatePDF()">Reporte PDF</button>
+<app-encabezado titulo="Gestión jugadores" icono="badge">
+    <button mat-stroked-button color="primary" (click)="generatePDF()"><mat-icon>picture_as_pdf</mat-icon> Reporte PDF</button>
+    <button mat-flat-button color="primary" *ngIf="role !== 'user' && !esDelegado" (click)="handleAddAction()"><mat-icon>person_add</mat-icon> Registrar jugador</button>
+    <button mat-flat-button color="primary" *ngIf="esDelegado" (click)="nuevaSolicitud()"><mat-icon>person_add</mat-icon> Registrar jugador</button>
+</app-encabezado>
+<ng-container *ngIf="!esDelegado; else vistaDelegado">
+    <ng-container *ngTemplateOutlet="listaOficial"></ng-container>
+</ng-container>
 
-</mat-card>
-<hr>
-<mat-card>
-    <mat-form-field appearance="fill" fxFlex>
-        <mat-label>Club</mat-label>
-        <mat-select formControlName="clubId" (selectionChange)="filterSelection($event)">
-            <mat-option  value="Todos">Todos</mat-option>
-            <mat-option  *ngFor="let club of dataClub" [value]="club.nombre">{{club.nombre}}   
-            </mat-option>
+<ng-template #vistaDelegado>
+    <mat-tab-group mat-stretch-tabs="false" animationDuration="150ms" [(selectedIndex)]="pestana">
+        <mat-tab label="Jugadores de mi club">
+            <ng-container *ngTemplateOutlet="listaOficial"></ng-container>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>Mis solicitudes</ng-template>
+            <mat-card class="tarjeta-pestana"><app-solicitudes-jugador #misSolicitudes modo="delegado"></app-solicitudes-jugador></mat-card>
+        </mat-tab>
+    </mat-tab-group>
+</ng-template>
+
+<ng-template #listaOficial>
+<mat-card class="barra-filtros">
+    <mat-form-field appearance="outline" class="filtro-select" subscriptSizing="dynamic" *ngIf="!esDelegado">
+        <mat-label>Filtrar por club</mat-label>
+        <mat-select [value]="clubFiltro" (selectionChange)="filterSelection($event)">
+            <mat-option value="Todos">Todos los clubs</mat-option>
+            <mat-option *ngFor="let club of dataClub" [value]="club.id">{{club.nombre}} - {{club.comunidad}}</mat-option>
         </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="fill">
-        <mat-label>Buscar</mat-label>
-        <input matInput (keyup)="applyFilter($event)" autocomplete="off">
+    <mat-form-field appearance="outline" class="filtro-buscar" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>Buscar por CI, nombre o apellido</mat-label>
+        <input matInput (keyup)="applyFilter($event)" autocomplete="off" #buscador>
     </mat-form-field>
 </mat-card>
-<div class="responsive_table">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<div class="tabla-contenedor">
+    <table mat-table matSort [dataSource]="dataSource" [paginador]="paginador" class="mat-elevation-z8">
 
         <ng-container matColumnDef="numero">
             <th mat-header-cell *matHeaderCellDef> Nro.</th>
-            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+            <td mat-cell *matCellDef="let element; index as i "> {{ (paginador?.pageIndex || 0) * (paginador?.pageSize || 0) + i + 1 }} </td>
         </ng-container>
 
         <ng-container matColumnDef="foto">
             <th mat-header-cell *matHeaderCellDef> Foto</th>
             <td mat-cell *matCellDef="let element">
-                <div align="center"  >
-                    <img class="img" width="70px" height="80px" [src]="imgURL + element.foto"
-                    alt="" onerror="this.onerror=null; this.src='../../../assets/img/user1.png';">
-                </div>
-                </td> 
+                <span class="foto-lista" [class.sin-permiso]="!puedeCambiarFoto" tabindex="0"
+                    [matTooltip]="puedeCambiarFoto ? (esDelegado ? 'Cambiar foto (se enviará al comité técnico)' : 'Subir o cambiar foto') : ''"
+                    (click)="cambiarFoto(element, archivoFoto)" (keydown.enter)="cambiarFoto(element, archivoFoto)">
+                    <img [src]="element.foto ? imgURL + element.foto + '?ancho=128' : 'assets/img/user1.png'" alt="" loading="lazy" decoding="async"
+                        onerror="this.onerror=null; this.src='assets/img/user1.png';">
+                    <span class="foto-lista-cambiar"><mat-icon>photo_camera</mat-icon></span>
+                </span>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="ci">
-            <th mat-header-cell *matHeaderCellDef> Ci</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> CI</th>
             <td mat-cell *matCellDef="let element"> {{element.ci}} </td>
         </ng-container>
 
         <ng-container matColumnDef="nombre">
-            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
             <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
         </ng-container>
 
 
         <ng-container matColumnDef="ap_paterno">
-            <th mat-header-cell *matHeaderCellDef>Ap Paterno</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ap Paterno</th>
             <td mat-cell *matCellDef="let element"> {{element.ap_paterno}} </td>
         </ng-container>
 
         <ng-container matColumnDef="ap_materno">
-            <th mat-header-cell *matHeaderCellDef> Ap Materno</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ap Materno</th>
             <td mat-cell *matCellDef="let element"> {{element.ap_materno}} </td>
         </ng-container>
 
         <ng-container matColumnDef="fecha_nacimiento">
-            <th mat-header-cell *matHeaderCellDef> fecha_nacimiento</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="fecha_nac"> Fecha de nacimiento</th>
             <td mat-cell *matCellDef="let element"> {{element.fecha_nac}} </td>
         </ng-container>
 
         <ng-container matColumnDef="NombreClub">
-            <th mat-header-cell *matHeaderCellDef> NombreClub</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Club</th>
             <td mat-cell *matCellDef="let element"> {{element.NombreClub}} </td>
         </ng-container>
 
         <ng-container matColumnDef="edad">
-            <th mat-header-cell *matHeaderCellDef> Edad</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Edad</th>
             <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
         </ng-container>
 
@@ -79,7 +95,7 @@
             <th mat-header-cell *matHeaderCellDef> Documento</th>
             <td mat-cell *matCellDef="let element">
                 <div *ngIf="(element.documento!=null)">
-                    <a [href]="imgURL + element.documento" target="_blank" matTooltip="Ver Documento">
+                    <a [href]="docPrivado(element.documento)" target="_blank" matTooltip="Ver Documento">
                         <img width="30px" height="30px" src="../../../assets/img/pdf-icono.png" alt="no exist">
                     </a>
                 </div>
@@ -103,7 +119,19 @@
                 </mat-slide-toggle>
             </td>
         </ng-container>
+        <ng-container matColumnDef="solicitar">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let element" class="action-link">
+                <button mat-icon-button color="accent" matTooltip="Editar (se enviará al comité técnico)" (click)="solicitarActualizacion(element)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
         <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+        <tr class="mat-mdc-no-data-row" *matNoDataRow><td class="mat-mdc-cell" [attr.colspan]="displayedColumns.length">No hay registros para mostrar.</td></tr>
     </table>
+    <mat-paginator #paginador [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="25" showFirstLastButtons aria-label="Páginas"></mat-paginator>
 </div>
+</ng-template>
+<input #archivoFoto type="file" accept="image/png,image/jpeg,image/webp" hidden (change)="subirFoto($event)">

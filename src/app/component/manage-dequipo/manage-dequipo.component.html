@@ -1,20 +1,14 @@
-<hr>
-<mat-card class="responsive_table">
-    <div class="float-center">
-        <b class="tamano_titulo"><span>EQUIPOS</span></b>
-    </div>
-</mat-card>
+<app-encabezado titulo="Equipos" icono="groups">
+    <button mat-flat-button color="primary" *ngIf="puedeInscribir" (click)="handleAddAction()"><mat-icon>add</mat-icon> Registrar equipo</button>
+</app-encabezado>
 
-<mat-card>
-    <mat-form-field appearance="fill" fxFlex>
-        <mat-label>Filter</mat-label>
+<mat-card class="barra-filtros">
+    <mat-form-field appearance="outline" class="filtro-buscar" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>Buscar club o comunidad</mat-label>
         <input matInput (keyup)="applyFilter($event)" #input autocomplete="off">
     </mat-form-field>
-    <div class="btn-add">
-        <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()">Registrar Equipo</button>
-    </div>
 </mat-card>
-<hr>
 
 <div class="row">
     <div class="responsive_table">
@@ -25,22 +19,48 @@
                         <mat-card-title align="left">{{element.nombre_club}}</mat-card-title>
                         <mat-card-subtitle align="left">
                             <div>{{element.comunidad}}</div>
+                            <div class="estado-equipo">
+                                <span class="estado" [ngClass]="estados[element.estado]?.clase">{{ estados[element.estado]?.texto || element.estado }}</span>
+                                · {{ element.total_jugadores || 0 }} jugadores
+                            </div>
+                            <div class="obs-equipo" *ngIf="element.observacion && (element.estado === 'observado' || element.estado === 'rechazado')">
+                                <mat-icon>feedback</mat-icon> {{ element.observacion }}
+                            </div>
+                            <!-- Delegado: enviar al comité técnico cuando el equipo está completo -->
+                            <button mat-flat-button color="primary" class="boton-solicitar"
+                                *ngIf="esMiEquipo(element) && (element.estado === 'borrador' || element.estado === 'observado')"
+                                (click)="solicitarInscripcion(element)">
+                                <mat-icon>send</mat-icon> Solicitar inscripción
+                            </button>
+                            <!-- Comité técnico -->
+                            <ng-container *ngIf="puedeAprobar && element.estado === 'solicitado'">
+                                <button mat-icon-button color="primary" matTooltip="Aprobar inscripción" (click)="revisar(element, 'aprobado')">
+                                    <mat-icon>check_circle</mat-icon>
+                                </button>
+                                <button mat-icon-button color="warn" matTooltip="Observar (con comentario)" (click)="revisar(element, 'observado')">
+                                    <mat-icon>feedback</mat-icon>
+                                </button>
+                                <button mat-icon-button color="warn" matTooltip="Rechazar inscripción" (click)="revisar(element, 'rechazado')">
+                                    <mat-icon>cancel</mat-icon>
+                                </button>
+                            </ng-container>
 
-                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Agregar jugadores"
+                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Jugadores del equipo"
                                 (click)="handleAddJugador(element)">
                                 <mat-icon>group_add</mat-icon>
                             </button>
-                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Editar"
+                            <button [disabled]="!puedeModificar(element)" mat-icon-button color="primary" matTooltip="Editar"
                                 (click)="handleEditAction(element)">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                            <button [disabled]="(element.id_club !== id_club) && (role === 'user')" mat-icon-button color="primary" matTooltip="Eliminar"
+                            <button [disabled]="!puedeModificar(element)" mat-icon-button color="primary" matTooltip="Eliminar"
                                 (click)="handleDeleteAction(element)">
                                 <mat-icon>delete</mat-icon>
                             </button>
 
                         </mat-card-subtitle>
-                        <img class="img" mat-card-sm-image src="../../../assets/img/logo2.png">
+                        <img class="img" mat-card-sm-image *ngIf="element.logo" [src]="urlArchivos + element.logo + '?ancho=128'" alt="" loading="lazy">
+                        <mat-icon *ngIf="!element.logo" class="escudo-equipo">shield</mat-icon>
                     </mat-card-title-group>
                 </mat-card>
             </div>

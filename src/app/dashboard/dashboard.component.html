@@ -1,27 +1,68 @@
-<body>
-    <mat-card>
-        <b><span>Dashboard</span></b>
-    </mat-card>
-    <br>
-    <div class="row">
-        <div class="column">
-            <div class="card">
-                <div class="container">
-                    <h2 class="title">Total Clubs:</h2>
-                    <h1 class="title">{{data?.club}}</h1>
-                    <p><button class="button" [routerLink]="['/integracion/club']">Ver Club</button></p>
-                </div>
-            </div>
-        </div>
+<app-encabezado [titulo]="'Bienvenido' + (nombre ? ', ' + nombre : '')" subtitulo="Resumen general del sistema" icono="dashboard">
+  <span class="rol">{{ rol }}</span>
+</app-encabezado>
 
-        <div class="column">
-            <div class="card">
-                <div class="container">
-                    <h2 class="title">Total Jugadores:</h2>
-                    <h1 class="title">{{data?.jugador}}</h1>
-                    <p><button class="button" [routerLink]="['/integracion/jugador']">Ver Jugadores</button></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
+<div class="avisos" *ngIf="esComite && (data?.jugadores_pendientes || data?.equipos_pendientes || data?.pases_pendientes)">
+  <mat-card class="aviso" [routerLink]="['/integracion/solicitudes']">
+    <mat-icon>fact_check</mat-icon>
+    <span>
+      Por revisar:
+      <b>{{ data.jugadores_pendientes || 0 }}</b> solicitud(es) de jugadores ·
+      <b>{{ data.equipos_pendientes || 0 }}</b> inscripción(es) de equipos ·
+      <b>{{ data.pases_pendientes || 0 }}</b> pase(s)
+    </span>
+  </mat-card>
+</div>
+<div class="avisos" *ngIf="esAdmin && data?.usuarios_pendientes">
+  <mat-card class="aviso" [routerLink]="['/integracion/user']">
+    <mat-icon>person_add</mat-icon>
+    <span><b>{{ data.usuarios_pendientes }}</b> usuario(s) esperan aprobación</span>
+  </mat-card>
+</div>
+
+<!-- Delegado -->
+<div class="avisos" *ngIf="esDelegado">
+  <mat-card class="aviso info" *ngIf="!data?.gestion">
+    <mat-icon>event_busy</mat-icon>
+    <span>Su usuario no tiene una gestión asignada. Pida al administrador que se la asigne para poder inscribir equipos.</span>
+  </mat-card>
+  <mat-card class="aviso info" *ngIf="data?.gestion">
+    <mat-icon>event_available</mat-icon>
+    <span>Puede inscribir a su equipo en los campeonatos de la <b>gestión {{ data.gestion }}</b>.</span>
+  </mat-card>
+  <mat-card class="aviso" *ngIf="data?.mis_solicitudes_observadas" [routerLink]="['/integracion/jugador']">
+    <mat-icon>feedback</mat-icon>
+    <span><b>{{ data.mis_solicitudes_observadas }}</b> solicitud(es) de jugadores fueron observadas por el comité técnico. Revíselas en "Mis solicitudes".</span>
+  </mat-card>
+  <mat-card class="aviso" *ngIf="data?.mis_equipos_observados" [routerLink]="['/integracion/campeonato']">
+    <mat-icon>groups</mat-icon>
+    <span><b>{{ data.mis_equipos_observados }}</b> inscripción(es) de equipo observada(s).</span>
+  </mat-card>
+  <mat-card class="aviso" *ngIf="data?.pases_por_responder" [routerLink]="['/integracion/pase']">
+    <mat-icon>swap_horiz</mat-icon>
+    <span>Otro club solicita el pase de <b>{{ data.pases_por_responder }}</b> jugador(es) de su club. Debe aceptarlo o rechazarlo.</span>
+  </mat-card>
+</div>
+
+<div class="indicadores">
+  <mat-card class="indicador" [routerLink]="['/integracion/campeonato']">
+    <mat-icon>emoji_events</mat-icon>
+    <div><div class="valor">{{ data?.campeonatos_activos ?? '—' }}</div><div class="etiqueta">Campeonatos activos</div></div>
+  </mat-card>
+  <mat-card class="indicador" [routerLink]="['/integracion/club']">
+    <mat-icon>category</mat-icon>
+    <div><div class="valor">{{ data?.club ?? '—' }}</div><div class="etiqueta">Clubs</div></div>
+  </mat-card>
+  <mat-card class="indicador" [routerLink]="['/integracion/jugador']">
+    <mat-icon>badge</mat-icon>
+    <div><div class="valor">{{ data?.jugador ?? '—' }}</div><div class="etiqueta">Jugadores</div></div>
+  </mat-card>
+  <mat-card class="indicador">
+    <mat-icon>sports_soccer</mat-icon>
+    <div><div class="valor">{{ data?.partidos_jugados ?? '—' }}</div><div class="etiqueta">Partidos jugados</div></div>
+  </mat-card>
+  <mat-card class="indicador vivo" *ngIf="data?.partidos_en_vivo">
+    <mat-icon>live_tv</mat-icon>
+    <div><div class="valor">{{ data.partidos_en_vivo }}</div><div class="etiqueta">Partidos en vivo</div></div>
+  </mat-card>
+</div>

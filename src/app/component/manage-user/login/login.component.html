@@ -17,8 +17,9 @@
             </mat-form-field>
 
             <mat-form-field appearance="fill" fxFlex>
-                <mat-label>Contareseña</mat-label>
-                <input matInput formControlName="password" type="password" required>
+                <mat-label>Contraseña</mat-label>
+                <input #verClave1 matInput formControlName="password" type="password" required>
+                <button mat-icon-button matSuffix type="button" tabindex="-1" (click)="verClave1.type = verClave1.type === 'password' ? 'text' : 'password'" [matTooltip]="verClave1.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña'"><mat-icon>{{ verClave1.type === 'password' ? 'visibility' : 'visibility_off' }}</mat-icon></button>
                 <mat-error *ngIf="loginForm.controls.password.touched && loginForm.controls.password.invalid">
                     <span *ngIf="loginForm.controls.password.errors.required">Este campo es obligatorio.</span>
                     <span *ngIf="loginForm.controls.password.errors.pattern">Este campo no es válido.</span>
@@ -26,10 +27,14 @@
             </mat-form-field>
         </div>
     </form>
+    <div class="enlaces-login">
+        <a href="" (click)="$event.preventDefault(); olvide()">¿Olvidó su contraseña?</a>
+        <a href="" (click)="$event.preventDefault(); registrarse()">Registrarse como delegado</a>
+    </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
-    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
+    <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()" (keyup.enter)="handleSubmit()"
     [disabled]="!(loginForm.valid && loginForm.dirty)">Iniciar</button>
     <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
 </mat-dialog-actions>

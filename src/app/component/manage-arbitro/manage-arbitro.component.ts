@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { exportarPDF } from 'src/app/shared/reporte-pdf';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -9,6 +10,8 @@ import { ArbitroComponent } from '../dialog/arbitro/arbitro.component';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-arbitro',
   templateUrl: './manage-arbitro.component.html',
   styleUrls: ['./manage-arbitro.component.scss']
@@ -126,4 +129,15 @@ export class ManageArbitroComponent implements OnInit {
     })
   }
 
+
+  /** Reporte PDF de la lista (respeta el filtro de búsqueda) */
+  reportePDF() {
+    const datos: any[] = this.dataSource?.filteredData || this.dataSource?.data || [];
+    exportarPDF({
+      titulo: 'Reporte de árbitros',
+      columnas: ['N°', 'CI', 'Nombre', 'Ap. paterno', 'Ap. materno', 'Teléfono', 'Función'],
+      filas: datos.map((f: any, i: number) => [i + 1, f.ci, f.nombre, f.ap_paterno, f.ap_materno, f.telefono, f.funcion]),
+      archivo: 'arbitros',
+    });
+  }
 }

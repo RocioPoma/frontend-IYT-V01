@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { exportarPDF } from 'src/app/shared/reporte-pdf';
+import { environment } from 'src/environments/environment';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -11,12 +13,15 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-club',
   templateUrl: './manage-club.component.html',
   styleUrls: ['./manage-club.component.scss']
 })
 export class ManageClubComponent implements OnInit {
-  displayedColumns: string[] = ['numero','nombre','comunidad', 'edit'];
+  displayedColumns: string[] = ['numero', 'logo', 'nombre', 'comunidad', 'edit'];
+  imgURL = environment.apiUrl + '/uploads/img/';
   dataSource: any;
   responseMessage: any;
 
@@ -115,4 +120,15 @@ export class ManageClubComponent implements OnInit {
 
   //----------------------------------------------------------------
 
-} 
+
+  /** Reporte PDF de la lista (respeta el filtro de búsqueda) */
+  reportePDF() {
+    const datos: any[] = this.dataSource?.filteredData || this.dataSource?.data || [];
+    exportarPDF({
+      titulo: 'Reporte de clubs',
+      columnas: ['N°', 'Nombre', 'Comunidad'],
+      filas: datos.map((f: any, i: number) => [i + 1, f.nombre, f.comunidad]),
+      archivo: 'clubs',
+    });
+  }
+}

@@ -1,52 +1,28 @@
-<mat-card class="responsive_table">
-    <div class="float-center">
-        <b class="tamano_titulo"><span>{{arraycamp.nombre_campeonato}} - </span></b>
-        <b class="tamano_titulo"><span>GESTION: {{arraycamp.gestion}}</span></b>
-    </div>
-</mat-card>
-<hr>
-<mat-card  fxLayout="column" fxLayout="row wrap">
-    <div fxFlex>
-        <b><span>GESTION CATEGORIAS CAMPEONATO</span></b>
-    </div>
-    <div class="btn-add2">
-        <button mat-flat-button color="primary" class="float-right" *ngIf="role !== 'user'" (click)="handleAddAction()">Agregar Categoria al Campeonato</button>
-    </div>
-</mat-card>
-<hr>
-<div class="responsive_table">
-    <div *ngFor="let element of dataSource" align="center">
-        <mat-card class="example-card">
-            <mat-card-title-group class="mayuscula">
-                <mat-card-title align="left">{{element.nombre_disciplina}} {{element.nombre_categoria}}</mat-card-title>
-                <mat-card-subtitle align="left">
-                    <div *ngIf="element.genero=='Masculino'">
-                        VARONES - {{element.sistema_de_juego}}
-                    </div>
-                    <div *ngIf="element.genero=='Femenino'">
-                        DAMAS - {{element.sistema_de_juego}}
-                    </div>
-                    <div *ngIf="element.genero=='Mixto'">
-                        MIXTO - {{element.sistema_de_juego}}
-                    </div>
-                    
-                    <button mat-icon-button color="primary" matTooltip="Administrar"
-                        (click)="handleDetalleAction(element)">
-                        <mat-icon>visibility</mat-icon>
-                    </button>
-                    <button *ngIf="role !== 'user'" mat-icon-button color="primary" matTooltip="Editar" (click)="handleEditAction(element)">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button *ngIf="role !== 'user'" mat-icon-button color="primary" matTooltip="Eliminar" (click)="handleDeleteAction(element)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                    <mat-slide-toggle *ngIf="role !== 'user'" (change)="onChange($event.checked, element.id)"
-                        matTooltip="Activar o desactivar estado de la categoria" [checked]="element.estado">
+<app-encabezado titulo="Categorías del campeonato" [subtitulo]="(arraycamp.nombre_campeonato || '') + (arraycamp.gestion ? ' · Gestión ' + arraycamp.gestion : '')" icono="category">
+    <button mat-flat-button color="primary" *ngIf="role !== 'user'" (click)="handleAddAction()"><mat-icon>add</mat-icon> Agregar categoría al campeonato</button>
+</app-encabezado>
+<p class="vacio" *ngIf="!dataSource?.length">Este campeonato todavía no tiene categorías.</p>
+<div class="grilla-categorias">
+    <mat-card *ngFor="let element of dataSource" class="categoria" [class.inactiva]="element.estado === 'false' || element.estado === false">
+        <img class="categoria-img" [src]="imagen(element.nombre_disciplina)" alt=""
+            onerror="this.onerror=null; this.src='assets/img/deportes/DEPORTE GENERICO.jpg';">
+        <div class="categoria-cuerpo">
+            <h3>{{element.nombre_disciplina}} {{element.nombre_categoria}}</h3>
+            <p>
+                {{ element.genero === 'Masculino' ? 'Varones' : element.genero === 'Femenino' ? 'Damas' : 'Mixto' }}
+                <span *ngIf="element.sistema_de_juego"> · {{element.sistema_de_juego}}</span>
+            </p>
+            <div class="categoria-acciones">
+                <button mat-flat-button color="primary" (click)="handleDetalleAction(element)"><mat-icon>visibility</mat-icon> Administrar</button>
+                <span class="espaciador"></span>
+                <ng-container *ngIf="role !== 'user'">
+                    <button mat-icon-button color="primary" matTooltip="Editar" (click)="handleEditAction(element)"><mat-icon>edit</mat-icon></button>
+                    <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="handleDeleteAction(element)"><mat-icon>delete</mat-icon></button>
+                    <mat-slide-toggle (change)="element.estado = $event.checked ? 'true' : 'false'; onChange($event.checked, element.id)"
+                        matTooltip="Activar o desactivar la categoría" [checked]="element.estado === 'true' || element.estado === true">
                     </mat-slide-toggle>
-                </mat-card-subtitle>
-                <img class="img" mat-card-sm-image [src]="imgURL+element.nombre_disciplina+extension">
-            </mat-card-title-group>
-        </mat-card>
-    </div>
-
+                </ng-container>
+            </div>
+        </div>
+    </mat-card>
 </div>

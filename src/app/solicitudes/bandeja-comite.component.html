@@ -1,0 +1,92 @@
+<app-encabezado titulo="Solicitudes por revisar" icono="fact_check"
+  subtitulo="Jugadores nuevos y actualizaciones enviados por los delegados, inscripciones de equipos y pases aceptados por el club de origen."></app-encabezado>
+
+<mat-card>
+  <mat-tab-group mat-stretch-tabs="false" animationDuration="150ms">
+    <mat-tab>
+      <ng-template mat-tab-label>Jugadores <span class="estado naranja" *ngIf="nJugadores">&nbsp;{{ nJugadores }}</span></ng-template>
+      <div class="pestana"><app-solicitudes-jugador modo="comite" (cambio)="nJugadores = $event"></app-solicitudes-jugador></div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>Inscripción de equipos <span class="estado naranja" *ngIf="equipos.length">&nbsp;{{ equipos.length }}</span></ng-template>
+      <div class="pestana">
+        <p class="vacio" *ngIf="!equipos.length">No hay inscripciones por revisar.</p>
+        <div class="tabla-scroll" *ngIf="equipos.length">
+          <table mat-table matSort [dataSource]="equipos" class="tabla">
+            <ng-container matColumnDef="club">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="nombre_club">Club</th>
+              <td mat-cell *matCellDef="let e"><b>{{ e.nombre_club }}</b><br /><small>{{ e.comunidad }}</small></td>
+            </ng-container>
+            <ng-container matColumnDef="categoria">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="nombre_campeonato">Campeonato / categoría</th>
+              <td mat-cell *matCellDef="let e">{{ e.nombre_campeonato }} ({{ e.gestion }})<br /><small>{{ e.disciplina }} · {{ e.categoria }} · {{ e.genero }}</small></td>
+            </ng-container>
+            <ng-container matColumnDef="jugadores">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="total_jugadores">Jugadores</th>
+              <td mat-cell *matCellDef="let e">{{ e.total_jugadores }}<span *ngIf="e.num_max_jugadores"> / {{ e.num_max_jugadores }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="fecha_solicitud_f">Solicitada</th>
+              <td mat-cell *matCellDef="let e"><small>{{ e.fecha_solicitud_f }}</small></td>
+            </ng-container>
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <td mat-cell *matCellDef="let e" class="acciones">
+                <button mat-icon-button matTooltip="Ver equipo y jugadores" (click)="verEquipo(e)"><mat-icon>visibility</mat-icon></button>
+                <button mat-flat-button color="primary" (click)="revisarEquipo(e, 'aprobado')"><mat-icon>check</mat-icon> Aprobar</button>
+                <button mat-stroked-button color="warn" (click)="revisarEquipo(e, 'observado')">Observar</button>
+                <button mat-button color="warn" (click)="revisarEquipo(e, 'rechazado')">Rechazar</button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="colEquipos"></tr>
+            <tr mat-row *matRowDef="let row; columns: colEquipos"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>Pases <span class="estado naranja" *ngIf="pases.length">&nbsp;{{ pases.length }}</span></ng-template>
+      <div class="pestana">
+        <p class="vacio" *ngIf="!pases.length">No hay pases por aprobar.</p>
+        <div class="tabla-scroll" *ngIf="pases.length">
+          <table mat-table matSort [dataSource]="pases" class="tabla">
+            <ng-container matColumnDef="jugador">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="nombre">Jugador</th>
+              <td mat-cell *matCellDef="let p"><b>{{ p.nombre }} {{ p.ap_paterno }} {{ p.ap_materno }}</b><br /><small>CI {{ p.ci }}</small></td>
+            </ng-container>
+            <ng-container matColumnDef="origen">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="club_solicitado">Club de origen</th>
+              <td mat-cell *matCellDef="let p">{{ p.club_solicitado }}<br /><small>Aceptó: {{ p.respondido_por_nombre }} {{ p.fecha_respuesta_f }}</small></td>
+            </ng-container>
+            <ng-container matColumnDef="destino">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="club_solicitante">Club de destino</th>
+              <td mat-cell *matCellDef="let p">{{ p.club_solicitante }}<br /><small>{{ p.observacion }}</small></td>
+            </ng-container>
+            <ng-container matColumnDef="documento">
+              <th mat-header-cell *matHeaderCellDef>Hoja de pase</th>
+              <td mat-cell *matCellDef="let p">
+                <a *ngIf="p.documento" [href]="doc(p.documento)" target="_blank" rel="noopener"><img width="28" height="28" src="assets/img/pdf-icono.png" alt="Documento" /></a>
+                <small *ngIf="!p.documento">Sin adjunto</small>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="fecha">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="fecha2">Solicitado</th>
+              <td mat-cell *matCellDef="let p"><small>{{ p.fecha2 }}</small></td>
+            </ng-container>
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <td mat-cell *matCellDef="let p" class="acciones">
+                <button mat-flat-button color="primary" (click)="revisarPase(p, 'aprobar')"><mat-icon>check</mat-icon> Aprobar</button>
+                <button mat-stroked-button color="warn" (click)="revisarPase(p, 'rechazar')">Rechazar</button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="colPases"></tr>
+            <tr mat-row *matRowDef="let row; columns: colPases"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

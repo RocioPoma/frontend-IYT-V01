@@ -1,11 +1,10 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { BandejaComiteComponent } from '../solicitudes/bandeja-comite.component';
 import { RouteGuardService } from '../servicios/route-guard.service';
 import { ManageClubComponent } from './manage-club/manage-club.component';
-import { ManageOrderComponent } from './manage-order/manage-order.component';
 import { ManageJugadorComponent } from './manage-jugador/manage-jugador.component';
 import { ManageUserComponent } from './manage-user/manage-user.component';
-import { ViewBillComponent } from './view-bill/view-bill.component';
 import { ManageCampeonatoComponent } from './manage-campeonato/manage-campeonato.component';
 import { ManageNoticiaComponent } from './manage-noticia/manage-noticia.component';
 import { ManageDetalleCampeonatoComponent } from './manage-detalle-campeonato/manage-detalle-campeonato.component';
@@ -25,149 +24,120 @@ import { ManageCampoDeJuegoComponent } from './manage-campo-de-juego/manage-camp
 
 export const MaterialRoutes: Routes = [
     {
+        // Bandeja del comité técnico: jugadores, inscripciones de equipos y pases por aprobar
+        path: 'solicitudes',
+        component: BandejaComiteComponent,
+        canActivate: [RouteGuardService],
+        data: { grupo: 'GESTION' }
+    },
+    {
         path: 'campeonato',
         component: ManageCampeonatoComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
 
     {
         path: 'jugador',
         component: ManageJugadorComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'pase',
         component: ManajePaseJugadorComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin']
-        }
+        data: { grupo: 'EQUIPOS' }
     },
     {
         path: 'user',
         component: ManageUserComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin']
-        }
+        data: { grupo: 'USUARIOS' }
     },
     {
         path: 'club',
         component: ManageClubComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin']
-        }
+        data: { grupo: 'GESTION' }
     },
     {
         path: 'reglamento',
         component: ManageReglamentoComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'disciplina',
         component: ManageDisciplinaComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin']
-        }
+        data: { grupo: 'GESTION' }
     },
     {
         path: 'arbitro',
         component: ManageArbitroComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin']
-        }
+        data: { grupo: 'GESTION' }
     },
     {
         path: 'categoria',
         component: ManageCategoriaComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'sitio',
         component: ManageCampoDeJuegoComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'auspiciador',
         component: ManageAuspiciadorComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'reporte',
         component: ManageReporteComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin']
-        }
+        data: { grupo: 'GESTION' }
     },
     {
         path: 'noticia',
         component: ManageNoticiaComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'noticia/:id',
         component: ManageNoticiaComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'dcampeonato/:id',
         component: ManageDetalleCampeonatoComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'auspiciador/:id',
         component: ManageAuspiciadorComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'dcategoria_campeonato/:id',
         component: ManageDcategoriaCampeonatoComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'dcategoria_f/:idc/:id_contempla',
         component: ManageDcategoriaFutbolComponent,
         canActivate: [RouteGuardService],
-        data: {
-            expectedRole: ['admin', 'user']
-        }
+        data: {}
     },
     {
         path: 'pie/:xnom',

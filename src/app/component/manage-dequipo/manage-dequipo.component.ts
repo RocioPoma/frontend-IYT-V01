@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClubService } from 'src/app/servicios/club.service';
@@ -9,14 +9,27 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { EquipoComponent } from '../dialog/equipo/equipo.component';
 import { JugadorEquipoComponent } from '../dialog/jugador-equipo/jugador-equipo.component';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { leerToken, puede } from 'src/app/shared/permisos';
+import { ESTADOS, SolicitudesService } from 'src/app/solicitudes/solicitudes.service';
+import { MotivoDialogComponent } from 'src/app/solicitudes/motivo-dialog.component';
+import { environment as envArchivos } from 'src/environments/environment';
+import { rolPantalla } from '../../shared/permisos';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-dequipo',
   templateUrl: './manage-dequipo.component.html',
   styleUrls: ['./manage-dequipo.component.scss']
 })
 export class ManageDequipoComponent implements OnInit {
+  puedeInscribir = puede('EQUIPOS');
+  puedeAprobar = puede('GESTION');
+  esDelegado = leerToken()?.role === 'delegado';
+  estados = ESTADOS;
+  urlArchivos = envArchivos.apiUrl + '/uploads/img/';
+
 
   dataSource: any = [];
   dataDcategoria: any = []; //para datos de una categoria especifica(Tabla contempla)
@@ -29,7 +42,8 @@ export class ManageDequipoComponent implements OnInit {
   imgURL = '../../../assets/img/deportes/';
   extension = '.jpg';
 
-  constructor(private equipoService: EquipoService,
+  constructor(private solicitudes: SolicitudesService,
+    private equipoService: EquipoService,
     private dcategoriacampeonatoService: DcategoriacampeonatoService,
     private clubService: ClubService,
     private snackbarService: SnackbarService,
@@ -42,11 +56,9 @@ export class ManageDequipoComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer datos
-      const decodedToken: any = jwt_decode(token);
+      const decodedToken: any = jwtDecode(token);
       this.id_club = decodedToken?.id_club || 'Id_club desconocido';
-      this.role = decodedToken?.role || 'Rol desconocido';
-
-      console.log('Id Club:', this.id_club);
+      this.role = rolPantalla('GESTION'); // 'admin' = puede modificar en este módulo
     } else {
       console.log('No hay token en localStorage');
     }
@@ -162,7 +174,8 @@ export class ManageDequipoComponent implements OnInit {
       id_contempla: this.id_contempla,
       data_categoria: this.dataDcategoria
     }
-    dialogConfig.width = "750px";
+    dialogConfig.width = "960px";
+    dialogConfig.maxWidth = "96vw";
     const dialogRef = this.dialog.open(JugadorEquipoComponent, dialogConfig);
     this.router.events.subscribe(() => {
       dialogRef.close();
@@ -174,4 +187,43 @@ export class ManageDequipoComponent implements OnInit {
     //this.router.navigate(['/integracion/dcategoria_f',this.id,values.id]);
   }
 
+
+  // ---------- Inscripción: el delegado solicita, el comité técnico revisa ----------
+  esMiEquipo(e: any): boolean {
+    return this.esDelegado && String(e.id_club) === String(this.id_club);
+  }
+
+  /** El delegado solo modifica su equipo en borrador u observado; el comité siempre */
+  puedeModificar(e: any): boolean {
+    if (!this.esDelegado) return this.role !== 'user';
+    return this.esMiEquipo(e) && (e.estado === 'borrador' || e.estado === 'observado');
+  }
+
+  solicitarInscripcion(e: any) {
+    this.solicitudes.solicitarInscripcion(e.id_club, e.id_contempla).subscribe({
+      next: (r: any) => { this.snackbarService.openSnackBar(r.message, 'success'); this.dataTable(e.id_contempla); },
+      error: (x: any) => this.snackbarService.openSnackBar(x.error?.message || GlobalCostants.genericError, GlobalCostants.error),
+    });
+  }
+
+  revisar(e: any, estado: 'aprobado' | 'observado' | 'rechazado') {
+    const titulos = { aprobado: 'Aprobar inscripción', observado: 'Observar inscripción', rechazado: 'Rechazar inscripción' };
+    this.dialog.open(MotivoDialogComponent, {
+      width: '440px',
+      data: {
+        titulo: titulos[estado],
+        mensaje: `${e.nombre_club}: ${e.total_jugadores || 0} jugadores inscritos.`,
+        obligatorio: estado !== 'aprobado',
+        etiqueta: estado === 'aprobado' ? 'Comentario (opcional)' : 'Motivo para el delegado',
+        boton: titulos[estado].split(' ')[0],
+        color: estado === 'aprobado' ? 'primary' : 'warn',
+      },
+    }).afterClosed().subscribe((texto: string | undefined) => {
+      if (texto === undefined) return;
+      this.solicitudes.revisarEquipo({ id_club: e.id_club, id_contempla: e.id_contempla, estado, observacion: texto || undefined }).subscribe({
+        next: (r: any) => { this.snackbarService.openSnackBar(r.message, 'success'); this.dataTable(e.id_contempla); },
+        error: (x: any) => this.snackbarService.openSnackBar(x.error?.message || GlobalCostants.genericError, GlobalCostants.error),
+      });
+    });
+  }
 }

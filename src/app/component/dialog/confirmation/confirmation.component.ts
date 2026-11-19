@@ -1,7 +1,9 @@
-import { Component, OnInit, EventEmitter,Inject } from '@angular/core';
+import { Component, OnInit, EventEmitter, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-confirmation',
   templateUrl: './confirmation.component.html',
   styleUrls: ['./confirmation.component.scss']

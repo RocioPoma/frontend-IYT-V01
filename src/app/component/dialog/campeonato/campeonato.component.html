@@ -71,6 +71,40 @@
 
             </div>
 
+            <div class="fila-anfitrion">
+                <mat-form-field appearance="fill" class="ancho-completo">
+                    <mat-label>Número de campeonato</mat-label>
+                    <input matInput formControlName="numero_romano" (input)="mayusculas()" autocomplete="off" placeholder="XX">
+                    <mat-hint>En romanos y mayúsculas, ej.: XX, XXI</mat-hint>
+                    <mat-error *ngIf="campeonatoForm.controls.numero_romano.invalid">
+                        <span *ngIf="campeonatoForm.controls.numero_romano.errors?.required">Este campo es obligatorio.</span>
+                        <span *ngIf="campeonatoForm.controls.numero_romano.errors?.pattern">Escriba un número romano válido (I, V, X, L, C...).</span>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Comunidad anfitriona</mat-label>
+                    <mat-select formControlName="comunidad_anfitriona" (selectionChange)="elegirComunidad($event.value)">
+                        <mat-option *ngFor="let c of comunidades" [value]="c">{{ c }}</mat-option>
+                    </mat-select>
+                    <mat-error>Este campo es obligatorio.</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Club anfitrión</mat-label>
+                    <mat-select formControlName="id_club_anfitrion">
+                        <mat-option [value]="null">Sin club anfitrión</mat-option>
+                        <mat-optgroup *ngIf="clubsComunidad.length" [label]="'Clubs de ' + campeonatoForm.value.comunidad_anfitriona">
+                            <mat-option *ngFor="let c of clubsComunidad" [value]="c.id">{{ c.nombre }} - {{ c.comunidad }}</mat-option>
+                        </mat-optgroup>
+                        <mat-optgroup label="Otros clubs">
+                            <mat-option *ngFor="let c of otrosClubs" [value]="c.id">{{ c.nombre }} - {{ c.comunidad }}</mat-option>
+                        </mat-optgroup>
+                    </mat-select>
+                    <mat-hint>Se elige según la comunidad</mat-hint>
+                </mat-form-field>
+            </div>
+
             <div fxLayout="row wrap">
                 <mat-form-field appearance="fill" fxFlex>
                     <mat-label>Gestion</mat-label>

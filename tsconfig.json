@@ -1,25 +1,20 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
+    "strict": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
-    "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ]
+    "target": "ES2022",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "dom"],
+    "paths": { "src/*": ["./src/*"] }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

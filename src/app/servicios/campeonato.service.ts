@@ -40,6 +40,7 @@ export class CampeonatoService {
     fd.append('fecha_fin', data.fecha_fin);
     fd.append('convocatoria', convocatoria);
     fd.append('gestion', data.gestion);
+    this.anfitrion(fd, data);
     return this.httpClient.post(this.url +
       "/campeonato/add/", fd);
   }
@@ -69,8 +70,16 @@ export class CampeonatoService {
     fd.append('gestion', data.gestion);
     fd.append('nombre_conv', data.nombre_conv);
     fd.append('convocatoria', convocatoria);
+    this.anfitrion(fd, data);
     return this.httpClient.patch(this.url +
       "/campeonato/update/", fd);
+  }
+
+  /** Número en romanos, comunidad y club anfitrión (se usan en los carnets) */
+  private anfitrion(fd: FormData, data: any) {
+    fd.append('numero_romano', data.numero_romano || '');
+    fd.append('comunidad_anfitriona', data.comunidad_anfitriona || '');
+    fd.append('id_club_anfitrion', data.id_club_anfitrion ?? '');
   }
 
   //----------------------API PARA ACTUALIZAR ESTADO -------------------------------------------

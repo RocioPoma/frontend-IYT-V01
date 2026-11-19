@@ -17,6 +17,13 @@ export class JugadorService {
     //return this.httpClient.get<Jugador[]>(this.url + "/noticia/get/")
   }
 
+  /** Cambia solo la foto del jugador (comité técnico / administrador) */
+  actualizarFoto(ci: string, foto: File) {
+    const fd = new FormData();
+    fd.append('foto', foto, foto.name);
+    return this.httpClient.patch(this.url + '/jugador/foto/' + encodeURIComponent(ci), fd);
+  }
+
   //----------------------API PARA AGREGAR JUGADOR ------------------------------
   add(data: any) {
     return this.httpClient.post(this.url +

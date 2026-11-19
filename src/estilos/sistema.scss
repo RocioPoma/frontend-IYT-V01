@@ -1,0 +1,384 @@
+// =====================================================================
+// Capa visual del sistema (se carga al final, por encima de los estilos
+// heredados de la plantilla). Colores, encabezados, diálogos, tablas,
+// filtros y pie de página comunes a todas las pantallas.
+// =====================================================================
+
+:root {
+  --iyt-verde: #053a31;        // header y menú lateral
+  --iyt-verde-2: #0a4a3f;      // hover / item activo
+  --iyt-acento: #80cbc4;       // verde claro (iconos activos)
+  --iyt-primario: #00796b;     // botones
+  --iyt-fondo: #f2f5f4;
+  --iyt-borde: #e1e8e6;
+  --iyt-texto: #24343a;
+  --iyt-texto-2: #5f7176;
+  --iyt-radio: 12px;
+  --iyt-sombra: 0 1px 3px rgba(16, 40, 36, .08), 0 4px 14px rgba(16, 40, 36, .05);
+
+  // Variables de Angular Material (M3)
+  --mat-sidenav-container-shape: 0;
+  --mat-dialog-container-shape: 16px;
+  --mat-dialog-container-max-width: 96vw; // Material 3 limita los diálogos a 560px por defecto
+  --mat-table-background-color: #fff;
+  --mat-sort-arrow-color: var(--iyt-acento);
+}
+
+html, body { background: var(--iyt-fondo); }
+body {
+  font-family: 'Poppins', Roboto, 'Helvetica Neue', sans-serif;
+  color: var(--iyt-texto);
+  --mat-sys-body-large-font: 'Poppins', Roboto, sans-serif;
+  --mat-sys-body-medium-font: 'Poppins', Roboto, sans-serif;
+  --mat-sys-label-large-font: 'Poppins', Roboto, sans-serif;
+  --mat-sys-title-medium-font: 'Poppins', Roboto, sans-serif;
+  --mat-sys-title-large-font: 'Poppins', Roboto, sans-serif;
+}
+.mat-mdc-button-base, .mat-mdc-form-field, .mat-mdc-table, .mat-mdc-tab, .mat-mdc-menu-item,
+.mat-mdc-option, .mat-mdc-chip, .mat-mdc-dialog-container, .mdc-list-item__primary-text {
+  font-family: 'Poppins', Roboto, sans-serif !important;
+}
+.espaciador { flex: 1 1 auto; }
+
+// ------------------------------------------------------------------
+// Barra superior (mismo verde que el menú lateral)
+// ------------------------------------------------------------------
+.mat-toolbar.topbar {
+  background: var(--iyt-verde) !important;
+  color: #fff !important;
+  height: 64px;
+  padding: 0 12px;
+  gap: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  position: relative;
+  z-index: 3;
+  .mat-icon, .mat-mdc-icon-button { color: #fff !important; }
+  .topbar-marca { display: inline-flex; align-items: center; gap: 10px; margin-left: 6px; min-width: 0; }
+  .topbar-copa { color: #fff !important; font-size: 28px; width: 28px; height: 28px; }
+  .topbar-nombre { font-size: 19px; font-weight: 500; letter-spacing: .2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-usuario { font-size: 14px; opacity: .9; margin-right: 4px; }
+  @media (max-width: 599px) {
+    .topbar-usuario { display: none; }
+    .topbar-nombre { font-size: 16px; }
+    .topbar-copa { font-size: 24px; width: 24px; height: 24px; }
+  }
+}
+
+.main-container { height: 100vh; }
+.example-sidenav-container { flex: 1 1 auto; background: var(--iyt-fondo) !important; }
+html .page-wrapper {
+  height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  .page-content { flex: 1 0 auto; padding: 20px 24px; width: 100%; box-sizing: border-box; }
+  @media (max-width: 599px) { .page-content { padding: 12px; } }
+}
+
+// ------------------------------------------------------------------
+// Menú lateral: iconos blancos; el elegido cambia a verde claro
+// ------------------------------------------------------------------
+#snav.mat-sidenav {
+  width: 250px;
+  background: var(--iyt-verde) !important;
+  border-radius: 0 !important;
+  border-right: 0;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, .12);
+  .mat-mdc-nav-list { padding-top: 12px; }
+  .mat-mdc-list-item {
+    height: auto !important;
+    padding: 0 10px;
+    background: transparent !important;
+    &::before { display: none; }
+    a {
+      height: 44px;
+      margin-bottom: 4px;
+      padding: 0 12px;
+      gap: 12px;
+      border-radius: 8px;
+      color: #fff !important;
+      font-size: 14.5px;
+      font-weight: 400;
+      border-left: 3px solid transparent;
+      transition: background .15s, color .15s;
+      mat-icon { color: #fff !important; font-size: 22px; width: 22px; height: 22px; }
+      &:hover { background: rgba(255, 255, 255, .07); }
+    }
+    &.selected a, a.active {
+      background: rgba(128, 203, 196, .14) !important;
+      color: var(--iyt-acento) !important;
+      font-weight: 500;
+      border-left-color: var(--iyt-acento);
+      mat-icon { color: var(--iyt-acento) !important; }
+    }
+  }
+}
+
+// ------------------------------------------------------------------
+// Encabezado de pantalla (app-encabezado y encabezados antiguos)
+// ------------------------------------------------------------------
+.pagina-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  background: #fff;
+  border: 1px solid var(--iyt-borde);
+  border-radius: var(--iyt-radio);
+  box-shadow: var(--iyt-sombra);
+  padding: 14px 20px;
+  margin-bottom: 16px;
+}
+.pagina-titulo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  h1 { margin: 0; font-size: 18px; font-weight: 600; color: var(--iyt-texto); letter-spacing: .3px; text-transform: uppercase; }
+  p { margin: 2px 0 0; font-size: 13px; color: var(--iyt-texto-2); }
+}
+.pagina-icono {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; border-radius: 10px;
+  background: #e0f2f1; color: var(--iyt-primario);
+}
+.pagina-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  .float-right { float: none !important; margin: 0 !important; }
+  button { white-space: nowrap; }
+}
+@media (max-width: 599px) {
+  .pagina-cabecera { padding: 12px 14px; }
+  .pagina-acciones { width: 100%; justify-content: flex-start; }
+  .pagina-titulo h1 { font-size: 16px; }
+}
+
+// ------------------------------------------------------------------
+// Barra de filtros: todos en una línea (select 25 %, buscador el resto)
+// ------------------------------------------------------------------
+.barra-filtros {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  background: #fff !important;
+  border: 1px solid var(--iyt-borde);
+  border-radius: var(--iyt-radio) !important;
+  box-shadow: var(--iyt-sombra) !important;
+  padding: 14px 16px !important;
+  margin-bottom: 16px;
+  > .mat-mdc-form-field { margin: 0; padding: 0 !important; }
+  .filtro-select { flex: 0 1 25%; min-width: 200px; }
+  .filtro-buscar { flex: 1 1 260px; min-width: 200px; }
+  .filtro-ayuda { flex: 1 1 100%; margin: 0; }
+  @media (max-width: 599px) {
+    .filtro-select, .filtro-buscar { flex: 1 1 100%; }
+  }
+}
+
+// ------------------------------------------------------------------
+// Tablas
+// ------------------------------------------------------------------
+.tabla-contenedor, .responsive_table {
+  width: 100%;
+  overflow-x: auto;
+}
+.tabla-contenedor {
+  background: #fff;
+  border: 1px solid var(--iyt-borde);
+  border-radius: var(--iyt-radio);
+  box-shadow: var(--iyt-sombra);
+  margin-bottom: 16px;
+  > table, > .mat-mdc-table { width: 100%; box-shadow: none !important; }
+}
+.mat-mdc-table {
+  .mat-mdc-header-row { height: 52px; }
+  .mat-mdc-header-cell {
+    background: #f6f9f8;
+    color: var(--iyt-texto-2);
+    font-weight: 600;
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    border-bottom: 1px solid var(--iyt-borde);
+  }
+  .mat-mdc-row { height: 54px; transition: background .12s; }
+  .mat-mdc-row:hover .mat-mdc-cell { background: #f7fbfa; }
+  .mat-mdc-cell { font-size: 14px; color: var(--iyt-texto); border-bottom-color: #edf1f0; }
+  .mat-sort-header-container { justify-content: center; }
+  .action-link { white-space: nowrap; }
+}
+@media (max-width: 800px) {
+  .tabla-contenedor .mat-mdc-table, .responsive_table .mat-mdc-table { min-width: 760px; }
+}
+
+// Foto redonda en listas (clic para cambiarla)
+.foto-lista {
+  position: relative;
+  display: inline-block;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #e0f2f1;
+  vertical-align: middle;
+  img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .foto-lista-cambiar {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(5, 58, 49, .55); color: #fff;
+    opacity: 0; transition: opacity .15s;
+    mat-icon { font-size: 22px; width: 22px; height: 22px; }
+  }
+  &:hover .foto-lista-cambiar, &:focus-visible .foto-lista-cambiar { opacity: 1; }
+  &.sin-permiso { cursor: default; .foto-lista-cambiar { display: none; } }
+}
+
+// ------------------------------------------------------------------
+// Tarjetas
+// ------------------------------------------------------------------
+.page-content .mat-mdc-card {
+  border-radius: var(--iyt-radio);
+  box-shadow: var(--iyt-sombra);
+  border: 1px solid var(--iyt-borde);
+  background: #fff;
+}
+.page-content hr { display: none; }
+
+// ------------------------------------------------------------------
+// Diálogos: barra de título verde, pegada arriba y bien alineada
+// ------------------------------------------------------------------
+.mat-mdc-dialog-container .mat-mdc-dialog-surface { border-radius: 16px !important; overflow: hidden; }
+.mat-mdc-dialog-container .mat-toolbar,
+.mat-mdc-dialog-container .mat-toolbar.mat-primary {
+  margin: 0 !important;
+  width: 100% !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  padding: 0 20px !important;
+  background: var(--iyt-verde) !important;
+  color: #fff !important;
+  font-size: 18px;
+  font-weight: 500;
+  justify-content: center;
+  .mat-toolbar-row { height: 58px !important; padding: 0 !important; width: 100%; }
+  .mat-icon, .mat-mdc-icon-button { color: #fff !important; }
+}
+.mat-mdc-dialog-container .mat-mdc-dialog-content {
+  padding-top: 20px !important;
+  max-height: 72vh;
+}
+.mat-mdc-dialog-container .mat-mdc-dialog-actions {
+  padding: 8px 24px 20px !important;
+  gap: 10px;
+  justify-content: center;
+  min-height: auto;
+  // botón principal relleno, "Cancelar" con borde
+  .mat-mdc-raised-button:not([mat-dialog-close]):not(:disabled) {
+    background: var(--iyt-primario) !important;
+    color: #fff !important;
+  }
+  .mat-mdc-raised-button[mat-dialog-close] {
+    box-shadow: none !important;
+    border: 1px solid #b9cbc8;
+    background: #fff !important;
+  }
+  .mat-mdc-button-base { min-width: 110px; }
+}
+.mat-mdc-dialog-container .mat-mdc-form-field { width: 100%; }
+
+// ------------------------------------------------------------------
+// Pie de página
+// ------------------------------------------------------------------
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 8px;
+  padding: 16px 20px;
+  font-size: 13px;
+  color: var(--iyt-texto-2);
+  border-top: 1px solid var(--iyt-borde);
+  background: #fff;
+  text-align: center;
+  strong { font-weight: 600; color: var(--iyt-texto); }
+  &.pie-oscuro {
+    background: transparent;
+    color: rgba(255, 255, 255, .65);
+    border-top-color: rgba(255, 255, 255, .1);
+    strong { color: #fff; }
+  }
+}
+@media (max-width: 599px) { .pie-sep { display: none; } .pie { flex-direction: column; } }
+
+// Campo de contraseña con botón "ver"
+.campo-clave .mat-mdc-form-field-icon-suffix { padding-right: 4px; }
+
+// Colores de botones de icono (en Material 3 el atributo color ya no los pinta)
+.mat-mdc-icon-button.mat-primary, .mat-mdc-icon-button.mat-accent { color: var(--iyt-primario) !important; }
+.mat-mdc-icon-button.mat-warn { color: var(--iyt-primario) !important; }
+.mat-mdc-icon-button:disabled { color: rgba(0, 0, 0, .3) !important; }
+.mat-mdc-cell .mat-mdc-icon-button, .mat-mdc-cell .mat-mdc-slide-toggle { vertical-align: middle; }
+#snav .mat-mdc-list-item a mat-icon { flex: 0 0 22px; }
+
+// Pestañas
+.mat-mdc-tab-group .mat-mdc-tab-header { background: #fff; border-radius: var(--iyt-radio) var(--iyt-radio) 0 0; }
+.page-content .mat-mdc-tab-body-content { padding-top: 12px; }
+
+// Fila sin datos
+.mat-mdc-no-data-row td, .vacio { padding: 20px; text-align: center; color: var(--iyt-texto-2); }
+
+// ------------------------------------------------------------------
+// Portal público oscuro: los componentes de Material cambian solos a
+// su versión oscura con color-scheme; aquí se ajustan tablas y tarjetas
+// internas (fixture, posiciones, ranking, medallero) a fondo transparente.
+// ------------------------------------------------------------------
+.portal.portal-oscuro {
+  color-scheme: dark;
+  --mat-sys-primary: #80cbc4;
+  --mat-sys-on-primary: #032420;
+  --mat-table-background-color: transparent;
+  --mat-tab-header-divider-color: rgba(255, 255, 255, .1);
+  --mat-form-field-outlined-container-color: rgba(3, 26, 22, .6);
+
+  .mat-mdc-tab-group .mat-mdc-tab-header { background: transparent; }
+  .mat-mdc-table, .mat-mdc-table .mat-mdc-header-cell, .mat-mdc-table .mat-mdc-cell { background: transparent !important; }
+  .mat-mdc-table {
+    .mat-mdc-header-cell { color: rgba(255, 255, 255, .6); border-bottom-color: rgba(255, 255, 255, .12); }
+    .mat-mdc-cell { color: #e8f1ef; border-bottom-color: rgba(255, 255, 255, .07); }
+    .mat-mdc-row:hover .mat-mdc-cell { background: rgba(255, 255, 255, .04) !important; }
+  }
+  .bloque-cabecera h3 { color: #fff; }
+  .vacio, .nota { color: rgba(255, 255, 255, .55) !important; }
+  .pos { background: rgba(255, 255, 255, .1); color: #fff; }
+  .pos.podio { background: #80cbc4; color: #032420; }
+  .ronda h4 { color: #80cbc4 !important; }
+  .partido { background: rgba(255, 255, 255, .04); border-color: rgba(255, 255, 255, .1); color: #e8f1ef; }
+  .partido .detalle, .partido .detalle * { color: rgba(255, 255, 255, .75) !important; }
+  .estado { background: rgba(255, 255, 255, .1); color: #e8f1ef; }
+  .estado.cerrado { background: #00796b; color: #fff; }
+  .escudo { color: rgba(255, 255, 255, .45); }
+  .medalla { color: #fff; border: 1px solid rgba(255, 255, 255, .1); }
+  .medalla.oro { background: rgba(249, 168, 37, .12); }
+  .medalla.plata { background: rgba(255, 255, 255, .06); }
+  .medalla.bronce { background: rgba(161, 136, 127, .14); }
+  .mat-mdc-chip.mat-mdc-standard-chip { --mat-chip-label-text-color: #e8f1ef; --mat-chip-outline-color: rgba(255, 255, 255, .2); }
+  .mat-mdc-chip-selected.mat-mdc-standard-chip {
+    --mat-chip-selected-container-color: rgba(128, 203, 196, .2);
+    --mat-chip-selected-label-text-color: #80cbc4;
+    --mat-chip-with-icon-selected-icon-color: #80cbc4;
+  }
+}
+.mat-mdc-header-cell.izq .mat-sort-header-container { justify-content: flex-start; }
+.mat-mdc-dialog-container .mat-toolbar { box-shadow: none !important; }
+.foto-lista .foto-marcador {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  background: #e0f2f1; color: var(--iyt-primario);
+}

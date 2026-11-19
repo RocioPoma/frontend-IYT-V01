@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
@@ -7,6 +7,8 @@ import { UserService } from 'src/app/servicios/user.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']

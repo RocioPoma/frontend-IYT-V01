@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ReglamentoService } from 'src/app/servicios/reglamento.service';
@@ -7,6 +7,8 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 import { environment } from 'src/environments/environment';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-reglamento',
   templateUrl: './reglamento.component.html',
   styleUrls: ['./reglamento.component.scss']

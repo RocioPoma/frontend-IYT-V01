@@ -1,5 +1,6 @@
+import { environment } from 'src/environments/environment';
 import { ThisReceiver } from '@angular/compiler';
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -11,6 +12,8 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 import { HechosPartidoComponent } from '../hechos-partido/hechos-partido.component';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-partido',
   templateUrl: './partido.component.html',
   styleUrls: ['./partido.component.scss']
@@ -20,6 +23,7 @@ export class PartidoComponent implements OnInit {
   displayedColumns: string[] = ['numero', 'nombre', 'edad'];
   displayedColumnsHechos: string[] = ['camiseta', 'nombre', 'hecho'];
   action: any = "Agregar";
+  readonly urlArchivos = environment.apiUrl + '/uploads/img/';
   dataPartido: any;
   dataEquipoJugador: any;
 

@@ -1,101 +1,74 @@
-<mat-card>
-    <b><span>GESTION USUARIOS</span></b>
-        <button mat-flat-button color="accent" class="float-right" (click)="handleAddAction()">Registrar usuario</button>
+<app-encabezado [titulo]="esComite ? 'Gestión de delegados' : 'Gestión usuarios'" icono="manage_accounts">
+    <button mat-stroked-button color="primary" (click)="reportePDF()"><mat-icon>picture_as_pdf</mat-icon> Reporte PDF</button>
+    <button mat-flat-button color="primary" (click)="handleAddAction()"><mat-icon>person_add</mat-icon> {{ esComite ? 'Registrar delegado' : 'Registrar usuario' }}</button>
+</app-encabezado>
 
-<br>
-    <mat-form-field appearance="fill">
-        <mat-label>Buscar</mat-label>
+<mat-card class="barra-filtros">
+    <mat-form-field appearance="outline" class="filtro-select" subscriptSizing="dynamic" *ngIf="!esComite">
+        <mat-label>Filtrar por rol</mat-label>
+        <mat-select [value]="rolFiltro" (selectionChange)="filtrarRol($event.value)">
+            <mat-option value="">Todos los roles</mat-option>
+            <mat-option *ngFor="let r of roles" [value]="r.valor">{{ r.nombre }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="filtro-select" subscriptSizing="dynamic">
+        <mat-label>Filtrar por club</mat-label>
+        <mat-select [value]="clubFiltro" (selectionChange)="filtrarClub($event.value)">
+            <mat-option value="">Todos los clubs</mat-option>
+            <mat-option *ngFor="let c of clubs" [value]="c.id">{{ c.nombre }} - {{ c.comunidad }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="filtro-buscar" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>Buscar por nombre, email o celular</mat-label>
         <input matInput (keyup)="applyFilter($event)" autocomplete="off">
     </mat-form-field>
+</mat-card>
 
-
-<div class="responsive_table">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<div class="tabla-contenedor">
+    <table mat-table matSort [dataSource]="dataSource" [paginador]="paginador">
         <ng-container matColumnDef="nombre">
-            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="name"> Nombre</th>
             <td mat-cell *matCellDef="let element"> {{element.name}} </td>
         </ng-container>
 
         <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef> Email</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Email</th>
             <td mat-cell *matCellDef="let element"> {{element.email}} </td>
         </ng-container>
 
         <ng-container matColumnDef="celular">
-            <th mat-header-cell *matHeaderCellDef> Nro Celular</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="contactNumber"> Nro Celular</th>
             <td mat-cell *matCellDef="let element"> {{element.contactNumber}} </td>
         </ng-container>
 
         <ng-container matColumnDef="rol">
-            <th mat-header-cell *matHeaderCellDef> Rol</th>
-            <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="role"> Rol</th>
+            <td mat-cell *matCellDef="let element"> {{ nombreRol(element.role) }}<small *ngIf="element.role === 'delegado' && element.gestion"> · Gestión {{ element.gestion }}</small> </td>
         </ng-container>
 
         <ng-container matColumnDef="NombreClub">
-            <th mat-header-cell *matHeaderCellDef> NombreClub</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Club</th>
             <td mat-cell *matCellDef="let element"> {{element.NombreClub}} </td>
         </ng-container>
         
         <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef>Acciones</th>
             <td mat-cell *matCellDef="let element" class="action-link">
-                <button mat-icon-button color="accent" matTooltip="Edit" (click)="handleEditAction(element)">
+                <button mat-icon-button color="primary" matTooltip="Editar" (click)="handleEditAction(element)">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="accent" matTooltip="Delete" (click)="handleDeleteAction(element)">
+                <button mat-icon-button color="warn" matTooltip="Eliminar" *ngIf="!esComite" (click)="handleDeleteAction(element)">
                     <mat-icon>delete</mat-icon>
                 </button>
                 <mat-slide-toggle (change)="handleChangeAction($event.checked, element.id)"
-                    matTooltip="Activate or Deactivate User" [checked]="element.status">
+                    matTooltip="Activar o desactivar usuario" [checked]="element.status">
                 </mat-slide-toggle>
             </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
         <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
+        <tr class="mat-mdc-no-data-row" *matNoDataRow><td class="mat-mdc-cell" [attr.colspan]="displayedColumns.length">No hay registros para mostrar.</td></tr>
     </table>
+    <mat-paginator #paginador [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="25" showFirstLastButtons aria-label="Páginas"></mat-paginator>
 </div>
-</mat-card>
-<!--
-<mat-card>
-    <b><span>Manage User</span></b>
-    <button mat-flat-button color="primary" class="float-right" (click)="signupAction()">Registrar usuario</button>
-</mat-card>
-<hr>
-<mat-card>
-    <mat-form-field appearance="fill">
-        <mat-label>Filter</mat-label>
-        <input matInput (keyup)="applyFilter($event)" #input>
-    </mat-form-field>
-</mat-card>
-<hr>
-
-<div class="responsive_table">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Name</th>
-            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef> Email</th>
-            <td mat-cell *matCellDef="let element"> {{element.email}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="contactNumber">
-            <th mat-header-cell *matHeaderCellDef> Contact Number</th>
-            <td mat-cell *matCellDef="let element"> {{element.contactNumber}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Action</th>
-            <td mat-cell *matCellDef="let element" class="action-link">
-                <mat-slide-toggle (change)="handleChangeAction($event.checked, element.id)"
-                    matTooltip="Activate or Deactivate User" [checked]="element.status">
-                </mat-slide-toggle>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky:true"></tr>
-        <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
-    </table>
-</div>
--->

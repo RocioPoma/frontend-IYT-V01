@@ -1,39 +1,13 @@
-.float-center {
-    text-align: center;
+.grilla-categorias { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+.categoria { overflow: hidden; padding: 0 !important; }
+.categoria-img { width: 100%; height: 120px; object-fit: contain; display: block; background: #fff; padding: 12px; box-sizing: border-box; border-bottom: 1px solid #e1e8e6; }
+.categoria-cuerpo {
+  padding: 14px 16px;
+  h3 { margin: 0; font-size: 15px; font-weight: 600; text-transform: uppercase; line-height: 1.35; min-height: 40px; }
+  p { margin: 4px 0 12px; font-size: 13px; color: #5f7176; }
 }
-
-.tamano_titulo {
-    font-size: 18px;
-    color: rgb(120, 132, 133);
-}
-
-.float-right{
-    float: right;
-    margin-top: -8px;
-}
-
-.example-card {
-    max-width: 400px;
-    margin-bottom: 8px;   
-}
-
-.img {
-    background-size: cover;
-    border-radius: 50%;
-   // margin: 0 auto;
-}
-.mayuscula{
-    text-transform: uppercase;
-}
-
-.btn-add{
-    // background-color: black;
-     margin-left: 30px;
-     margin-top: 8px;
-     margin-right: 35px;
- }
- .btn-add2{
-    //background-color: black;
-    margin-left: 30px;
-    margin-top: 8px;
-}
+.categoria-acciones { display: flex; align-items: center; gap: 2px; flex-wrap: nowrap; }
+.categoria-acciones .mat-mdc-unelevated-button { padding: 0 14px; }
+.categoria-acciones mat-slide-toggle { margin-left: 4px; }
+.inactiva .categoria-img { filter: grayscale(1); opacity: .6; }
+.vacio { padding: 24px; text-align: center; color: #5f7176; }

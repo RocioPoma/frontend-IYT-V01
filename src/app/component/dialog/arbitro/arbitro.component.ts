@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -7,6 +7,8 @@ import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-arbitro',
   templateUrl: './arbitro.component.html',
   styleUrls: ['./arbitro.component.scss']

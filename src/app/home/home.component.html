@@ -1,23 +1,195 @@
-<!--
-<div class="bg-image" align="center"  >
-  <img  src="../../assets/img/deportes.jpg" alt="error">
-</div>
--->
+<div class="portal portal-oscuro">
+  <header class="barra">
+    <div class="barra-interior">
+      <a class="marca" (click)="irA('campeonatos')">
+        <mat-icon class="copa">emoji_events</mat-icon>
+        <span>Integración Yaretanense</span>
+      </a>
+      <nav class="menu" aria-label="Secciones">
+        <button type="button" [class.activo]="seccion === 'campeonatos'" (click)="irA('campeonatos')">
+          <mat-icon>emoji_events</mat-icon> Campeonatos
+        </button>
+        <button type="button" [class.activo]="seccion === 'sobre'" (click)="irA('sobre')">
+          <mat-icon>groups</mat-icon> Sobre la Integración
+        </button>
+        <button type="button" [class.activo]="seccion === 'sistema'" (click)="irA('sistema')">
+          <mat-icon>devices</mat-icon> Sobre el Sistema
+        </button>
+      </nav>
+      <div class="barra-acciones">
+        <button mat-flat-button class="btn-claro" aria-label="Ir al panel" *ngIf="conSesion" (click)="irAlPanel()"><mat-icon>dashboard</mat-icon> <span class="txt">Ir al panel</span></button>
+        <ng-container *ngIf="!conSesion">
+          <button mat-flat-button class="btn-claro" aria-label="Iniciar sesión" (click)="loginAction()"><mat-icon>login</mat-icon> <span class="txt">Iniciar sesión</span></button>
+        </ng-container>
+      </div>
+    </div>
+  </header>
 
-  
-<app-best-seller></app-best-seller>
+  <!-- ======================= CAMPEONATOS ======================= -->
+  <ng-container *ngIf="seccion === 'campeonatos'">
+    <section class="portada">
+      <span class="etiqueta-portada"><mat-icon>sports_soccer</mat-icon> Campeonato de Integración</span>
+      <h1>{{ campeonato?.nombre_campeonato || 'Campeonatos de la Integración Yaretanense' }}</h1>
+      <p *ngIf="campeonato" class="fechas">
+        <span><mat-icon>event</mat-icon> Gestión {{ campeonato.gestion }}</span>
+        <span><mat-icon>date_range</mat-icon> {{ campeonato.fecha_i }} al {{ campeonato.fecha_f }}</span>
+      </p>
+      <div class="portada-acciones">
+        <mat-form-field appearance="outline" class="selector-campeonato" subscriptSizing="dynamic" *ngIf="campeonatos.length > 1">
+          <mat-label>Campeonato</mat-label>
+          <mat-select [value]="campeonato" (selectionChange)="elegirCampeonato($event.value)">
+            <mat-option *ngFor="let c of campeonatos" [value]="c">{{ c.nombre_campeonato }} ({{ c.gestion }})</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <a *ngIf="campeonato?.convocatoria" mat-stroked-button class="btn-borde" [href]="imgUrl + campeonato.convocatoria" target="_blank" rel="noopener">
+          <mat-icon>description</mat-icon> Ver convocatoria
+        </a>
+      </div>
+    </section>
 
-<div class="wrapper sticky">
-  <nav class="navbar-fixed-top">
-    <a href="#" class="logo">
-      <mat-icon>diversity_2</mat-icon> . Integracion Yaretanence
-    </a>
-    <ul>
-      <li><a (click)="loginAction()" class="color-letra">Iniciar Sesion</a></li>
-     <!-- <li><a (click)="forgotPasswordAction()" class="color-letra">Forgot Password</a></li>-->
-    </ul>
-  </nav>
-</div>
-<div class="footer" id="signup">
-  <h5>All right reserved @Rocio Poma Silvestre</h5>
+    <main class="contenido">
+      <mat-progress-bar *ngIf="cargando" mode="indeterminate"></mat-progress-bar>
+
+      <section class="vidrio" *ngIf="campeonato">
+        <mat-tab-group mat-stretch-tabs="false" animationDuration="150ms">
+          <mat-tab>
+            <ng-template mat-tab-label><mat-icon class="tab-icono">category</mat-icon> Categorías</ng-template>
+            <ng-template matTabContent>
+              <p class="vacio" *ngIf="!categorias.length">Este campeonato todavía no tiene categorías habilitadas.</p>
+              <mat-chip-listbox *ngIf="categorias.length" class="chips" aria-label="Categorías">
+                <mat-chip-option *ngFor="let c of categorias" [selected]="c === categoria" (click)="categoria = c">
+                  {{ nombreCategoria(c) }}
+                </mat-chip-option>
+              </mat-chip-listbox>
+              <mat-tab-group *ngIf="categoria" mat-stretch-tabs="false" class="sub-tabs">
+                <mat-tab label="Fixture">
+                  <ng-template matTabContent><app-fixture [idContempla]="categoria.id"></app-fixture></ng-template>
+                </mat-tab>
+                <mat-tab label="Tabla de posiciones">
+                  <ng-template matTabContent><app-manage-tabla-posiciones [idContempla]="categoria.id"></app-manage-tabla-posiciones></ng-template>
+                </mat-tab>
+                <mat-tab label="Ranking de jugadores">
+                  <ng-template matTabContent><app-manage-ranking-jugadores [idContempla]="categoria.id"></app-manage-ranking-jugadores></ng-template>
+                </mat-tab>
+                <mat-tab label="Medallero">
+                  <ng-template matTabContent><app-medallero-categoria [idContempla]="categoria.id"></app-medallero-categoria></ng-template>
+                </mat-tab>
+              </mat-tab-group>
+            </ng-template>
+          </mat-tab>
+
+          <mat-tab>
+            <ng-template mat-tab-label><mat-icon class="tab-icono">military_tech</mat-icon> Medallero general</ng-template>
+            <ng-template matTabContent><app-medallero-campeonato [idCampeonato]="campeonato.id"></app-medallero-campeonato></ng-template>
+          </mat-tab>
+
+          <mat-tab>
+            <ng-template mat-tab-label><mat-icon class="tab-icono">newspaper</mat-icon> Noticias</ng-template>
+            <ng-template matTabContent>
+              <p class="vacio" *ngIf="!noticias.length">No hay noticias publicadas.</p>
+              <div class="noticias">
+                <article class="noticia" *ngFor="let n of noticias">
+                  <img *ngIf="n.imagen" [src]="imgUrl + n.imagen" alt="" loading="lazy" />
+                  <div class="noticia-cuerpo">
+                    <small>{{ n.fecha }}</small>
+                    <h3>{{ n.titulo }}</h3>
+                    <p>{{ n.descripcion }}</p>
+                  </div>
+                </article>
+              </div>
+            </ng-template>
+          </mat-tab>
+
+          <mat-tab>
+            <ng-template mat-tab-label><mat-icon class="tab-icono">stadium</mat-icon> Campos de juego</ng-template>
+            <ng-template matTabContent>
+              <p class="vacio" *ngIf="!canchas.length">No hay campos de juego registrados.</p>
+              <div class="canchas">
+                <div class="cancha" *ngFor="let c of canchas">
+                  <mat-icon>stadium</mat-icon>
+                  <div>
+                    <b>{{ c.nombre }}</b>
+                    <div class="gris" *ngIf="c.tipo">{{ c.tipo }}</div>
+                    <div class="gris" *ngIf="c.direccion">{{ c.direccion }}</div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </section>
+
+      <section class="vidrio" *ngIf="!cargando && !campeonato">
+        <p class="vacio">Todavía no hay campeonatos publicados.</p>
+      </section>
+
+      <section class="vidrio" *ngIf="auspiciadores.length">
+        <h2><mat-icon>handshake</mat-icon> Auspiciadores</h2>
+        <div class="auspiciadores">
+          <ng-container *ngFor="let a of auspiciadores">
+            <a *ngIf="a.sitio; else sinSitio" class="auspiciador" [href]="a.sitio.startsWith('http') ? a.sitio : 'https://' + a.sitio" target="_blank" rel="noopener">{{ a.nombre }} {{ a.ap_paterno }}</a>
+            <ng-template #sinSitio><span class="auspiciador">{{ a.nombre }} {{ a.ap_paterno }}</span></ng-template>
+          </ng-container>
+        </div>
+      </section>
+    </main>
+  </ng-container>
+
+  <!-- ======================= SOBRE LA INTEGRACIÓN ======================= -->
+  <ng-container *ngIf="seccion === 'sobre'">
+    <section class="portada portada-sobre">
+      <img class="logo-portada" src="assets/img/logo-iyt.png" alt="Logo de la Integración Yaretanense" />
+      <h1>Sobre la Integración Yaretanence</h1>
+      <p class="fechas"><span><mat-icon>place</mat-icon> Provincia Ladislao Cabrera - UTD Yaretani · Oruro, Bolivia</span></p>
+    </section>
+
+    <main class="contenido">
+      <section class="vidrio sobre">
+        <p class="parrafo">
+          El campeonato de integración Yaretanense ubicada en la provincia Ladislao Cabrera departamento de Oruro-Bolivia,
+          fundada el 23 de diciembre de 2004, con sus 17 comunidades: {{ comunidades.join(', ') }}, es una entidad
+          autónoma de derecho privado y de carácter estrictamente deportivo sin fines de lucro, encargada de normar,
+          organizar, dirigir, controlar y estimular el deporte en sus diferentes disciplinas.
+        </p>
+        <div class="datos">
+          <div class="dato"><b>2004</b><span>Fundada el 23 de diciembre</span></div>
+          <div class="dato"><b>17</b><span>Comunidades</span></div>
+          <div class="dato"><b>Oruro</b><span>Provincia Ladislao Cabrera - UTD Yaretani</span></div>
+        </div>
+        <h3 class="subtitulo-chico">Comunidades</h3>
+        <div class="comunidades">
+          <span class="comunidad" *ngFor="let c of comunidades"><mat-icon>location_on</mat-icon>{{ c }}</span>
+        </div>
+      </section>
+    </main>
+  </ng-container>
+
+  <!-- ======================= SOBRE EL SISTEMA ======================= -->
+  <ng-container *ngIf="seccion === 'sistema'">
+    <section class="portada portada-sobre">
+      <span class="etiqueta-portada"><mat-icon>devices</mat-icon> Sobre el Sistema</span>
+      <h1>Evolución del Sistema de Integración Yaretanence</h1>
+    </section>
+
+    <main class="contenido">
+      <section class="vidrio sobre">
+        <p class="parrafo">
+          El Sistema de Integración Yaretanence surge como una iniciativa tecnológica orientada a modernizar y optimizar
+          la organización, administración y seguimiento de los campeonatos deportivos del Ayllu Kulli Yaretani.
+        </p>
+        <ol class="linea-tiempo">
+          <li *ngFor="let h of historia">
+            <span class="hito-punto"><mat-icon>{{ h.icono }}</mat-icon></span>
+            <div class="hito">
+              <span class="hito-anio">{{ h.periodo }}</span>
+              <h4 *ngIf="h.titulo">{{ h.titulo }}</h4>
+              <p [innerHTML]="h.texto"></p>
+            </div>
+          </li>
+        </ol>
+      </section>
+    </main>
+  </ng-container>
+
+  <app-pie [oscuro]="true"></app-pie>
 </div>

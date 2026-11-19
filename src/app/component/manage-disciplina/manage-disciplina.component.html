@@ -1,23 +1,17 @@
-<mat-card class="responsive_table">
-    <div class="float-center">
-        <b class="tamano_titulo"><span>DISCIPLINAS</span></b>
-    </div>
-</mat-card>
-<hr>
-<div class="responsive_table">
-    <div *ngFor="let element of datosDisciplina" align="center">
-        <mat-card class="example-card">
-            <mat-card-title-group>
-                <mat-card-title align="left">{{element.nombre}}</mat-card-title>
-                <mat-card-subtitle align="left">"Siempre puedes ser mejor" <br>
-                    <mat-slide-toggle (change)="onChange($event.checked, element.id)"
-                        matTooltip="Activar o Desactivar Disciplina" [checked]="element.estado">
-                    </mat-slide-toggle>
-                </mat-card-subtitle>
-                <img class="img" mat-card-sm-image [src]="imgURL+element.nombre+extension">
-            </mat-card-title-group>
+<app-encabezado titulo="Disciplinas" icono="sports_soccer" subtitulo="Active o desactive las disciplinas que se juegan en los campeonatos."></app-encabezado>
 
-        </mat-card>
-    </div>
-
+<div class="grilla-disciplinas">
+    <mat-card *ngFor="let element of datosDisciplina" class="disciplina" [class.inactiva]="element.estado !== 'true' && element.estado !== true">
+        <img class="disciplina-img" [src]="imagen(element.nombre)" [alt]="element.nombre"
+            onerror="this.onerror=null; this.src='assets/img/deportes/DEPORTE GENERICO.jpg';">
+        <div class="disciplina-cuerpo">
+            <div>
+                <h3>{{element.nombre}}</h3>
+                <p>"Siempre puedes ser mejor"</p>
+            </div>
+            <mat-slide-toggle (change)="element.estado = $event.checked ? 'true' : 'false'; onChange($event.checked, element.id)"
+                matTooltip="Activar o desactivar disciplina" [checked]="element.estado === 'true' || element.estado === true">
+            </mat-slide-toggle>
+        </div>
+    </mat-card>
 </div>

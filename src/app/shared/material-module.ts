@@ -50,12 +50,15 @@
  import { ObserversModule } from '@angular/cdk/observers';
  import { PortalModule } from '@angular/cdk/portal';
  import { DateAdapter } from '@angular/material/core';
+ import { UiModule } from './ui/ui.module';
  
  /**
   * NgModule that includes all Material modules that are required to serve the demo-app.
   */
  @NgModule({
+     imports: [UiModule],
      exports: [
+         UiModule,
          MatAutocompleteModule,
          MatButtonModule,
          MatBottomSheetModule,

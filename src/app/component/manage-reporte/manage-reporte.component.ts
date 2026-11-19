@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-reporte',
   templateUrl: './manage-reporte.component.html',
   styleUrls: ['./manage-reporte.component.scss']

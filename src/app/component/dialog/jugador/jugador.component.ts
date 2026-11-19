@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClubService } from 'src/app/servicios/club.service';
@@ -15,6 +15,8 @@ interface HtmlInputEvent extends Event {
 }
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-jugador',
   templateUrl: './jugador.component.html',
   styleUrls: ['./jugador.component.scss']

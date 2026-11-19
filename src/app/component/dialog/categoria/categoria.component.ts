@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CategoriaService } from 'src/app/servicios/categoria.service';
@@ -6,6 +6,8 @@ import { SnackbarService } from 'src/app/servicios/snackbar.service';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-categoria',
   templateUrl: './categoria.component.html',
   styleUrls: ['./categoria.component.scss']

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { exportarPDF } from 'src/app/shared/reporte-pdf';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -11,15 +12,18 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
 
 import { DateAdapter } from '@angular/material/core';
 import { environment } from 'src/environments/environment';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { rolPantalla } from '../../shared/permisos';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-campeonato',
   templateUrl: './manage-campeonato.component.html',
   styleUrls: ['./manage-campeonato.component.scss']
 })
 export class ManageCampeonatoComponent implements OnInit {
-  displayedColumns: string[] = ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
+  displayedColumns: string[] = ['nombre_campeonato', 'anfitrion', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
   dataSource: any; //almacena los tatos extraidos del backend
   responseMessage: any;
   role: any;
@@ -47,17 +51,15 @@ export class ManageCampeonatoComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer el nombre
-      const decodedToken: any = jwt_decode(token);
-      this.role = decodedToken?.role || 'Rol desconocido';
-      
-      console.log('Rol:', this.role);
+      const decodedToken: any = jwtDecode(token);
+      this.role = rolPantalla('GESTION'); // 'admin' = puede modificar en este módulo
     } else {
       console.log('No hay token en localStorage');
     }
 
     this.displayedColumns = this.role === 'user' 
-      ? ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'ver']  // Agrega las columnas que sí pueden ver los usuarios "user"
-      : ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
+      ? ['nombre_campeonato', 'anfitrion', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'ver']  // Agrega las columnas que sí pueden ver los usuarios "user"
+      : ['nombre_campeonato', 'anfitrion', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
   
   }
 
@@ -190,5 +192,16 @@ export class ManageCampeonatoComponent implements OnInit {
 
     // this.campeonatoService.obtenerCampeonato(values);
     //this.router.navigate(['/integracion/dcampeonato']);
+  }
+
+  /** Reporte PDF de la lista (respeta el filtro de búsqueda) */
+  reportePDF() {
+    const datos: any[] = this.dataSource?.filteredData || this.dataSource?.data || [];
+    exportarPDF({
+      titulo: 'Reporte de campeonatos',
+      columnas: ['N°', 'Campeonato', 'Gestión', 'Inicio', 'Fin', 'Estado'],
+      filas: datos.map((f: any, i: number) => [i + 1, f.nombre_campeonato, f.gestion, f.fecha_i, f.fecha_f, f.status === 'true' ? 'Activo' : 'Concluido']),
+      archivo: 'campeonatos',
+    });
   }
 }

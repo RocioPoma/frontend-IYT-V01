@@ -1,0 +1,38 @@
+<div class="bloque">
+  <div class="bloque-cabecera"><h3>Medallero</h3></div>
+  <p class="vacio" *ngIf="puestos.length === 0">Todavía no se registró el medallero de esta categoría.</p>
+  <div class="podio-grid" *ngIf="puestos.length">
+    <div class="medalla" *ngFor="let p of puestos" [ngClass]="clases[p.puesto]">
+      <mat-icon>workspace_premium</mat-icon>
+      <div>{{ nombres[p.puesto] }}</div>
+      <div class="club">{{ p.club }}</div>
+    </div>
+  </div>
+
+  <div *ngIf="puedeEditar">
+    <div class="form-medallero">
+      <mat-form-field appearance="outline">
+        <mat-label>Primer lugar</mat-label>
+        <mat-select [(value)]="seleccion.primero">
+          <mat-option *ngFor="let e of equipos" [value]="e.id_club">{{ e.nombre_club }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Segundo lugar</mat-label>
+        <mat-select [(value)]="seleccion.segundo">
+          <mat-option [value]="null">—</mat-option>
+          <mat-option *ngFor="let e of equipos" [value]="e.id_club">{{ e.nombre_club }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Tercer lugar</mat-label>
+        <mat-select [(value)]="seleccion.tercero">
+          <mat-option [value]="null">—</mat-option>
+          <mat-option *ngFor="let e of equipos" [value]="e.id_club">{{ e.nombre_club }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <button mat-flat-button color="primary" (click)="guardar()" [disabled]="!seleccion.primero || guardando">Guardar medallero</button>
+    <button mat-button color="warn" (click)="eliminar()" *ngIf="puestos.length">Eliminar medallero</button>
+  </div>
+</div>

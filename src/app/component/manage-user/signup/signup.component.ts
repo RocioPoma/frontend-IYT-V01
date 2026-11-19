@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import { ROLES, leerToken } from 'src/app/shared/permisos';
+import { Component, EventEmitter, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -10,6 +11,8 @@ import { GlobalCostants } from '../../../shared/global-constants';
 import { ClubService } from 'src/app/servicios/club.service';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
@@ -23,7 +26,9 @@ export class SignupComponent implements OnInit {
   responseMessage: any;
   club: any = [];
 
-  role = ['user', 'admin'];
+  /** El comité técnico solo puede registrar delegados */
+  roles = leerToken()?.role === 'comite_tecnico' ? ROLES.filter((r) => r.valor === 'delegado') : ROLES;
+  publico = false;
 
   constructor(@Inject(MAT_DIALOG_DATA) public dialogData: any,
     private formBuilder: FormBuilder,
@@ -40,17 +45,30 @@ export class SignupComponent implements OnInit {
       name: [null, [Validators.required, Validators.pattern(GlobalCostants.nameRegex)]],
       email: [null, [Validators.required, Validators.pattern(GlobalCostants.emailRegex)]],
       contactNumber: [null, [Validators.required, Validators.pattern(GlobalCostants.contactNumberRegex)]],
-      password: [null, [Validators.required]],
-      role: [null, Validators.required],
-      clubId: [null, Validators.required]
+      password: [null, [Validators.required, Validators.minLength(6)]],
+      role: ['delegado', Validators.required],
+      clubId: [null, Validators.required],
+      // Gestión (año) en la que el delegado puede inscribir equipos
+      gestion: [new Date().getFullYear(), [Validators.min(2000), Validators.max(2100)]]
       
     });
-    if (this.dialogData.action === 'Editar') {
-      //console.log('Password '+this.dialogData.data.password);
+    this.publico = !!this.dialogData?.publico || !localStorage.getItem('token');
+    const ajustarClub = (rol: string) => {
+      this.userForm.controls.clubId.setValidators(rol === 'delegado' ? [Validators.required] : []);
+      this.userForm.controls.clubId.updateValueAndValidity({ emitEvent: false });
+    };
+    this.userForm.controls.role.valueChanges.subscribe((r: any) => ajustarClub(r));
+    if (this.publico) this.action = 'Registrarse';
+    if (this.dialogData?.action === 'Editar') {
       this.dialogAction = "Edit";
       this.action = "Actualizar";
-      this.userForm.patchValue(this.dialogData.data);
-      console.log(this.dialogData.data);
+      const datos = { ...this.dialogData.data, password: null };
+      if (datos.role === 'user') datos.role = 'delegado';
+      this.userForm.patchValue(datos);
+      ajustarClub(datos.role);
+      // Al editar, la contraseña es opcional (vacía = se mantiene)
+      this.userForm.controls.password.setValidators([Validators.minLength(6)]);
+      this.userForm.controls.password.updateValueAndValidity();
     }
     this.getClubs();
   }
@@ -88,7 +106,7 @@ export class SignupComponent implements OnInit {
       password: formData.password,
       role:formData.role,
       clubId: formData.clubId,
-
+      gestion: formData.role === 'delegado' ? formData.gestion : null,
     }
     this.userService.signup(data).subscribe((response: any) => {
       this.dialogRef.close();
@@ -116,7 +134,8 @@ export class SignupComponent implements OnInit {
       contactNumber: formData.contactNumber,
       password: formData.password,
       role:formData.role,
-      clubId: formData.clubId
+      clubId: formData.clubId,
+      gestion: formData.role === 'delegado' ? formData.gestion : null
     }
     this.userService.update(data).subscribe((response: any) => {
       this.dialogRef.close();

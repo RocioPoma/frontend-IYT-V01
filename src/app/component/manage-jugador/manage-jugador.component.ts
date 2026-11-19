@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { urlDocumentoPrivado } from 'src/app/shared/permisos';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -9,20 +10,22 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
 import { environment } from 'src/environments/environment';
 import { ConfirmationComponent } from '../dialog/confirmation/confirmation.component';
 import { JugadorComponent } from '../dialog/jugador/jugador.component';
-import * as _ from 'lodash';
 import { ClubService } from 'src/app/servicios/club.service';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { leerToken } from 'src/app/shared/permisos';
+import { SolicitudJugadorDialogComponent } from 'src/app/solicitudes/solicitud-jugador-dialog.component';
+import { SolicitudesJugadorComponent } from 'src/app/solicitudes/solicitudes-jugador.component';
+import { rolPantalla } from '../../shared/permisos';
 
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonsts from 'pdfmake/build/vfs_fonts';
-pdfMake.vfs = pdfFonsts.pdfMake.vfs;
 
 
 //reporte
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-manage-jugador',
   templateUrl: './manage-jugador.component.html',
   styleUrls: ['./manage-jugador.component.scss']
@@ -33,6 +36,10 @@ export class ManageJugadorComponent implements OnInit {
   dataClub: any = [];
   responseMessage: any;
   role: any;
+  /** El delegado no modifica la lista oficial: envía solicitudes al comité técnico */
+  esDelegado = leerToken()?.role === 'delegado';
+  pestana = 0;
+  @ViewChild('misSolicitudes') misSolicitudes?: SolicitudesJugadorComponent;
 
   //----url del servidor backend
   url = environment.apiUrl;
@@ -41,6 +48,8 @@ export class ManageJugadorComponent implements OnInit {
   imgURL = this.url + '/uploads/img/';
 
   apiResponse: any = []; //para filtrar con el select
+  clubFiltro: any = 'Todos';
+  private jugadorFoto: any = null;
  
   //-----PARA REPORTES
   userName: string = '';
@@ -64,56 +73,19 @@ export class ManageJugadorComponent implements OnInit {
     const token = localStorage.getItem('token');
     if (token) {
       // Decodificar el token y extraer el nombre
-      const decodedToken: any = jwt_decode(token);
-      this.role = decodedToken?.role || 'Rol desconocido';
+      const decodedToken: any = jwtDecode(token);
+      this.role = rolPantalla('GESTION'); // 'admin' = puede modificar en este módulo
       this.userName = decodedToken?.nombre || 'Usuario desconocido';
-      
-      console.log('Rol:', this.role);
     } else {
       console.log('No hay token en localStorage');
     }
 
-    this.displayedColumns = this.role === 'user' 
+    this.displayedColumns = this.esDelegado
+      ? ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento', 'solicitar']
+      : this.role === 'user'
       ? ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento']  // Agrega las columnas que sí pueden ver los usuarios "user"
       : ['numero', 'foto', 'ci', 'nombre', 'ap_paterno', 'ap_materno', 'fecha_nacimiento', 'NombreClub', 'edad', 'documento', 'edit'];
   
-  }
-
-  craatePdf() {
-    const fecha = new Date();
-    const pdfDefinition: any = {
-
-      header: {
-        margin: 20,
-        alignment: "center",
-        columns: [
-          'INTEGRACION YARETANENSE'
-        ]
-      },
-
-      footer: {
-        margin: 10,
-        columns: [
-          'USUARIO: Rocio Poma silvestre',
-          { text: fecha, alignment: 'right' }
-        ]
-      },
-
-      content: [
-        {
-          text: 'Reporte de Jugadores'
-        },
-        {
-
-          // you'll most often use dataURI images on the browser side
-          // if no width/height/fit is provided, the original size will be used
-          // image: '../../../assets/img/futbol.jpg'
-        }
-        //{ stack: htmlToPdfmake(this.apiResponse) },
-      ]
-    }
-    const pdf = pdfMake.createPdf(pdfDefinition);
-    pdf.open();
   }
 
   //----------------------- LISTA  JUGADORES--------------------------------
@@ -121,7 +93,7 @@ export class ManageJugadorComponent implements OnInit {
     this.jugadorService.getJugadors().subscribe((response: any) => {
       this.ngxService.stop();
       this.apiResponse = response;
-      this.dataSource = new MatTableDataSource(response);
+      this.aplicarFiltroClub();
     }, (error: any) => {
       if (error.error?.message) {
         this.responseMessage = error.error?.message;
@@ -146,14 +118,59 @@ export class ManageJugadorComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   filterSelection($event: any) {
-    let filterData = _.filter(this.apiResponse, (item) => {
-      return item.NombreClub.toLowerCase() == $event.value.toLowerCase();
-    })
-    if ($event.value == 'Todos') {
-      this.tableData();
-    } else {
-      this.dataSource = new MatTableDataSource(filterData);
+    this.clubFiltro = $event.value;
+    this.aplicarFiltroClub();
+  }
+
+  /** Muestra solo los jugadores del club elegido (por id: hay clubs con el mismo nombre en distintas comunidades) */
+  private aplicarFiltroClub() {
+    const texto = this.dataSource?.filter || '';
+    const datos = this.clubFiltro === 'Todos'
+      ? (this.apiResponse || [])
+      : (this.apiResponse || []).filter((j: any) => String(j.clubId) === String(this.clubFiltro));
+    this.dataSource = new MatTableDataSource(datos);
+    this.dataSource.filter = texto;
+  }
+
+  //------------------- FOTO DESDE LA LISTA -------------------
+  /** Comité / administrador: cambia la foto directo. Delegado: abre la solicitud de actualización. */
+  get puedeCambiarFoto(): boolean {
+    return this.esDelegado || this.role === 'admin';
+  }
+
+  cambiarFoto(jugador: any, input: HTMLInputElement) {
+    if (!this.puedeCambiarFoto) return;
+    if (this.esDelegado) {
+      this.solicitarActualizacion(jugador);
+      return;
     }
+    this.jugadorFoto = jugador;
+    input.click();
+  }
+
+  subirFoto(evento: Event) {
+    const input = evento.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    input.value = '';
+    const jugador = this.jugadorFoto;
+    this.jugadorFoto = null;
+    if (!archivo || !jugador) return;
+    if (!/^image\/(png|jpe?g|webp)$/.test(archivo.type)) {
+      this.snackbarService.openSnackBar('La foto debe ser una imagen JPG, PNG o WEBP', GlobalCostants.error);
+      return;
+    }
+    this.ngxService.start();
+    this.jugadorService.actualizarFoto(jugador.ci, archivo).subscribe({
+      next: (r: any) => {
+        this.ngxService.stop();
+        jugador.foto = r.foto;
+        this.snackbarService.openSnackBar(r.message, 'success');
+      },
+      error: (e: any) => {
+        this.ngxService.stop();
+        this.snackbarService.openSnackBar(e.error?.message || GlobalCostants.genericError, GlobalCostants.error);
+      },
+    });
   }
 
 
@@ -187,7 +204,7 @@ export class ManageJugadorComponent implements OnInit {
      ]);
  
      // Agregar la tabla al PDF usando autoTable
-     (doc as any).autoTable({
+     autoTable(doc, {
        head: [columns],
        body: rows,
        startY: 30, // Ajusta la posición de inicio de la tabla
@@ -213,12 +230,12 @@ export class ManageJugadorComponent implements OnInit {
 
     // Cargar la imagen del logo desde la carpeta de assets
     const logoImg = new Image();
-    logoImg.src = '../../../assets/img/logo2_1.png'; // Ruta de la imagen en tu proyecto
+    logoImg.src = '../../../assets/img/logo-iyt.png'; // Ruta de la imagen en tu proyecto
 
     logoImg.onload = () => {
       
       // Agregar el encabezado con el logo, usuario y fecha
-      doc.addImage(logoImg, 'PNG', 150, 5, 40, 20);// Ajusta la posición y tamaño según sea necesario
+      doc.addImage(logoImg, 'PNG', 170, 4, 24, 21);// Ajusta la posición y tamaño según sea necesario
       doc.setFontSize(12);
       doc.text('REPORTE JUGADORES', 75, 25);
 
@@ -231,7 +248,7 @@ export class ManageJugadorComponent implements OnInit {
       const addHeaderAndFooter = () => {
 
         // Agregar numeración de página en el pie de página
-        const pageCount = doc.internal.getNumberOfPages();
+        const pageCount = doc.getNumberOfPages();
         for (let i = 1; i <= pageCount; i++) {
           doc.setPage(i);
           doc.text(`Página ${i}`, 100, doc.internal.pageSize.getHeight() - 10);
@@ -256,7 +273,7 @@ export class ManageJugadorComponent implements OnInit {
       ]);
 
       // Agregar la tabla al PDF usando autoTable
-      (doc as any).autoTable({
+      autoTable(doc, {
         head: [columns],
         body: rows,
         startY: 30, // Ajusta la posición de inicio de la tabla
@@ -375,4 +392,28 @@ export class ManageJugadorComponent implements OnInit {
   }
 
 
+
+  /** Los documentos personales solo se abren con sesión iniciada */
+  docPrivado(nombre: string): string {
+    return urlDocumentoPrivado(this.imgURL, nombre);
+  }
+
+  // ---------- Delegado: solicitudes al comité técnico ----------
+  nuevaSolicitud() {
+    this.dialog.open(SolicitudJugadorDialogComponent, { width: '760px', maxWidth: '96vw', data: { modo: 'alta' } })
+      .afterClosed().subscribe((ok) => {
+        if (!ok) return;
+        this.pestana = 1;
+        setTimeout(() => this.misSolicitudes?.cargar());
+      });
+  }
+
+  solicitarActualizacion(jugador: any) {
+    this.dialog.open(SolicitudJugadorDialogComponent, { width: '760px', maxWidth: '96vw', data: { modo: 'actualizacion', jugador } })
+      .afterClosed().subscribe((ok) => {
+        if (!ok) return;
+        this.pestana = 1;
+        setTimeout(() => this.misSolicitudes?.cargar());
+      });
+  }
 }

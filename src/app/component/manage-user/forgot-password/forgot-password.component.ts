@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
@@ -7,6 +7,8 @@ import { UserService } from '../../../servicios/user.service';
 import { GlobalCostants } from '../../../shared/global-constants';
 
 @Component({
+  standalone: false,
+  changeDetection: ChangeDetectionStrategy.Eager,
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.scss']

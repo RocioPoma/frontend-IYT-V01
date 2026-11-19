@@ -1,12 +1,12 @@
 <div *ngFor="let element of dataPartido">
-    <mat-toolbar color="primary" align="center">
+    <mat-toolbar class="barra-partido">
+        <span class="titulo-partido">Administrar partido</span>
+        <span class="espaciador"></span>
         <div class="divestado">
-            <!-- <span class="title-center">Agregar Jugadores al equipo: {{action}} </span> -->
-            <mat-form-field class="estado" appearance="fill">
-                <mat-label>Estado Partido</mat-label>
+            <mat-form-field class="estado" appearance="outline" subscriptSizing="dynamic">
+                <mat-label>Estado del partido</mat-label>
                 <mat-select [(value)]="element.estado" (selectionChange)="changeSelectEstado($event.value,id_partido)">
-                    <mat-option>None</mat-option>
-                    <mat-option value="Cerrado">CERRADO</mat-option>
+                                        <mat-option value="Cerrado">CERRADO</mat-option>
                     <mat-option value="En vivo">EN VIVO</mat-option>
                     <mat-option value="No realizado">NO REALIZADO</mat-option>
                 </mat-select>
@@ -18,16 +18,16 @@
 
         <!-- EQUIPO 1  -->
         <div>
-            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="cards-wrapper">
+            <h4 class="equipo-hechos"><mat-icon>groups</mat-icon> {{element.equipo1}}</h4>
+<mat-tab-group mat-stretch-tabs="false" class="tabs-hechos" animationDuration="150ms">
+    <mat-tab label="Jugadores">
+<div class="cards-wrapper">
 
                             <div class="card">
                                 <div align="center" class="encavezado">EN CANCHA</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="equipoJugadorEnCanchaE1" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="equipoJugadorEnCanchaE1" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="numero">
                                             <th mat-header-cell *matHeaderCellDef> No.</th>
@@ -35,13 +35,13 @@
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="edad">
-                                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Edad</th>
                                             <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
                                         </ng-container>
                     
@@ -55,11 +55,11 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">CAMBIO</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="equipoJugadorEnBancaE1" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="equipoJugadorEnBancaE1" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="numero">
                                             <th mat-header-cell *matHeaderCellDef> No.</th>
@@ -67,13 +67,13 @@
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="edad">
-                                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Edad</th>
                                             <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
                                         </ng-container>
                     
@@ -87,30 +87,29 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="cards-wrapper">
+    </mat-tab>
+    <mat-tab label="Goles y faltas">
+<div class="cards-wrapper">
                             
                             <div class="card">
                                 <div align="center" class="encavezado">GOLES</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="hechoGolE1" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="hechoGolE1" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="camiseta">
-                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="nro_camiseta"> No.</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hecho">
-                                            <th mat-header-cell *matHeaderCellDef> Goles</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="hecho_jugador"> Goles</th>
                                             <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
                                         </ng-container>
                     
@@ -124,25 +123,25 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">FALTAS</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="hechoFaltaE1" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="hechoFaltaE1" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="camiseta">
-                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="nro_camiseta"> No.</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hecho">
-                                            <th mat-header-cell *matHeaderCellDef> Faltas</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="hecho_jugador"> Faltas</th>
                                             <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
                                         </ng-container>
                     
@@ -157,30 +156,29 @@
                             </div>
                 
                         </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="cards-wrapper">
+    </mat-tab>
+    <mat-tab label="Tarjetas">
+<div class="cards-wrapper">
                             
                             <div class="card">
                                 <div align="center" class="encavezado">TARJETA AMARILLA</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="hechoTarjetaAmarillaE1" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="hechoTarjetaAmarillaE1" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="camiseta">
-                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="nro_camiseta"> No.</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hecho">
-                                            <th mat-header-cell *matHeaderCellDef> Amarilla</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="hecho_jugador"> Amarilla</th>
                                             <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
                                         </ng-container>
                     
@@ -194,25 +192,25 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">TARJETA ROJA</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="hechoTarjetaRojaE1" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="hechoTarjetaRojaE1" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="camiseta">
-                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="nro_camiseta"> No.</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hecho">
-                                            <th mat-header-cell *matHeaderCellDef>T Roja</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="hecho_jugador">T Roja</th>
                                             <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
                                         </ng-container>
                     
@@ -226,20 +224,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
+    </mat-tab>
+</mat-tab-group>
         </div>
         <hr>
         <!-- FIN EQUIPO 1-->
@@ -247,11 +233,13 @@
 
         <!---->
         <div class="div-padre" align="center">
-            <div class="div-equipo" fxFlex>{{element.equipo1}}</div>
+            <div class="div-equipo" fxFlex>
+                <span class="escudo-p"><img *ngIf="element.logo1; else l1" [src]="urlArchivos + element.logo1 + '?ancho=128'" alt=""><ng-template #l1><mat-icon>shield</mat-icon></ng-template></span>
+                {{element.equipo1}}</div>
             <div fxFlex class="contenedorDiv" matTooltip="Agregar Resultado" 
                 (click)="addResultado(element.id_equipo1,element.id_equipo2,element.equipo1,element.equipo2,'resultado')" >
-                <div class="div1">1</div> 
-                <div class="div2"> {{totalGolesE1[0].total}} : {{totalGolesE2[0].total}} </div>
+                <div class="div2"> {{ totalGolesE1?.[0]?.total ?? 0 }} : {{ totalGolesE2?.[0]?.total ?? 0 }} </div>
+                <div class="div-ayuda">Clic para registrar el resultado</div>
                 <!--<div class="div2"> {{element.total_equipo1}} : {{element.total_equipo2}} </div>-->
                 <!--
                 <div class="div2" *ngIf="(totalGolesE1[0].total!=totalGolesOldE1[0].total || totalGolesE2[0].total!=totalGolesOldE2[0].total)">
@@ -261,10 +249,11 @@
                     {{element.total_equipo1}} : {{element.total_equipo2}} 
                 </div>-->
                 
-                <!--<div class="div2" *ngIf="actualizarResultadoPartido(totalGolesE1[0].total,totalGolesE2[0].total)"> {{element.total_equipo1}} : {{element.total_equipo2}} </div>-->
-                <div class="div1">1</div>
+
             </div>
-            <div class="div-equipo" fxFlex>{{element.equipo2}}</div>
+            <div class="div-equipo" fxFlex>
+                <span class="escudo-p"><img *ngIf="element.logo2; else l2" [src]="urlArchivos + element.logo2 + '?ancho=128'" alt=""><ng-template #l2><mat-icon>shield</mat-icon></ng-template></span>
+                {{element.equipo2}}</div>
         </div>
         <hr>
         <!---->
@@ -272,16 +261,16 @@
 
         <!-- EQUIPO 2-->
         <div>
-            <div id="carouselEquipo2" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="cards-wrapper">
+            <h4 class="equipo-hechos"><mat-icon>groups</mat-icon> {{element.equipo2}}</h4>
+<mat-tab-group mat-stretch-tabs="false" class="tabs-hechos" animationDuration="150ms">
+    <mat-tab label="Jugadores">
+<div class="cards-wrapper">
 
                             <div class="card">
                                 <div align="center" class="encavezado">EN CANCHA</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="equipoJugadorEnCanchaE2" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="equipoJugadorEnCanchaE2" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="numero">
                                             <th mat-header-cell *matHeaderCellDef> No.</th>
@@ -289,13 +278,13 @@
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="edad">
-                                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Edad</th>
                                             <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
                                         </ng-container>
                     
@@ -309,11 +298,11 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">CAMBIO</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="equipoJugadorEnBancaE2" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="equipoJugadorEnBancaE2" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="numero">
                                             <th mat-header-cell *matHeaderCellDef> No.</th>
@@ -321,13 +310,13 @@
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="edad">
-                                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Edad</th>
                                             <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
                                         </ng-container>
                     
@@ -341,30 +330,29 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="cards-wrapper">
+    </mat-tab>
+    <mat-tab label="Goles y faltas">
+<div class="cards-wrapper">
                             
                             <div class="card">
                                 <div align="center" class="encavezado">GOLES</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="hechoGolE2" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="hechoGolE2" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="camiseta">
-                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="nro_camiseta"> No.</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hecho">
-                                            <th mat-header-cell *matHeaderCellDef> Goles</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="hecho_jugador"> Goles</th>
                                             <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
                                         </ng-container>
                     
@@ -378,25 +366,25 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">FALTAS</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="hechoFaltaE2" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="hechoFaltaE2" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="camiseta">
-                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="nro_camiseta"> No.</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hecho">
-                                            <th mat-header-cell *matHeaderCellDef> Faltas</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="hecho_jugador"> Faltas</th>
                                             <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
                                         </ng-container>
                     
@@ -411,30 +399,29 @@
                             </div>
                 
                         </div>
-                    </div>
-
-                    <div class="carousel-item">
-                        <div class="cards-wrapper">
+    </mat-tab>
+    <mat-tab label="Tarjetas">
+<div class="cards-wrapper">
                             
                             <div class="card">
                                 <div align="center" class="encavezado">TARJETA AMARILLA</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="hechoTarjetaAmarillaE2" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="hechoTarjetaAmarillaE2" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="camiseta">
-                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="nro_camiseta"> No.</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hecho">
-                                            <th mat-header-cell *matHeaderCellDef> Amarilla</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="hecho_jugador"> Amarilla</th>
                                             <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
                                         </ng-container>
                     
@@ -448,25 +435,25 @@
                                 </div>
                             </div>
 
-                            <div class="card d-none d-md-block">
+                            <div class="card">
                                 <div align="center" class="encavezado">TARJETA ROJA</div>
                                 <hr>
                                 <div class="card-body">
-                                    <table mat-table [dataSource]="hechoTarjetaRojaE2" class="mat-elevation-z5">
+                                    <table mat-table matSort [dataSource]="hechoTarjetaRojaE2" class="mat-elevation-z5">
     
                                         <ng-container matColumnDef="camiseta">
-                                            <th mat-header-cell *matHeaderCellDef> No.</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="nro_camiseta"> No.</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nro_camiseta}} </td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="nombre">
-                                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                                 {{element.ap_materno}}</td>
                                         </ng-container>
                     
                                         <ng-container matColumnDef="hecho">
-                                            <th mat-header-cell *matHeaderCellDef>T Roja</th>
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header="hecho_jugador">T Roja</th>
                                             <td mat-cell *matCellDef="let element"> {{element.hecho_jugador}} </td>
                                         </ng-container>
                     
@@ -480,21 +467,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                </div>
-
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselEquipo2"
-                    data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselEquipo2"
-                    data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
+    </mat-tab>
+</mat-tab-group>
         </div>
         <!--FIN EQUIPO 2-->
 
@@ -504,10 +478,10 @@
                 <div fxFlex>
                     <div fxFlex>
                         <h4>Selecciona los Jugadores:</h4>
-                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 ">
+                        <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8 ">
     
                             <ng-container matColumnDef="nombre">
-                                <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                                 <td class="align-left" mat-cell *matCellDef="let element">
     
                                     <div *ngIf="comprobarSiExiste(element.ci); then thenBlock else elseBlock"> </div>
@@ -533,7 +507,7 @@
     
                 <div fxFlex>
                     <h4>Jugadores Seleccionados:</h4>
-                    <table mat-table [dataSource]="dataEquipoJugador" class="mat-elevation-z5">
+                    <table mat-table matSort [dataSource]="dataEquipoJugador" class="mat-elevation-z5">
     
                         <ng-container matColumnDef="numero">
                             <th mat-header-cell *matHeaderCellDef> No.</th>
@@ -541,13 +515,13 @@
                         </ng-container>
     
                         <ng-container matColumnDef="nombre">
-                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                             <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                                 {{element.ap_materno}}</td>
                         </ng-container>
     
                         <ng-container matColumnDef="edad">
-                            <th mat-header-cell *matHeaderCellDef> Edad</th>
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Edad</th>
                             <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
                         </ng-container>
     
@@ -561,7 +535,7 @@
     </mat-dialog-content>
 
     <mat-dialog-actions align="center">
-        <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'"  (click)="handleSubmit(totalGolesE1[0].total,totalGolesE2[0].total)">Guardar</button>
-        <button mat-raised-button color="primary" mat-dialog-close>Cerrar</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="element.estado!='En vivo'"  (click)="handleSubmit(totalGolesE1?.[0]?.total ?? 0, totalGolesE2?.[0]?.total ?? 0)">Guardar</button>
+        <button mat-raised-button mat-dialog-close>Cerrar</button>
     </mat-dialog-actions>
 </div>
