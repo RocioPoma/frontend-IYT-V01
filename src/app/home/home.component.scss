@@ -22,9 +22,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
 .barra-interior {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 10px 20px;
+  padding: 10px 28px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -35,7 +33,7 @@
   .copa {
     flex: 0 0 auto; width: 38px; height: 38px; font-size: 24px; border-radius: 10px;
     display: inline-flex; align-items: center; justify-content: center;
-    background: rgba(128, 203, 196, .15); color: #ffd54f;
+    background: rgba(255, 255, 255, .1); color: #fff;
   }
 }
 .menu {
@@ -54,7 +52,12 @@
   }
 }
 .barra-acciones { display: flex; gap: 8px; align-items: center; justify-content: flex-end; flex: 1 1 0; }
-.btn-claro { background: #80cbc4 !important; color: #032420 !important; }
+.btn-claro {
+  background: transparent !important; color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, .55) !important;
+  transition: background .15s, color .15s, border-color .15s;
+  &:hover, &:active, &:focus-visible { background: #80cbc4 !important; color: #032420 !important; border-color: #80cbc4 !important; }
+}
 .btn-texto { color: #fff !important; }
 .btn-borde { color: #fff !important; border-color: rgba(255, 255, 255, .45) !important; }
 
@@ -219,3 +222,4 @@ a.auspiciador:hover { border-color: #80cbc4; color: #80cbc4; }
   .sobre .parrafo, .hito p { text-align: left; }
 }
 .logo-portada { width: 170px; max-width: 45vw; height: auto; display: block; margin: 0 auto 8px; filter: drop-shadow(0 8px 24px rgba(0, 0, 0, .35)); }
+:host ::ng-deep .hito p b { color: #fff; font-weight: 600; }

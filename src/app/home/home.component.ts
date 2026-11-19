@@ -48,8 +48,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       titulo: 'Desarrollo e implementación piloto',
       icono: 'rocket_launch',
       texto:
-        'Durante esta gestión se desarrolló el sistema y se realizó su primera implementación piloto en la comunidad de Catuyo, ' +
-        'con el Club Aurora, liderado por el Sr. Cándido Poma Mamani, esta primera experiencia permitió poner en práctica sus ' +
+        'Durante esta gestión se desarrolló el sistema y se realizó su primera implementación piloto en la <b>comunidad de Catuyo, ' +
+        'con el Club Aurora, liderado por el Sr. Cándido Poma Mamani,</b> esta primera experiencia permitió poner en práctica sus ' +
         'funcionalidades para la gestión de campeonatos deportivos, incluyendo el registro de equipos y jugadores, la conformación ' +
         'de grupos, la generación de fixtures, la programación de partidos y el seguimiento de resultados y tablas de posiciones.',
     },
@@ -58,7 +58,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       titulo: 'Priorización',
       icono: 'flag',
       texto:
-        'Durante esta gestión se priorizó la implementación y utilización del sistema en la comunidad de Jilstata con su Club Litoral, ' +
+        'Durante esta gestión se priorizó la implementación y utilización del sistema en la <b>comunidad de Jilstata con su Club Litoral, ' +
+        'liderado por el Sr. Ivar Nina,</b> ' +
         'estableciéndose su uso obligatorio y estricto para la organización y administración de las actividades deportivas. Esta etapa ' +
         'representó un avance importante en la incorporación de herramientas tecnológicas para la gestión y el control de los campeonatos.',
     },

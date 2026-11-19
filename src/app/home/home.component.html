@@ -140,7 +140,7 @@
     <section class="portada portada-sobre">
       <img class="logo-portada" src="assets/img/logo-iyt.png" alt="Logo de la Integración Yaretanense" />
       <h1>Sobre la Integración Yaretanence</h1>
-      <p class="fechas"><span><mat-icon>place</mat-icon> Provincia Ladislao Cabrera · Oruro, Bolivia</span></p>
+      <p class="fechas"><span><mat-icon>place</mat-icon> Provincia Ladislao Cabrera - UTD Yaretani · Oruro, Bolivia</span></p>
     </section>
 
     <main class="contenido">
@@ -154,7 +154,7 @@
         <div class="datos">
           <div class="dato"><b>2004</b><span>Fundada el 23 de diciembre</span></div>
           <div class="dato"><b>17</b><span>Comunidades</span></div>
-          <div class="dato"><b>Oruro</b><span>Provincia Ladislao Cabrera</span></div>
+          <div class="dato"><b>Oruro</b><span>Provincia Ladislao Cabrera - UTD Yaretani</span></div>
         </div>
         <h3 class="subtitulo-chico">Comunidades</h3>
         <div class="comunidades">
@@ -183,7 +183,7 @@
             <div class="hito">
               <span class="hito-anio">{{ h.periodo }}</span>
               <h4 *ngIf="h.titulo">{{ h.titulo }}</h4>
-              <p>{{ h.texto }}</p>
+              <p [innerHTML]="h.texto"></p>
             </div>
           </li>
         </ol>
