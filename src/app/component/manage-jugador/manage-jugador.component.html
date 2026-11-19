@@ -35,11 +35,11 @@
     </mat-form-field>
 </mat-card>
 <div class="tabla-contenedor">
-    <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
+    <table mat-table matSort [dataSource]="dataSource" [paginador]="paginador" class="mat-elevation-z8">
 
         <ng-container matColumnDef="numero">
             <th mat-header-cell *matHeaderCellDef> Nro.</th>
-            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+            <td mat-cell *matCellDef="let element; index as i "> {{ (paginador?.pageIndex || 0) * (paginador?.pageSize || 0) + i + 1 }} </td>
         </ng-container>
 
         <ng-container matColumnDef="foto">
@@ -48,7 +48,7 @@
                 <span class="foto-lista" [class.sin-permiso]="!puedeCambiarFoto" tabindex="0"
                     [matTooltip]="puedeCambiarFoto ? (esDelegado ? 'Cambiar foto (se enviará al comité técnico)' : 'Subir o cambiar foto') : ''"
                     (click)="cambiarFoto(element, archivoFoto)" (keydown.enter)="cambiarFoto(element, archivoFoto)">
-                    <img [src]="element.foto ? imgURL + element.foto : 'assets/img/user1.png'" alt=""
+                    <img [src]="element.foto ? imgURL + element.foto + '?ancho=128' : 'assets/img/user1.png'" alt="" loading="lazy" decoding="async"
                         onerror="this.onerror=null; this.src='assets/img/user1.png';">
                     <span class="foto-lista-cambiar"><mat-icon>photo_camera</mat-icon></span>
                 </span>
@@ -83,7 +83,7 @@
 
         <ng-container matColumnDef="NombreClub">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Club</th>
-            <td mat-cell *matCellDef="let element"> {{element.NombreClub}} <div class="sub-celda" *ngIf="element.ComunidadClub">{{element.ComunidadClub}}</div></td>
+            <td mat-cell *matCellDef="let element"> {{element.NombreClub}} </td>
         </ng-container>
 
         <ng-container matColumnDef="edad">
@@ -131,6 +131,7 @@
         <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
         <tr class="mat-mdc-no-data-row" *matNoDataRow><td class="mat-mdc-cell" [attr.colspan]="displayedColumns.length">No hay registros para mostrar.</td></tr>
     </table>
+    <mat-paginator #paginador [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="25" showFirstLastButtons aria-label="Páginas"></mat-paginator>
 </div>
 </ng-template>
 <input #archivoFoto type="file" accept="image/png,image/jpeg,image/webp" hidden (change)="subirFoto($event)">

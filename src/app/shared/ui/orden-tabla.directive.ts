@@ -1,5 +1,6 @@
 import { Directive, DoCheck, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 
@@ -32,6 +33,9 @@ function comparar(a: any, b: any, orden: Sort): number {
 @Directive({ selector: 'table[mat-table][matSort]', standalone: false })
 export class OrdenTablaDirective implements OnInit, DoCheck, OnDestroy {
   @Input() dataSource: any;
+  /** Paginador opcional: con listas grandes solo se dibujan las filas de la página actual (mucho más rápido) */
+  @Input() paginador: MatPaginator | null = null;
+  private paginadorConectado: MatPaginator | null = null;
   private readonly sort = inject(MatSort);
   private readonly tabla = inject(MatTable, { optional: true });
   private conectado: any = null;
@@ -44,10 +48,12 @@ export class OrdenTablaDirective implements OnInit, DoCheck, OnDestroy {
 
   ngDoCheck(): void {
     const ds = this.dataSource;
-    if (ds instanceof MatTableDataSource && ds !== this.conectado) {
+    if (ds instanceof MatTableDataSource && (ds !== this.conectado || this.paginador !== this.paginadorConectado)) {
       this.conectado = ds;
+      this.paginadorConectado = this.paginador;
       ds.sortingDataAccessor = valorOrden;
       ds.sort = this.sort;
+      if (this.paginador) ds.paginator = this.paginador;
     }
   }
 

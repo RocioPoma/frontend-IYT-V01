@@ -11,7 +11,7 @@
 </mat-card>
 
 <div class="tabla-contenedor">
-        <table mat-table matSort [dataSource]="dataSource">
+        <table mat-table matSort [dataSource]="dataSource" [paginador]="paginador">
             <ng-container matColumnDef="nombre_reglamento">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header="nombre"> Nombre Reglamento</th>
                 <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
@@ -52,4 +52,5 @@
             <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
         <tr class="mat-mdc-no-data-row" *matNoDataRow><td class="mat-mdc-cell" [attr.colspan]="displayedColumns.length">No hay registros para mostrar.</td></tr>
         </table>
+    <mat-paginator #paginador [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="25" showFirstLastButtons aria-label="Páginas"></mat-paginator>
     </div>

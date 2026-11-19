@@ -12,18 +12,18 @@
 </mat-card>
 
 <div class="tabla-contenedor">
-    <table mat-table matSort [dataSource]="dataSource">
+    <table mat-table matSort [dataSource]="dataSource" [paginador]="paginador">
 
         <ng-container matColumnDef="numero">
             <th mat-header-cell *matHeaderCellDef> No.</th>
-            <td mat-cell *matCellDef="let element; index as i "> {{i+1}} </td>
+            <td mat-cell *matCellDef="let element; index as i "> {{ (paginador?.pageIndex || 0) * (paginador?.pageSize || 0) + i + 1 }} </td>
         </ng-container>
 
         <ng-container matColumnDef="logo">
             <th mat-header-cell *matHeaderCellDef> Logo</th>
             <td mat-cell *matCellDef="let element">
                 <span class="foto-lista" (click)="handleEditAction(element)" matTooltip="Cambiar logo">
-                    <img *ngIf="element.logo; else sinLogo" [src]="imgURL + element.logo" alt="">
+                    <img *ngIf="element.logo; else sinLogo" [src]="imgURL + element.logo + '?ancho=128'" alt="">
                     <ng-template #sinLogo><span class="foto-marcador"><mat-icon>shield</mat-icon></span></ng-template>
                     <span class="foto-lista-cambiar"><mat-icon>photo_camera</mat-icon></span>
                 </span>
@@ -55,4 +55,5 @@
         <tr mat-row *matRowDef="let row;columns:displayedColumns"></tr>
         <tr class="mat-mdc-no-data-row" *matNoDataRow><td class="mat-mdc-cell" [attr.colspan]="displayedColumns.length">No hay registros para mostrar.</td></tr>
     </table>
+    <mat-paginator #paginador [pageSizeOptions]="[10, 25, 50, 100]" [pageSize]="25" showFirstLastButtons aria-label="Páginas"></mat-paginator>
 </div>

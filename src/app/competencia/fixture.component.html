@@ -17,14 +17,14 @@
     <div class="partido" *ngFor="let p of r.partidos">
       <span class="local equipo">
         {{ p.equipo1 }}
-        <img *ngIf="p.logo1" [src]="imgUrl + p.logo1" alt="" loading="lazy" />
+        <img *ngIf="p.logo1" [src]="imgUrl + p.logo1 + '?ancho=128'" alt="" loading="lazy" />
       </span>
       <span class="marcador">
         <ng-container *ngIf="p.estado !== 'No realizado'; else vs">{{ p.total_equipo1 }} - {{ p.total_equipo2 }}</ng-container>
         <ng-template #vs>vs</ng-template>
       </span>
       <span class="equipo">
-        <img *ngIf="p.logo2" [src]="imgUrl + p.logo2" alt="" loading="lazy" />
+        <img *ngIf="p.logo2" [src]="imgUrl + p.logo2 + '?ancho=128'" alt="" loading="lazy" />
         {{ p.equipo2 }}
       </span>
       <div class="detalle">

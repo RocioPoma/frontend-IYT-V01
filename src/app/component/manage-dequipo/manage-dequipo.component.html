@@ -59,7 +59,7 @@
                             </button>
 
                         </mat-card-subtitle>
-                        <img class="img" mat-card-sm-image *ngIf="element.logo" [src]="urlArchivos + element.logo" alt="" loading="lazy">
+                        <img class="img" mat-card-sm-image *ngIf="element.logo" [src]="urlArchivos + element.logo + '?ancho=128'" alt="" loading="lazy">
                         <mat-icon *ngIf="!element.logo" class="escudo-equipo">shield</mat-icon>
                     </mat-card-title-group>
                 </mat-card>

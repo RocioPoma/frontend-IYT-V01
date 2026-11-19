@@ -34,7 +34,7 @@ export interface OpcionesFixture {
           <div class="equipo" *ngFor="let e of s.equipos; index as i">
             <span class="num">{{ i + 1 }}</span>
             <span class="escudo">
-              <img *ngIf="e.logo; else sinLogo" [src]="urlArchivos + e.logo" alt="" />
+              <img *ngIf="e.logo; else sinLogo" [src]="urlArchivos + e.logo + '?ancho=128'" alt="" />
               <ng-template #sinLogo><mat-icon>shield</mat-icon></ng-template>
             </span>
             <span class="nombre">{{ e.nombre_club }}<small *ngIf="e.comunidad">{{ e.comunidad }}</small></span>

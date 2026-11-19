@@ -1,3 +1,5 @@
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { PaginadorEs } from './shared/ui/paginador-es';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -58,7 +60,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
-    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorInterceptor, multi: true },
+    { provide: MatPaginatorIntl, useClass: PaginadorEs },
   ],
   bootstrap: [AppComponent]
 })

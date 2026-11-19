@@ -49,7 +49,7 @@
             <div class="equipo local">
                 <span class="nombre">{{ p.equipo1 }}</span>
                 <span class="escudo">
-                    <img *ngIf="p.logo1; else e1" [src]="urlArchivos + p.logo1" alt="" loading="lazy">
+                    <img *ngIf="p.logo1; else e1" [src]="urlArchivos + p.logo1 + '?ancho=128'" alt="" loading="lazy">
                     <ng-template #e1><mat-icon>shield</mat-icon></ng-template>
                 </span>
             </div>
@@ -62,7 +62,7 @@
 
             <div class="equipo visita">
                 <span class="escudo">
-                    <img *ngIf="p.logo2; else e2" [src]="urlArchivos + p.logo2" alt="" loading="lazy">
+                    <img *ngIf="p.logo2; else e2" [src]="urlArchivos + p.logo2 + '?ancho=128'" alt="" loading="lazy">
                     <ng-template #e2><mat-icon>shield</mat-icon></ng-template>
                 </span>
                 <span class="nombre">{{ p.equipo2 }}</span>

@@ -18,7 +18,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header class="izq">Equipo</th>
         <td mat-cell *matCellDef="let f" class="izq">
           <span class="equipo">
-            <img *ngIf="f.logo" [src]="imgUrl + f.logo" alt="" loading="lazy" />
+            <img *ngIf="f.logo" [src]="imgUrl + f.logo + '?ancho=128'" alt="" loading="lazy" />
             <mat-icon *ngIf="!f.logo" class="escudo">shield</mat-icon>
             {{ f.equipo }}
           </span>

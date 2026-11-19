@@ -234,7 +234,7 @@
         <!---->
         <div class="div-padre" align="center">
             <div class="div-equipo" fxFlex>
-                <span class="escudo-p"><img *ngIf="element.logo1; else l1" [src]="urlArchivos + element.logo1" alt=""><ng-template #l1><mat-icon>shield</mat-icon></ng-template></span>
+                <span class="escudo-p"><img *ngIf="element.logo1; else l1" [src]="urlArchivos + element.logo1 + '?ancho=128'" alt=""><ng-template #l1><mat-icon>shield</mat-icon></ng-template></span>
                 {{element.equipo1}}</div>
             <div fxFlex class="contenedorDiv" matTooltip="Agregar Resultado" 
                 (click)="addResultado(element.id_equipo1,element.id_equipo2,element.equipo1,element.equipo2,'resultado')" >
@@ -252,7 +252,7 @@
 
             </div>
             <div class="div-equipo" fxFlex>
-                <span class="escudo-p"><img *ngIf="element.logo2; else l2" [src]="urlArchivos + element.logo2" alt=""><ng-template #l2><mat-icon>shield</mat-icon></ng-template></span>
+                <span class="escudo-p"><img *ngIf="element.logo2; else l2" [src]="urlArchivos + element.logo2 + '?ancho=128'" alt=""><ng-template #l2><mat-icon>shield</mat-icon></ng-template></span>
                 {{element.equipo2}}</div>
         </div>
         <hr>
