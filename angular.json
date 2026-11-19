@@ -32,10 +32,19 @@
               "src/favicon.ico"
             ],
             "styles": [
+              "node_modules/material-icons/iconfont/filled.css",
+              "node_modules/@fontsource/roboto/latin-300.css",
+              "node_modules/@fontsource/roboto/latin-400.css",
+              "node_modules/@fontsource/roboto/latin-500.css",
+              "node_modules/@fontsource/poppins/latin-300.css",
+              "node_modules/@fontsource/poppins/latin-400.css",
+              "node_modules/@fontsource/poppins/latin-500.css",
+              "node_modules/@fontsource/poppins/latin-600.css",
               "src/theme.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss",
-              "src/assets/styles/style.scss"
+              "src/assets/styles/style.scss",
+              "src/estilos/sistema.scss"
             ],
             "scripts": []
           },

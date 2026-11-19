@@ -40,7 +40,8 @@
 
                 <mat-form-field appearance="fill" fxFlex>
                     <mat-label>Contraseña</mat-label>
-                    <input matInput formControlName="password" type="password" [required]="dialogAction !== 'Edit'" autocomplete="new-password">
+                    <input #verClave1 matInput formControlName="password" type="password" [required]="dialogAction !== 'Edit'" autocomplete="new-password">
+                <button mat-icon-button matSuffix type="button" tabindex="-1" (click)="verClave1.type = verClave1.type === 'password' ? 'text' : 'password'" [matTooltip]="verClave1.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña'"><mat-icon>{{ verClave1.type === 'password' ? 'visibility' : 'visibility_off' }}</mat-icon></button>
                     <mat-hint *ngIf="dialogAction === 'Edit'">Déjelo vacío para mantener la contraseña actual</mat-hint>
                     <mat-hint *ngIf="dialogAction !== 'Edit'">Mínimo 6 caracteres</mat-hint>
                     <mat-error *ngIf="userForm.controls.password.touched && userForm.controls.password.invalid">
@@ -129,7 +130,8 @@
 
             <mat-form-field appearance="fill" fxFlex>
                 <mat-label>Password</mat-label>
-                <input matInput formControlName="password"  type="password" required>
+                <input #verClave2 matInput formControlName="password"  type="password" required>
+                <button mat-icon-button matSuffix type="button" tabindex="-1" (click)="verClave2.type = verClave2.type === 'password' ? 'text' : 'password'" [matTooltip]="verClave2.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña'"><mat-icon>{{ verClave2.type === 'password' ? 'visibility' : 'visibility_off' }}</mat-icon></button>
                 <mat-error *ngIf="userForm.controls.password.touched && userForm.controls.name.invalid">
                     <span *ngIf="userForm.controls.password.errors.required">Este campo es obligatorio.</span>
                     <span *ngIf="userForm.controls.password.errors.pattern">Este campo no es válido.</span>

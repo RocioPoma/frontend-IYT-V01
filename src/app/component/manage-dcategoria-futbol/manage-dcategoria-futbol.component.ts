@@ -1,3 +1,4 @@
+import { imagenDeporte } from 'src/app/shared/deportes';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DcategoriacampeonatoService } from 'src/app/servicios/dcategoriacampeonato.service';
@@ -17,6 +18,7 @@ export class ManageDcategoriaFutbolComponent implements OnInit {
 
   imgURL = '../../../assets/img/deportes/';
   extension = '.jpg';
+  imagen = imagenDeporte;
 
   constructor(
     private dcategoriacampeonatoService: DcategoriacampeonatoService,

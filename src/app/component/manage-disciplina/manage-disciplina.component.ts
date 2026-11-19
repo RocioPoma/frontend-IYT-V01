@@ -1,3 +1,4 @@
+import { imagenDeporte } from 'src/app/shared/deportes';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DisciplinaService } from 'src/app/servicios/disciplina.service';
 import { SnackbarService } from 'src/app/servicios/snackbar.service';
@@ -16,6 +17,8 @@ export class ManageDisciplinaComponent implements OnInit {
   responseMessage: any;
   imgURL='../../../assets/img/deportes/';
   extension='.jpg';
+
+  imagen = imagenDeporte;
 
   //imagen=['futbol', 'futsal','futbol_8','baloncesto','']
   

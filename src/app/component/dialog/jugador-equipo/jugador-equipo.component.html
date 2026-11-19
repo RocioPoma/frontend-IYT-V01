@@ -17,10 +17,10 @@
 
                 <div fxFlex>
                     <h4>Selecciona los Jugadores:</h4>
-                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 ">
+                    <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8 ">
 
                         <ng-container matColumnDef="nombre">
-                            <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                             <td class="align-left" mat-cell *matCellDef="let element">
 
                                 <div *ngIf="comprobarSiExiste(element.ci); then thenBlock else elseBlock"> </div>
@@ -56,7 +56,7 @@
                     matTooltip="Carnets de Jugadores" style="cursor: pointer;" (click)="generateCarnetsPDF()">
                 </div>
 
-                <table mat-table [dataSource]="dataEquipoJugador" class="mat-elevation-z5">
+                <table mat-table matSort [dataSource]="dataEquipoJugador" class="mat-elevation-z5">
 
                     <ng-container matColumnDef="numero">
                         <th mat-header-cell *matHeaderCellDef> No.</th>
@@ -64,13 +64,13 @@
                     </ng-container>
 
                     <ng-container matColumnDef="nombre">
-                        <th mat-header-cell *matHeaderCellDef> Nombre</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre</th>
                         <td mat-cell *matCellDef="let element"> {{element.nombre}} {{element.ap_paterno}}
                             {{element.ap_materno}}</td>
                     </ng-container>
 
                     <ng-container matColumnDef="edad">
-                        <th mat-header-cell *matHeaderCellDef> Edad</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Edad</th>
                         <td mat-cell *matCellDef="let element"> {{element.edad}} </td>
                     </ng-container>
 

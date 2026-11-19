@@ -1,45 +1,212 @@
-:host { display: block; min-height: 100vh; background: #f4f6f6; }
+:host { display: block; }
+
+.portal {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: #e8f1ef;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(0, 150, 136, .22), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(128, 203, 196, .12), transparent 55%),
+    linear-gradient(180deg, #04241f 0%, #031a16 55%, #02130f 100%);
+}
+
+// ---------------- Barra superior ----------------
 .barra {
-  position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 20px; background: #00352f; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(3, 26, 22, .72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
 }
-.marca { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 18px; }
-.barra-acciones { display: flex; gap: 8px; }
-.claro { color: #fff !important; border-color: rgba(255,255,255,.6) !important; }
+.barra-interior {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.marca {
+  display: flex; align-items: center; gap: 10px; cursor: pointer; color: #fff; text-decoration: none;
+  font-weight: 600; font-size: 18px; white-space: nowrap;
+  img { height: 40px; width: auto; }
+}
+.menu {
+  display: flex; gap: 4px; margin-left: 12px; flex: 1 1 auto;
+  button {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: transparent; border: 0; cursor: pointer;
+    color: rgba(255, 255, 255, .75); font: inherit; font-size: 14.5px; font-weight: 500;
+    padding: 10px 14px; border-radius: 10px; position: relative; white-space: nowrap;
+    mat-icon { font-size: 20px; width: 20px; height: 20px; }
+    &:hover { color: #fff; background: rgba(255, 255, 255, .06); }
+    &.activo {
+      color: #80cbc4; background: rgba(128, 203, 196, .12);
+      &::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: 2px; height: 2px; border-radius: 2px; background: #80cbc4; }
+    }
+  }
+}
+.barra-acciones { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+.btn-claro { background: #80cbc4 !important; color: #032420 !important; }
+.btn-texto { color: #fff !important; }
+.btn-borde { color: #fff !important; border-color: rgba(255, 255, 255, .45) !important; }
+
+// ---------------- Portada ----------------
 .portada {
-  background: linear-gradient(rgba(0,53,47,.75), rgba(0,53,47,.85)), url('../../assets/img/deportes.jpg') center/cover;
-  color: #fff; padding: 48px 20px 40px; text-align: center;
+  text-align: center;
+  padding: 56px 20px 36px;
+  max-width: 1000px;
+  margin: 0 auto;
+  h1 {
+    margin: 14px 0 12px; font-size: clamp(26px, 4.6vw, 44px); font-weight: 700; line-height: 1.15; color: #fff;
+    letter-spacing: -.3px;
+  }
 }
-.portada h1 { margin: 0 0 8px; font-size: clamp(22px, 4vw, 36px); font-weight: 700; }
-.portada p { margin: 0 0 16px; opacity: .9; }
-.selector-campeonato { width: min(420px, 100%); display: block; margin: 0 auto 8px; background: rgba(255,255,255,.95); border-radius: 6px; }
-.contenido { max-width: 1100px; margin: -20px auto 0; padding: 0 12px 40px; display: flex; flex-direction: column; gap: 16px; }
-.tarjeta { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-.tarjeta h2 { margin: 0 0 12px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
-.punto-vivo { width: 10px; height: 10px; border-radius: 50%; background: #d32f2f; animation: pulso 1.2s infinite; }
-@keyframes pulso { 50% { opacity: .3; } }
-.carrusel { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; }
-.mini-partido { min-width: 200px; border: 1px solid #e0e0e0; border-radius: 10px; padding: 10px; }
-.mini-partido.vivo { border-color: #d32f2f; }
-.mp-estado { font-size: 11px; color: #757575; margin-bottom: 6px; }
-.mini-partido.vivo .mp-estado { color: #d32f2f; font-weight: 700; }
-.mp-equipo { display: flex; justify-content: space-between; font-weight: 500; }
-.mp-lugar { font-size: 12px; color: #757575; margin-top: 6px; display: flex; align-items: center; gap: 2px; }
+.etiqueta-portada {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 600;
+  color: #80cbc4; background: rgba(128, 203, 196, .1); border: 1px solid rgba(128, 203, 196, .25);
+  padding: 6px 12px; border-radius: 999px;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+}
+.fechas {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 20px;
+  color: rgba(255, 255, 255, .78); font-size: 15px;
+  span { display: inline-flex; align-items: center; gap: 6px; }
+  mat-icon { font-size: 18px; width: 18px; height: 18px; color: #80cbc4; }
+}
+.portada-acciones { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px; }
+.selector-campeonato { width: min(420px, 100%); }
+
+// ---------------- Contenido ----------------
+.contenido {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 48px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1 0 auto;
+}
+.vidrio {
+  background: rgba(255, 255, 255, .045);
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 18px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  h2 {
+    margin: 0 0 16px; font-size: 19px; font-weight: 600; color: #fff;
+    display: flex; align-items: center; gap: 10px;
+    mat-icon { color: #80cbc4; }
+  }
+}
+.punto-vivo { width: 10px; height: 10px; border-radius: 50%; background: #ff5252; box-shadow: 0 0 0 4px rgba(255, 82, 82, .2); animation: pulso 1.2s infinite; }
+@keyframes pulso { 50% { opacity: .35; } }
+
+.carrusel { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.mini-partido {
+  min-width: 220px; padding: 14px; border-radius: 14px;
+  background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .1);
+  &.vivo { border-color: rgba(255, 82, 82, .7); background: rgba(255, 82, 82, .08); }
+}
+.mp-estado { font-size: 11.5px; color: rgba(255, 255, 255, .6); margin-bottom: 8px; letter-spacing: .3px; }
+.mini-partido.vivo .mp-estado { color: #ff8a80; font-weight: 700; }
+.mp-equipo { display: flex; justify-content: space-between; gap: 10px; font-weight: 500; color: #fff; line-height: 1.7; }
+.mp-lugar { font-size: 12px; color: rgba(255, 255, 255, .55); margin-top: 8px; display: flex; align-items: center; gap: 3px; }
 .mp-lugar mat-icon { font-size: 14px; width: 14px; height: 14px; }
-.chips { margin: 12px 0; }
+
+.tab-icono { font-size: 18px; width: 18px; height: 18px; margin-right: 6px; }
+.chips { margin: 16px 0 8px; display: block; }
 .sub-tabs { margin-top: 4px; }
-.vacio { color: #757575; padding: 16px 4px; }
-.noticias { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding-top: 12px; }
-.noticia { border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff; }
-.noticia img { width: 100%; height: 160px; object-fit: cover; display: block; }
-.noticia-cuerpo { padding: 12px; }
-.noticia-cuerpo small { color: #9e9e9e; }
-.noticia-cuerpo h3 { margin: 4px 0 8px; font-size: 16px; }
-.noticia-cuerpo p { margin: 0; color: #424242; white-space: pre-line; }
-.canchas { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; padding-top: 12px; }
-.cancha { display: flex; gap: 10px; padding: 12px; border: 1px solid #eee; border-radius: 10px; }
-.cancha mat-icon { color: #00695c; }
-.gris { color: #757575; font-size: 13px; }
-.auspiciadores { display: flex; flex-wrap: wrap; gap: 8px 20px; }
-.pie { text-align: center; color: #757575; font-size: 13px; padding: 20px; }
-@media (max-width: 600px) { .marca span { display: none; } }
+.vacio { color: rgba(255, 255, 255, .6); padding: 18px 4px; text-align: center; }
+
+.noticias { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding-top: 16px; }
+.noticia { border: 1px solid rgba(255, 255, 255, .1); border-radius: 14px; overflow: hidden; background: rgba(255, 255, 255, .04); }
+.noticia img { width: 100%; height: 170px; object-fit: cover; display: block; }
+.noticia-cuerpo { padding: 14px; }
+.noticia-cuerpo small { color: rgba(255, 255, 255, .5); }
+.noticia-cuerpo h3 { margin: 4px 0 8px; font-size: 16px; color: #fff; }
+.noticia-cuerpo p { margin: 0; color: rgba(255, 255, 255, .75); white-space: pre-line; }
+
+.canchas { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; padding-top: 16px; }
+.cancha { display: flex; gap: 12px; padding: 14px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 12px; background: rgba(255, 255, 255, .03); }
+.cancha mat-icon { color: #80cbc4; }
+.cancha b { color: #fff; }
+.gris { color: rgba(255, 255, 255, .6); font-size: 13px; }
+
+.auspiciadores { display: flex; flex-wrap: wrap; gap: 10px; }
+.auspiciador {
+  padding: 8px 14px; border-radius: 999px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .1);
+  color: #e8f1ef; text-decoration: none; font-size: 14px;
+}
+a.auspiciador:hover { border-color: #80cbc4; color: #80cbc4; }
+
+// ---------------- Sobre la Integración ----------------
+.portada-sobre { padding-bottom: 28px; }
+.sobre .parrafo { font-size: 15.5px; line-height: 1.75; color: rgba(255, 255, 255, .82); margin: 0 0 18px; text-align: justify; }
+.subtitulo-chico { margin: 20px 0 12px; font-size: 15px; font-weight: 600; color: #80cbc4; letter-spacing: .3px; }
+.datos { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.dato {
+  padding: 16px; border-radius: 14px; background: rgba(128, 203, 196, .08); border: 1px solid rgba(128, 203, 196, .2);
+  display: flex; flex-direction: column; gap: 2px;
+  b { font-size: 26px; color: #fff; font-weight: 700; }
+  span { font-size: 13px; color: rgba(255, 255, 255, .65); }
+}
+.comunidades { display: flex; flex-wrap: wrap; gap: 8px; }
+.comunidad {
+  display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px 6px 8px; border-radius: 999px;
+  background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .1); font-size: 13.5px;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; color: #80cbc4; }
+}
+.linea-tiempo {
+  list-style: none; margin: 8px 0 0; padding: 0; position: relative;
+  &::before { content: ''; position: absolute; left: 21px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(#80cbc4, rgba(128, 203, 196, .1)); }
+  li { display: flex; gap: 18px; padding: 10px 0; position: relative; }
+}
+.hito-punto {
+  flex: 0 0 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: #0b4a40; border: 2px solid #80cbc4; color: #80cbc4; z-index: 1;
+  mat-icon { font-size: 20px; width: 20px; height: 20px; }
+}
+.hito {
+  flex: 1; padding: 14px 18px; border-radius: 14px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .08);
+  h4 { margin: 4px 0 6px; font-size: 16px; color: #fff; font-weight: 600; }
+  p { margin: 0; color: rgba(255, 255, 255, .78); line-height: 1.7; font-size: 14.5px; text-align: justify; }
+}
+.hito-anio {
+  display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+  color: #032420; background: #80cbc4; padding: 3px 10px; border-radius: 999px;
+}
+
+// ---------------- Responsive ----------------
+@media (max-width: 860px) {
+  .barra-interior { flex-wrap: wrap; padding: 8px 14px; gap: 8px; }
+  .menu { order: 3; flex: 1 1 100%; margin: 0; overflow-x: auto; }
+  .menu button { flex: 1 1 auto; justify-content: center; }
+}
+@media (max-width: 599px) {
+  .marca span { font-size: 15px; }
+  .marca img { height: 32px; }
+  .btn-texto { display: none; }
+  .portada { padding: 32px 16px 24px; }
+  .contenido { padding: 0 12px 32px; }
+  .vidrio { padding: 14px; border-radius: 14px; h2 { font-size: 17px; line-height: 1.35; } }
+  .barra-acciones .txt { display: none; }
+  .barra-acciones .btn-claro { min-width: 0; padding: 0 12px; }
+  .barra-acciones .btn-claro mat-icon { margin: 0; }
+  .marca { flex: 1 1 auto; min-width: 0; }
+  .marca span { overflow: hidden; text-overflow: ellipsis; }
+  .datos { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .dato { padding: 10px; b { font-size: 18px; } span { font-size: 11.5px; } }
+  .linea-tiempo::before { left: 17px; }
+  .hito-punto { flex-basis: 36px; height: 36px; }
+  .hito { padding: 12px; }
+  .sobre .parrafo, .hito p { text-align: left; }
+}

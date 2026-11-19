@@ -1,12 +1,6 @@
 <!--<h1>Ruta 01</h1>
 <h1>{{id}}</h1>-->
-<mat-card class="responsive_table">
-  <div class="float-center">
-    <b class="tamano_titulo"><span>{{arraycamp.nombre_campeonato}} - </span></b>
-    <b class="tamano_titulo"><span>GESTION: {{arraycamp.gestion}}</span></b>
-  </div>
-</mat-card>
-<hr>
+<app-encabezado [titulo]="arraycamp.nombre_campeonato || 'Campeonato'" [subtitulo]="arraycamp.gestion ? 'Gestión ' + arraycamp.gestion : ''" icono="emoji_events"></app-encabezado>
 <!--
 <mat-tab-group class="color">
   <mat-tab  label="Detalle"></mat-tab>
@@ -24,16 +18,15 @@
   </mat-tab>
 </mat-tab-group>
 -->
-<mat-card class="responsive_table">
-  <div>
-    <b>Fecha Inicio: </b> {{arraycamp.fecha_i }}
-    <b>Fecha Fin: </b> {{arraycamp.fecha_f}}
-    <b>Convocatoria: </b> <a [href]="imgURL + arraycamp.convocatoria" target="_blank">
-      ver convocatoria</a>
+<mat-card class="detalle-camp">
+  <div class="datos-camp">
+    <div class="dato-camp"><mat-icon>event</mat-icon><div><span>Fecha de inicio</span><b>{{ arraycamp.fecha_i || '—' }}</b></div></div>
+    <div class="dato-camp"><mat-icon>event_available</mat-icon><div><span>Fecha de finalización</span><b>{{ arraycamp.fecha_f || '—' }}</b></div></div>
+    <div class="dato-camp"><mat-icon>description</mat-icon><div><span>Convocatoria</span>
+      <a *ngIf="arraycamp.convocatoria; else sinConv" [href]="imgURL + arraycamp.convocatoria" target="_blank" rel="noopener">Ver convocatoria</a>
+      <ng-template #sinConv><b>No publicada</b></ng-template></div></div>
   </div>
-  <div align="center">
-    <img src="../../../assets/img/logo2.png" alt="No image" width="80%">
-  </div>
+  <img class="logo-camp" src="assets/img/logo-iyt.png" alt="Integración Yaretanense">
 </mat-card>
 
 

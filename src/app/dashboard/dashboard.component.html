@@ -1,7 +1,6 @@
-<mat-card class="saludo">
-  <b>Bienvenido{{ nombre ? ', ' + nombre : '' }}</b>
+<app-encabezado [titulo]="'Bienvenido' + (nombre ? ', ' + nombre : '')" subtitulo="Resumen general del sistema" icono="dashboard">
   <span class="rol">{{ rol }}</span>
-</mat-card>
+</app-encabezado>
 
 <div class="avisos" *ngIf="esComite && (data?.jugadores_pendientes || data?.equipos_pendientes || data?.pases_pendientes)">
   <mat-card class="aviso" [routerLink]="['/integracion/solicitudes']">

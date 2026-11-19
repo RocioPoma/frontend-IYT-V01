@@ -1,4 +1,5 @@
 import { exportarPDF } from 'src/app/shared/reporte-pdf';
+import { environment } from 'src/environments/environment';
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -19,7 +20,8 @@ import { ConfirmationComponent } from '../dialog/confirmation/confirmation.compo
   styleUrls: ['./manage-club.component.scss']
 })
 export class ManageClubComponent implements OnInit {
-  displayedColumns: string[] = ['numero','nombre','comunidad', 'edit'];
+  displayedColumns: string[] = ['numero', 'logo', 'nombre', 'comunidad', 'edit'];
+  imgURL = environment.apiUrl + '/uploads/img/';
   dataSource: any;
   responseMessage: any;
 

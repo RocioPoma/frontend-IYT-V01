@@ -10,18 +10,20 @@ export class ClubService {
 
   constructor(private httpClient: HttpClient) { }
 
-  add(data: any) {
-    return this.httpClient.post(this.url +
-      "/club/add/", data, {
-      headers: new HttpHeaders().set('Content-Type', "application/json")
-    });
+  /** Registra un club; el logo (opcional) viaja como archivo. */
+  add(data: any, logo?: File | null) {
+    return this.httpClient.post(this.url + "/club/add/", this.formulario(data, logo));
   }
 
-  update(data: any) {
-    return this.httpClient.patch(this.url +
-      "/club/update/", data, {
-      headers: new HttpHeaders().set('Content-Type', "application/json")
-    });
+  update(data: any, logo?: File | null) {
+    return this.httpClient.patch(this.url + "/club/update/", this.formulario(data, logo));
+  }
+
+  private formulario(data: any, logo?: File | null): FormData {
+    const fd = new FormData();
+    Object.entries(data).forEach(([k, v]) => { if (v != null) fd.append(k, String(v)); });
+    if (logo) fd.append('logo', logo, logo.name);
+    return fd;
   }
 
   getClubs() {

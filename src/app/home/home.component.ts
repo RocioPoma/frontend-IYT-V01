@@ -36,6 +36,51 @@ export class HomeComponent implements OnInit, OnDestroy {
   imgUrl = environment.apiUrl + '/uploads/img/';
   private temporizador: any;
 
+  /** Menú del portal: "Campeonatos" se abre por defecto */
+  seccion: 'campeonatos' | 'sobre' = 'campeonatos';
+
+  readonly comunidades = [
+    'Cañavícota', 'Catuyo', 'Cajuata', 'Challgua', 'Challuma', 'Chite', 'Cochevillque', 'Jayocota Vinto',
+    'Jilstata', 'Jupacollo', 'Lipipujio', 'Puqui', 'Quitamalla', 'Rodeo', 'Sigualaca', 'Sonturo', 'Tambo Tambillo',
+  ];
+
+  readonly historia = [
+    {
+      periodo: 'Gestión 2021',
+      titulo: 'Desarrollo e implementación piloto',
+      icono: 'rocket_launch',
+      texto:
+        'Durante esta gestión se desarrolló el sistema y se realizó su primera implementación piloto en la comunidad de Catuyo, ' +
+        'con el Club Aurora, liderado por el Sr. Cándido Poma Mamani, esta primera experiencia permitió poner en práctica sus ' +
+        'funcionalidades para la gestión de campeonatos deportivos, incluyendo el registro de equipos y jugadores, la conformación ' +
+        'de grupos, la generación de fixtures, la programación de partidos y el seguimiento de resultados y tablas de posiciones.',
+    },
+    {
+      periodo: 'Gestión 2024',
+      titulo: 'Priorización',
+      icono: 'flag',
+      texto:
+        'Durante esta gestión se priorizó la implementación y utilización del sistema en la comunidad de Jilstata con su Club Litoral, ' +
+        'estableciéndose su uso obligatorio y estricto para la organización y administración de las actividades deportivas. Esta etapa ' +
+        'representó un avance importante en la incorporación de herramientas tecnológicas para la gestión y el control de los campeonatos.',
+    },
+    {
+      periodo: '2025 - Actualidad',
+      titulo: '',
+      icono: 'verified',
+      texto:
+        'El sistema constituye una herramienta tecnológica para centralizar y facilitar la administración de los campeonatos deportivos, ' +
+        'permitiendo gestionar equipos, jugadores, modalidades de competencia, fixture, resultados, tablas de posiciones, goleadores, ' +
+        'tarjetas y estadísticas. Asimismo, facilita la generación de planillas e informes y la difusión de información deportiva, ' +
+        'fotografías, videos y noticias relacionadas con los campeonatos.',
+    },
+  ];
+
+  irA(seccion: 'campeonatos' | 'sobre'): void {
+    this.seccion = seccion;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   constructor(
     private dialog: MatDialog,
     private router: Router,

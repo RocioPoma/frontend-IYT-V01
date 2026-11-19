@@ -1,35 +1,50 @@
-<mat-toolbar color="primary">
-    <mat-toolbar-row fxLayout="row">
-        <span class="title-center">{{action}} Club</span>
-    </mat-toolbar-row>
+<mat-toolbar>
+    <span>{{action}} Club</span>
 </mat-toolbar>
 
-<mat-dialog-content class="mat-typography">
-    <form [formGroup]="clubForm">
-        <div fxFlex fxLayout="column">
-            <div fxLayout="row wrap">
-                <mat-form-field appearance="fill" fxFlex>
-                    <mat-label>Nombre</mat-label>
-                    <input matInput formControlName="nombre" required>
-                    <mat-error *ngIf="clubForm.controls.nombre.touched && clubForm.controls.nombre.invalid">
-                        <span *ngIf="clubForm.controls.nombre.errors.required">Este campo es obligatorio.</span>
-                    </mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="fill" fxFlex>
-                    <mat-label>Comunidad</mat-label>
-                    <input matInput formControlName="comunidad" required>
-                    <mat-error *ngIf="clubForm.controls.comunidad.touched && clubForm.controls.comunidad.invalid">
-                        <span *ngIf="clubForm.controls.comunidad.errors.required">Este campo es obligatorio.</span>
-                    </mat-error>
-                </mat-form-field>
+<mat-dialog-content>
+    <form [formGroup]="clubForm" class="form-club">
+        <div class="logo-zona">
+            <div class="logo-vista" (click)="archivo.click()" matTooltip="Elegir logo">
+                <img *ngIf="vistaLogo; else sinLogo" [src]="vistaLogo" alt="Logo del club">
+                <ng-template #sinLogo><mat-icon>shield</mat-icon></ng-template>
+                <span class="logo-editar"><mat-icon>photo_camera</mat-icon></span>
             </div>
+            <div class="logo-info">
+                <b>Logo del club</b>
+                <span>JPG, PNG o WEBP · máx. 10 MB (opcional)</span>
+                <div class="logo-botones">
+                    <button mat-stroked-button type="button" (click)="archivo.click()">
+                        <mat-icon>upload</mat-icon> {{ vistaLogo ? 'Cambiar logo' : 'Subir logo' }}
+                    </button>
+                    <button mat-button type="button" *ngIf="logo" (click)="quitarLogo()">Quitar</button>
+                </div>
+            </div>
+            <input #archivo type="file" accept="image/png,image/jpeg,image/webp" hidden (change)="elegirLogo($event)">
+        </div>
+
+        <div class="fila">
+            <mat-form-field appearance="fill">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="nombre" required>
+                <mat-error *ngIf="clubForm.controls.nombre.touched && clubForm.controls.nombre.invalid">
+                    <span *ngIf="clubForm.controls.nombre.errors.required">Este campo es obligatorio.</span>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Comunidad</mat-label>
+                <input matInput formControlName="comunidad" required>
+                <mat-error *ngIf="clubForm.controls.comunidad.touched && clubForm.controls.comunidad.invalid">
+                    <span *ngIf="clubForm.controls.comunidad.errors.required">Este campo es obligatorio.</span>
+                </mat-error>
+            </mat-form-field>
         </div>
     </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="center">
     <button mat-raised-button color="primary" type="submit" (click)="handleSubmit()"
-        [disabled]="!(clubForm.valid && clubForm.dirty)">{{action}}</button>
-        <button mat-raised-button color="primary" mat-dialog-close>Cancelar</button>
+        [disabled]="!(clubForm.valid && (clubForm.dirty || logo)) || guardando">{{action}}</button>
+    <button mat-raised-button color="primary" mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>

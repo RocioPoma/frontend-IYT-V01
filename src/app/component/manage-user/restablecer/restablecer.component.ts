@@ -18,12 +18,14 @@ import { GlobalCostants } from 'src/app/shared/global-constants';
         <form *ngIf="token" [formGroup]="form" (ngSubmit)="guardar()">
           <mat-form-field appearance="outline" class="campo">
             <mat-label>Nueva contraseña</mat-label>
-            <input matInput type="password" formControlName="password" autocomplete="new-password" />
+            <input #verClave1 matInput type="password" formControlName="password" autocomplete="new-password" />
+            <button mat-icon-button matSuffix type="button" tabindex="-1" (click)="verClave1.type = verClave1.type === 'password' ? 'text' : 'password'"><mat-icon>{{ verClave1.type === 'password' ? 'visibility' : 'visibility_off' }}</mat-icon></button>
             <mat-hint>Mínimo 6 caracteres</mat-hint>
           </mat-form-field>
           <mat-form-field appearance="outline" class="campo">
             <mat-label>Repetir contraseña</mat-label>
-            <input matInput type="password" formControlName="confirmar" autocomplete="new-password" />
+            <input #verClave2 matInput type="password" formControlName="confirmar" autocomplete="new-password" />
+            <button mat-icon-button matSuffix type="button" tabindex="-1" (click)="verClave2.type = verClave2.type === 'password' ? 'text' : 'password'"><mat-icon>{{ verClave2.type === 'password' ? 'visibility' : 'visibility_off' }}</mat-icon></button>
           </mat-form-field>
           <p class="error" *ngIf="form.errors?.['distintas'] && form.controls['confirmar'].dirty">Las contraseñas no coinciden.</p>
           <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || guardando">Guardar</button>

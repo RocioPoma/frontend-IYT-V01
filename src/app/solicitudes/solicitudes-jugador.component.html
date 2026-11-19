@@ -4,7 +4,7 @@
 </p>
 
 <div class="tabla-scroll" *ngIf="filas.length">
-  <table mat-table [dataSource]="filas" class="tabla">
+  <table mat-table matSort [dataSource]="filas" class="tabla">
     <ng-container matColumnDef="foto">
       <th mat-header-cell *matHeaderCellDef>Foto</th>
       <td mat-cell *matCellDef="let s">
@@ -13,24 +13,24 @@
     </ng-container>
 
     <ng-container matColumnDef="tipo">
-      <th mat-header-cell *matHeaderCellDef>Tipo</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</th>
       <td mat-cell *matCellDef="let s">{{ s.tipo === 'alta' ? 'Jugador nuevo' : 'Actualización' }}</td>
     </ng-container>
 
     <ng-container matColumnDef="jugador">
-      <th mat-header-cell *matHeaderCellDef>Jugador</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="ci">Jugador</th>
       <td mat-cell *matCellDef="let s">
         <b>{{ nombre(s) }}</b><br /><small>CI {{ s.ci }}</small>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="club">
-      <th mat-header-cell *matHeaderCellDef>Club</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Club</th>
       <td mat-cell *matCellDef="let s">{{ s.club }}<br /><small>{{ s.solicitado_por_nombre }}</small></td>
     </ng-container>
 
     <ng-container matColumnDef="cambios">
-      <th mat-header-cell *matHeaderCellDef>Datos / cambios</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="fecha_nacimiento">Datos / cambios</th>
       <td mat-cell *matCellDef="let s">
         <ng-container *ngIf="s.tipo === 'alta'">
           <small>{{ s.fecha_nacimiento }} · {{ s.sexo }} · {{ s.decendencia || '—' }}</small>
@@ -51,7 +51,7 @@
     </ng-container>
 
     <ng-container matColumnDef="estado">
-      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="observacion">Estado</th>
       <td mat-cell *matCellDef="let s">
         <span class="estado" [ngClass]="estados[s.estado]?.clase">{{ estados[s.estado]?.texto }}</span>
         <div class="obs" *ngIf="s.estado === 'observado' && s.observacion">{{ s.observacion }}</div>
@@ -59,12 +59,12 @@
     </ng-container>
 
     <ng-container matColumnDef="fecha">
-      <th mat-header-cell *matHeaderCellDef>Enviada</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="fecha_solicitud_f">Enviada</th>
       <td mat-cell *matCellDef="let s"><small>{{ s.fecha_solicitud_f || '—' }}</small></td>
     </ng-container>
 
     <ng-container matColumnDef="acciones">
-      <th mat-header-cell *matHeaderCellDef>Acciones</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="tipo">Acciones</th>
       <td mat-cell *matCellDef="let s" class="acciones">
         <ng-container *ngIf="modo === 'delegado'">
           <button mat-icon-button color="primary" matTooltip="Editar" *ngIf="editable(s)" (click)="editar(s)"><mat-icon>edit</mat-icon></button>

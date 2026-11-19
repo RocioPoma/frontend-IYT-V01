@@ -1,14 +1,19 @@
-.mat-toolbar{
-    margin: -24px;
-    width: auto;
-    margin-bottom: 10px;
+.form-club { display: flex; flex-direction: column; gap: 16px; }
+.fila { display: flex; flex-wrap: wrap; gap: 0 16px; mat-form-field { flex: 1 1 220px; } }
+.logo-zona { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.logo-vista {
+  position: relative; width: 96px; height: 96px; border-radius: 50%; overflow: hidden; cursor: pointer;
+  background: #e0f2f1; border: 2px dashed #80cbc4; display: flex; align-items: center; justify-content: center;
+  img { width: 100%; height: 100%; object-fit: cover; }
+  > mat-icon { font-size: 44px; width: 44px; height: 44px; color: #00796b; }
+  .logo-editar {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(5, 58, 49, .5); color: #fff; opacity: 0; transition: opacity .15s;
+  }
+  &:hover .logo-editar { opacity: 1; }
 }
-
-.title-center{
-    flex: 1 1 auto;
-    text-align: center;
+.logo-info {
+  display: flex; flex-direction: column; gap: 4px;
+  span { font-size: 12.5px; color: #5f7176; }
 }
-
-mat-form-field{
-    padding: 5px;
-}
+.logo-botones { display: flex; gap: 8px; margin-top: 6px; }

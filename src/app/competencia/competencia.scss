@@ -24,7 +24,7 @@
   display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px;
   padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 8px; background: #fff;
 }
-.partido .local { text-align: right; }
+.partido .local { text-align: right; justify-content: flex-end; }
 .partido .marcador { min-width: 72px; text-align: center; font-weight: 700; font-size: 18px; }
 .partido .detalle { grid-column: 1 / -1; font-size: 12px; color: #616161; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
 .partido .detalle mat-icon { font-size: 15px; width: 15px; height: 15px; vertical-align: -3px; }

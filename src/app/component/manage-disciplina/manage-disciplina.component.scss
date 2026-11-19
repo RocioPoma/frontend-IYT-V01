@@ -1,20 +1,13 @@
-.float-center {
-    text-align: center;
+.grilla-disciplinas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
 }
-
-.tamano_titulo {
-    font-size: 18px;
-    color: rgb(120, 132, 133);
+.disciplina { overflow: hidden; padding: 0 !important; }
+.disciplina-img { width: 100%; height: 140px; object-fit: cover; display: block; }
+.disciplina-cuerpo {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px;
+  h3 { margin: 0; font-size: 16px; font-weight: 600; }
+  p { margin: 2px 0 0; font-size: 12.5px; color: #5f7176; }
 }
-
-.example-card {
-    max-width: 400px;
-    margin-bottom: 8px;   
-}
-
-.img {
-    background-size: cover;
-    border-radius: 50%;
-   // margin: 0 auto;
-}
-
+.inactiva .disciplina-img { filter: grayscale(1); opacity: .6; }

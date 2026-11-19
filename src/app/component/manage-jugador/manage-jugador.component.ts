@@ -48,6 +48,8 @@ export class ManageJugadorComponent implements OnInit {
   imgURL = this.url + '/uploads/img/';
 
   apiResponse: any = []; //para filtrar con el select
+  clubFiltro: any = 'Todos';
+  private jugadorFoto: any = null;
  
   //-----PARA REPORTES
   userName: string = '';
@@ -91,7 +93,7 @@ export class ManageJugadorComponent implements OnInit {
     this.jugadorService.getJugadors().subscribe((response: any) => {
       this.ngxService.stop();
       this.apiResponse = response;
-      this.dataSource = new MatTableDataSource(response);
+      this.aplicarFiltroClub();
     }, (error: any) => {
       if (error.error?.message) {
         this.responseMessage = error.error?.message;
@@ -116,14 +118,59 @@ export class ManageJugadorComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
   filterSelection($event: any) {
-    let filterData = (this.apiResponse || []).filter((item: any) => {
-      return item.NombreClub.toLowerCase() == $event.value.toLowerCase();
-    })
-    if ($event.value == 'Todos') {
-      this.tableData();
-    } else {
-      this.dataSource = new MatTableDataSource(filterData);
+    this.clubFiltro = $event.value;
+    this.aplicarFiltroClub();
+  }
+
+  /** Muestra solo los jugadores del club elegido (por id: hay clubs con el mismo nombre en distintas comunidades) */
+  private aplicarFiltroClub() {
+    const texto = this.dataSource?.filter || '';
+    const datos = this.clubFiltro === 'Todos'
+      ? (this.apiResponse || [])
+      : (this.apiResponse || []).filter((j: any) => String(j.clubId) === String(this.clubFiltro));
+    this.dataSource = new MatTableDataSource(datos);
+    this.dataSource.filter = texto;
+  }
+
+  //------------------- FOTO DESDE LA LISTA -------------------
+  /** Comité / administrador: cambia la foto directo. Delegado: abre la solicitud de actualización. */
+  get puedeCambiarFoto(): boolean {
+    return this.esDelegado || this.role === 'admin';
+  }
+
+  cambiarFoto(jugador: any, input: HTMLInputElement) {
+    if (!this.puedeCambiarFoto) return;
+    if (this.esDelegado) {
+      this.solicitarActualizacion(jugador);
+      return;
     }
+    this.jugadorFoto = jugador;
+    input.click();
+  }
+
+  subirFoto(evento: Event) {
+    const input = evento.target as HTMLInputElement;
+    const archivo = input.files?.[0];
+    input.value = '';
+    const jugador = this.jugadorFoto;
+    this.jugadorFoto = null;
+    if (!archivo || !jugador) return;
+    if (!/^image\/(png|jpe?g|webp)$/.test(archivo.type)) {
+      this.snackbarService.openSnackBar('La foto debe ser una imagen JPG, PNG o WEBP', GlobalCostants.error);
+      return;
+    }
+    this.ngxService.start();
+    this.jugadorService.actualizarFoto(jugador.ci, archivo).subscribe({
+      next: (r: any) => {
+        this.ngxService.stop();
+        jugador.foto = r.foto;
+        this.snackbarService.openSnackBar(r.message, 'success');
+      },
+      error: (e: any) => {
+        this.ngxService.stop();
+        this.snackbarService.openSnackBar(e.error?.message || GlobalCostants.genericError, GlobalCostants.error);
+      },
+    });
   }
 
 

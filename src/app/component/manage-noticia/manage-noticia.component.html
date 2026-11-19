@@ -1,8 +1,6 @@
-<mat-card>
-    <b><span>Administracion de Noticias</span></b>
-    <button mat-flat-button color="primary" class="float-right" (click)="handleAddAction()" *ngIf="role !== 'user'">Crear Noticia</button>
-</mat-card>
-<hr>
+<app-encabezado titulo="Noticias" icono="newspaper">
+    <button mat-flat-button color="primary" (click)="handleAddAction()" *ngIf="role !== 'user'"><mat-icon>add</mat-icon> Crear noticia</button>
+</app-encabezado>
 
 <div  layout=”row”  *ngFor="let noticia of datosNoticia">
         <div class="column">
