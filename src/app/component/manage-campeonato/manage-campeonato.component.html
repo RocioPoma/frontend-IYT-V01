@@ -15,7 +15,17 @@
     <table mat-table matSort [dataSource]="dataSource" [paginador]="paginador">
             <ng-container matColumnDef="nombre_campeonato">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre Campeonato</th>
-                <td mat-cell *matCellDef="let element"> {{element.nombre_campeonato}} </td>
+                <td mat-cell *matCellDef="let element">
+                    <b *ngIf="element.numero_romano">{{element.numero_romano}} · </b>{{element.nombre_campeonato}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="anfitrion">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header="comunidad_anfitriona"> Anfitrión</th>
+                <td mat-cell *matCellDef="let element">
+                    {{ element.comunidad_anfitriona || '—' }}
+                    <div class="sub-celda" *ngIf="element.club_anfitrion">{{ element.club_anfitrion }}</div>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="gestion">

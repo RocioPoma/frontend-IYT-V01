@@ -1,3 +1,4 @@
+import { COMUNIDADES } from '../shared/comunidades';
 import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -37,10 +38,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   /** Menú del portal: "Campeonatos" se abre por defecto */
   seccion: 'campeonatos' | 'sobre' | 'sistema' = 'campeonatos';
 
-  readonly comunidades = [
-    'Cañavícota', 'Catuyo', 'Cajuata', 'Challgua', 'Challuma', 'Chite', 'Cochevillque', 'Jayocota Vinto',
-    'Jilstata', 'Jupacollo', 'Lipipujio', 'Puqui', 'Quitamalla', 'Rodeo', 'Sigualaca', 'Sonturo', 'Tambo Tambillo',
-  ];
+  readonly comunidades = COMUNIDADES;
 
   readonly historia = [
     {

@@ -23,7 +23,7 @@ import { rolPantalla } from '../../shared/permisos';
   styleUrls: ['./manage-campeonato.component.scss']
 })
 export class ManageCampeonatoComponent implements OnInit {
-  displayedColumns: string[] = ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
+  displayedColumns: string[] = ['nombre_campeonato', 'anfitrion', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
   dataSource: any; //almacena los tatos extraidos del backend
   responseMessage: any;
   role: any;
@@ -58,8 +58,8 @@ export class ManageCampeonatoComponent implements OnInit {
     }
 
     this.displayedColumns = this.role === 'user' 
-      ? ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'ver']  // Agrega las columnas que sí pueden ver los usuarios "user"
-      : ['nombre_campeonato', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
+      ? ['nombre_campeonato', 'anfitrion', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'ver']  // Agrega las columnas que sí pueden ver los usuarios "user"
+      : ['nombre_campeonato', 'anfitrion', 'gestion', 'fecha_inicio', 'fecha_fin', 'convocatoria', 'acciones', 'ver'];
   
   }
 

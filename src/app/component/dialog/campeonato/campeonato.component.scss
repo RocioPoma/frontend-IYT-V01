@@ -20,3 +20,7 @@ mat-form-field {
 .radio_buton{
     padding: 5px;  
 }
+
+.fila-anfitrion { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 12px; margin: 10px 0; }
+.fila-anfitrion .ancho-completo { grid-column: 1 / -1; }
+@media (max-width: 700px) { .fila-anfitrion { grid-template-columns: 1fr; } }

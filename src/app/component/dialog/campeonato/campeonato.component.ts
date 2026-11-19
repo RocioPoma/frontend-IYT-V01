@@ -7,6 +7,8 @@ import { DateAdapter } from '@angular/material/core';
 import { GlobalCostants } from 'src/app/shared/global-constants';
 import { environment } from 'src/environments/environment';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ClubService } from 'src/app/servicios/club.service';
+import { COMUNIDADES, PATRON_ROMANO, normalizarNombre } from 'src/app/shared/comunidades';
 
 @Component({
   standalone: false,
@@ -32,6 +34,8 @@ export class CampeonatoComponent implements OnInit {
   imgURL2 = this.url + '/uploads/img/';
 
   imgURL = '../../../../assets/img/img.jpg';
+  comunidades: string[] = [...COMUNIDADES];
+  clubs: any[] = [];
   image = '';
 
 
@@ -41,6 +45,7 @@ export class CampeonatoComponent implements OnInit {
     private _sanitizer: DomSanitizer,
     private dialogRef: MatDialogRef<CampeonatoComponent>,
     private snackbarService: SnackbarService,
+    private clubService: ClubService,
     private dateAdapter: DateAdapter<Date>) {
     this.dateAdapter.setLocale('en-GB'); //dd/MM/yyyy
   }
@@ -52,12 +57,48 @@ export class CampeonatoComponent implements OnInit {
       fecha_fin: [null, Validators.required],
       convocatoria: [null],
       gestion: [null, [Validators.required,Validators.minLength(4)]],
+      numero_romano: [null, [Validators.required, Validators.pattern(PATRON_ROMANO)]],
+      comunidad_anfitriona: [null, Validators.required],
+      id_club_anfitrion: [null],
+    });
+    this.clubService.getClubs().subscribe((r: any) => {
+      this.clubs = (r || []).slice().sort((a: any, b: any) => String(a.nombre).localeCompare(String(b.nombre), 'es'));
+      // comunidades de los clubs que no estén en la lista oficial
+      for (const c of this.clubs) {
+        if (c.comunidad && !this.comunidades.some((x) => normalizarNombre(x) === normalizarNombre(c.comunidad))) this.comunidades.push(c.comunidad);
+      }
     });
     if (this.dialogData.action === 'Edit') {
       this.dialogAction = "Edit";
       this.action = "Actualizar";
+      const d = this.dialogData.data || {};
+      if (d.comunidad_anfitriona && !this.comunidades.includes(d.comunidad_anfitriona)) this.comunidades.push(d.comunidad_anfitriona);
       this.campeonatoForm.patchValue(this.dialogData.data);
     }
+  }
+
+  /** El número del campeonato siempre en mayúsculas */
+  mayusculas() {
+    const c = this.campeonatoForm.controls.numero_romano;
+    const v = String(c.value || '').toUpperCase().replace(/\s+/g, '');
+    if (v !== c.value) c.setValue(v);
+  }
+
+  get clubsComunidad(): any[] {
+    const com = normalizarNombre(this.campeonatoForm.value.comunidad_anfitriona);
+    return com ? this.clubs.filter((c) => normalizarNombre(c.comunidad).includes(com) || com.includes(normalizarNombre(c.comunidad) || '#')) : [];
+  }
+
+  get otrosClubs(): any[] {
+    const ids = new Set(this.clubsComunidad.map((c) => c.id));
+    return this.clubs.filter((c) => !ids.has(c.id));
+  }
+
+  /** Al elegir la comunidad, se propone su club como anfitrión */
+  elegirComunidad(comunidad: string) {
+    const club = this.clubsComunidad[0];
+    this.campeonatoForm.controls.id_club_anfitrion.setValue(club ? club.id : null);
+    this.campeonatoForm.markAsDirty();
   }
 
   //--------------------------- SELECCIONAMOS ARCHIVO PARA MOSTRARLO EN EL MODAL ------------------
@@ -92,6 +133,9 @@ export class CampeonatoComponent implements OnInit {
       fecha_fin: formData.fecha_fin,
       convocatoria: formData.convocatoria,
       gestion: formData.gestion,
+      numero_romano: formData.numero_romano,
+      comunidad_anfitriona: formData.comunidad_anfitriona,
+      id_club_anfitrion: formData.id_club_anfitrion,
     }
     this.campeonatoService.add1(data,this.file).subscribe((response: any) => {
       this.dialogRef.close();
@@ -120,7 +164,10 @@ export class CampeonatoComponent implements OnInit {
       fecha_fin: formData.fecha_fin,
       convocatoria: formData.convocatoria,
       gestion: formData.gestion,
-      nombre_conv:this.dialogData.data.convocatoria
+      nombre_conv:this.dialogData.data.convocatoria,
+      numero_romano: formData.numero_romano,
+      comunidad_anfitriona: formData.comunidad_anfitriona,
+      id_club_anfitrion: formData.id_club_anfitrion,
     }
     this.campeonatoService.update1(data,this.file).subscribe((response: any) => {
       this.dialogRef.close();

@@ -19,6 +19,7 @@
   // Variables de Angular Material (M3)
   --mat-sidenav-container-shape: 0;
   --mat-dialog-container-shape: 16px;
+  --mat-dialog-container-max-width: 96vw; // Material 3 limita los diálogos a 560px por defecto
   --mat-table-background-color: #fff;
   --mat-sort-arrow-color: var(--iyt-acento);
 }
