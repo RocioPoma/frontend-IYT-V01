@@ -8,6 +8,7 @@ import { SolicitudJugadorDialogComponent } from './solicitud-jugador-dialog.comp
 import { SolicitudesJugadorComponent } from './solicitudes-jugador.component';
 import { SolicitarPaseDialogComponent } from './solicitar-pase-dialog.component';
 import { BandejaComiteComponent } from './bandeja-comite.component';
+import { RevisarSolicitudDialogComponent } from './revisar-solicitud-dialog.component';
 
 const COMPONENTES = [
   MotivoDialogComponent,
@@ -15,6 +16,7 @@ const COMPONENTES = [
   SolicitudesJugadorComponent,
   SolicitarPaseDialogComponent,
   BandejaComiteComponent,
+  RevisarSolicitudDialogComponent,
 ];
 
 @NgModule({

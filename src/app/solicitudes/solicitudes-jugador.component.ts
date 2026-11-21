@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ESTADOS, SolicitudesService, SolicitudJugador } from './solicitudes.service';
 import { SolicitudJugadorDialogComponent } from './solicitud-jugador-dialog.component';
 import { MotivoDialogComponent } from './motivo-dialog.component';
+import { RevisarSolicitudDialogComponent } from './revisar-solicitud-dialog.component';
 import { SnackbarService } from '../servicios/snackbar.service';
 import { GlobalCostants } from '../shared/global-constants';
 import { environment } from 'src/environments/environment';
@@ -112,6 +113,14 @@ export class SolicitudesJugadorComponent implements OnInit {
   }
 
   // ----- Comité técnico -----
+  /** Formulario con los datos a la izquierda y el documento a la derecha; permite corregir, aceptar u observar */
+  revisar(s: SolicitudJugador): void {
+    this.dialog
+      .open(RevisarSolicitudDialogComponent, { width: '1280px', maxWidth: '98vw', maxHeight: '96vh', data: { solicitud: s }, autoFocus: false })
+      .afterClosed()
+      .subscribe((ok) => ok && this.cargar());
+  }
+
   aceptar(s: SolicitudJugador): void {
     this.dialog
       .open(MotivoDialogComponent, {

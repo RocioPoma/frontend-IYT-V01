@@ -33,6 +33,8 @@ export interface SolicitudJugador {
   actual_sexo?: string;
   actual_decendencia?: string;
   actual_foto?: string;
+  actual_documento?: string;
+  comunidad_club?: string;
 }
 
 type Msg = { message: string; id?: number };
